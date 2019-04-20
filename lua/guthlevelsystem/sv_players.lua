@@ -54,7 +54,9 @@ function Player:LSGetData()
     self:LSCalcNXP()
     self:LSSetLVL( result[1].LVL )
 
-    self:LSSendData()
+    timer.Simple( .1, function()
+        self:LSSendData()
+    end )
 
     LEVELSYSTEM.Notif( "LS Data has been loaded on " .. self:Name() )
 end
@@ -75,14 +77,16 @@ function Player:LSAddXP( num )
     if not num or not isnumber( num ) then return end
 
     self.LSxp = ( self.LSxp or 0 ) + num
-    if self.LSxp >= self.LSnxp then
+    if self.LSxp >= ( self.LSnxp or math.huge ) then
+        local dif = self.LSnxp - self.LSxp
+        --print( self.LSnxp, self.LSxp, dif )
+
         self:LSAddLVL( 1 )
 
-        local dif = self.LSnxp - self.LSxp
-        if dif > 0 then
+        if dif < 0 then
             timer.Simple( .5, function()
                 if not self:IsValid() then return end
-                self:LSAddXP( dif )
+                self:LSAddXP( -dif )
             end)
         end
         return
@@ -110,7 +114,18 @@ function Player:LSSetXP( num )
 
     self.LSxp = num
     if self.LSxp >= self.LSnxp then
+        local dif = self.LSnxp - self.LSxp
+        --print( self.LSnxp, self.LSxp, dif )
+
         self:LSAddLVL( 1 )
+
+        if dif < 0 then
+            timer.Simple( .5, function()
+                if not self:IsValid() then return end
+                self:LSAddXP( -dif )
+            end)
+        end
+        return
     end
 
     self:LSSaveData()
