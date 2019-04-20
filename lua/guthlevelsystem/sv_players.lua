@@ -1,13 +1,14 @@
 local Player = FindMetaTable( "Player" )
 
+--  > DATA <  --
+
 --  >   Player:LSCreateData
 --  >   args: nil
 --  >   return: nil
 function Player:LSCreateData()
     local sid = self:SteamID()
-    local nxp = self:LSCalcNXP()
 
-    local query = string.format( "INSERT INTO guth_ls( SteamID, XP, NXP, LVL ) VALUES ( '%s', 0, %d, 0)", sid, nxp )
+    local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 0)", sid )
     local result = sql.Query( query )
 
     if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data on " .. self:Name() ) end
@@ -19,12 +20,11 @@ end
 --  >   args: nil
 --  >   return: nil
 function Player:LSSaveData()
-    local sid = self:SteamID()
     local xp = self:LSGetXP()
-    local nxp = self:LSGetNXP()
     local lvl = self:LSGetLVL()
+    local sid = self:SteamID()
 
-    local query = string.format( "UPDATE guth_ls SET XP=%d, NXP=%d, LVL=%d WHERE SteamID='%s'", xp, nxp, lvl, sid )
+    local query = string.format( "UPDATE guth_ls SET XP=%d, LVL=%d WHERE SteamID='%s'", xp, lvl, sid )
     local result = sql.Query( query )
 
     if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Save LS Data on " .. self:Name() ) end
@@ -38,22 +38,35 @@ end
 function Player:LSGetData()
     local sid = self:SteamID()
 
-    local query = string.format( "SELECT * FROM guth_ls WHERE SteamID='%s'", sid )
+    local query = string.format( "SELECT SteamID, XP, LVL FROM guth_ls WHERE SteamID='%s'", sid )
     local result = sql.Query( query )
 
-    PrintTable( values )
+    if not istable( result ) then return end
 
-    --self.LSxp = 0
-    --self.LSnxp = 0
-    --self.LSlvl = 0
+    if #result > 1 then
+        query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
+        sql.Query( query )
+        LEVELSYSTEM.Notif( "LS Data has been erased on " .. self:Name() )
+        return self:LSCreateData()
+    end
+
+    self:LSSetXP( result[1].XP )
+    self:LSCalcNXP()
+    self:LSSetLVL( result[1].LVL )
+
+    self:LSSendData()
+
+    LEVELSYSTEM.Notif( "LS Data has been loaded on " .. self:Name() )
 end
 
 function Player:LSHasData()
-    local query = string.format( "SELECT SteamID, XP, NXP, LVL FROM guth_ls WHERE SteamID='%s'", sid )
+    local query = string.format( "SELECT SteamID FROM guth_ls WHERE SteamID='%s'", sid )
     local result = sql.Query( query )
 
-    return result and true or false
+    return result == nil and true or false
 end
+
+--  > XP <  --
 
 --  >   Player:LSAddXP
 --  >   args: #1 number
@@ -64,7 +77,21 @@ function Player:LSAddXP( num )
     self.LSxp = ( self.LSxp or 0 ) + num
     if self.LSxp >= self.LSnxp then
         self:LSAddLVL( 1 )
+
+        local dif = self.LSnxp - self.LSxp
+        if dif > 0 then
+            timer.Simple( .5, function()
+                if not self:IsValid() then return end
+                self:LSAddXP( dif )
+            end)
+        end
+        return
     end
+
+    self:LSSaveData()
+    self:LSSendData()
+
+    self:LSSendNotif( string.format( "You get %d XP, work harder !", num ) )
 end
 
 --  >   Player:LSCalcNXP
@@ -85,6 +112,9 @@ function Player:LSSetXP( num )
     if self.LSxp >= self.LSnxp then
         self:LSAddLVL( 1 )
     end
+
+    self:LSSaveData()
+    self:LSSendData()
 end
 
 --  >   Player:LSGetXP
@@ -101,6 +131,8 @@ function Player:LSGetNXP()
     return self.LSnxp or -1
 end
 
+--  > LVL <  --
+
 --  >   Player:LSAddLVL
 --  >   args: #1 number
 --  >   return: nil
@@ -110,6 +142,11 @@ function Player:LSAddLVL( num )
     self.LSlvl = ( self.LSlvl or 0 ) + num
     self.LSxp = 0
     self:LSCalcNXP()
+
+    self:LSSaveData()
+    self:LSSendData()
+
+    self:LSSendNotif( string.format( "You get LVL %d, good job !", self:LSGetLVL() ) )
 end
 
 --  >   Player:LSSetLVL
@@ -121,6 +158,11 @@ function Player:LSSetLVL( num )
     self.LSlvl = num
     self.LSxp = 0
     self:LSCalcNXP()
+
+    self:LSSaveData()
+    self:LSSendData()
+
+    self:LSSendNotif( string.format( "You get LVL %d, good job !", self:LSGetLVL() ) )
 end
 
 --  >   Player:LSGetLVL
@@ -128,6 +170,23 @@ end
 --  >   return: Player.LSlvl or -1 (number)
 function Player:LSGetLVL()
     return self.LSlvl or -1
+end
+
+--  > OTHERS <  --
+
+function Player:LSSendData()
+    net.Start( "LEVELSYSTEM:SendData" )
+        net.WriteInt( self:LSGetLVL(), 32 )
+        net.WriteInt( self:LSGetXP(), 32 )
+        net.WriteInt( self:LSGetNXP(), 32 )
+    net.Send( self )
+end
+
+function Player:LSSendNotif( msg, type )
+    net.Start( "LEVELSYSTEM:SendNotif" )
+        net.WriteString( msg or "" )
+        net.WriteInt( type or 0, 32 )
+    net.Send( self )
 end
 
 print( "Loaded succesfully" )

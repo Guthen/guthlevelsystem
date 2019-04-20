@@ -16,6 +16,10 @@ local function load()
 
     AddCSLuaFile( "guthlevelsystem/sh_config.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
+    AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
+
+    util.AddNetworkString( "LEVELSYSTEM:SendNotif" )
+    util.AddNetworkString( "LEVELSYSTEM:SendData" )
 
     print( "------->LOADED<-------" )
 end

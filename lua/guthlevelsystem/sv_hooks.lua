@@ -9,6 +9,6 @@ local function data( ply )
         ply:LSGetData()
     end
 end
-hook.Add( "PlayerSpawn", "LEVELSYSTEM:SetData", data )
+hook.Add( "PlayerInitialSpawn", "LEVELSYSTEM:SetData", data )
 
 print( "Loaded succesfully" )

@@ -8,4 +8,6 @@ LEVELSYSTEM.NXBase              =   400
 --  > How much we multiplicate the needed xp to get the next needed xp of the new level
 LEVELSYSTEM.NXPMultiplicator    =   1.1
 
+LEVELSYSTEM.NotificationSound   =   "Friends/friend_join.wav"
+
 print( "Loaded succesfully" )
