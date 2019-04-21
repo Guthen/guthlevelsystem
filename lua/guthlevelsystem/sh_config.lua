@@ -38,4 +38,9 @@ LEVELSYSTEM.ByPlayingTimer          =   60
 --  > How many XP we earn when we kill play on the server
 LEVELSYSTEM.ByPlayingXP             =   150
 
+--  > HUD Offset Y
+LEVELSYSTEM.HUDOffSetY              =   0
+--  > HUD Offset X
+LEVELSYSTEM.HUDOffSetX              =   0
+
 print( "Loaded succesfully" )
