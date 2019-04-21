@@ -76,6 +76,27 @@ function Player:LSHasData()
     return result == nil and true or false
 end
 
+function Player:LSResetData()
+    local sid = self:SteamID()
+
+    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
+    local result = sql.Query( query )
+
+    if result == false then LEVELSYSTEM.Notif( "SQL Error on trying to Reset LS Data on " .. self:Name() ) end
+
+    self:LSCreateData()
+    self:LSGetData()
+    self:LSSendData()
+end
+
+function Player:LSSendData()
+    net.Start( "LEVELSYSTEM:SendData" )
+        net.WriteInt( self:LSGetLVL(), 32 )
+        net.WriteInt( self:LSGetXP(), 32 )
+        net.WriteInt( self:LSGetNXP(), 32 )
+    net.Send( self )
+end
+
 --  > XP <  --
 
 --  >   Player:LSAddXP
@@ -208,27 +229,6 @@ function Player:LSGetLVL()
 end
 
 --  > OTHERS <  --
-
-function Player:LSResetData()
-    local sid = self:SteamID()
-
-    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
-    local result = sql.Query( query )
-
-    if result == false then LEVELSYSTEM.Notif( "SQL Error on trying to Reset LS Data on " .. self:Name() ) end
-
-    self:LSCreateData()
-    self:LSGetData()
-    self:LSSendData()
-end
-
-function Player:LSSendData()
-    net.Start( "LEVELSYSTEM:SendData" )
-        net.WriteInt( self:LSGetLVL(), 32 )
-        net.WriteInt( self:LSGetXP(), 32 )
-        net.WriteInt( self:LSGetNXP(), 32 )
-    net.Send( self )
-end
 
 function Player:LSSendNotif( msg, type, snd )
     net.Start( "LEVELSYSTEM:SendNotif" )
