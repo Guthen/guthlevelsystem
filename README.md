@@ -40,6 +40,12 @@ This addon offers for developpers some functions.
 
 + `Player:LSGetData()`, load level system data to put in `Player` (used in `PlayerInitialSpawn` to load data and then use others function)
 
++ `Player:LSHasData()`, returns true if `Player` has level system data
+
 + `Player:LSResetData()`, reset to zero level system data of `Player`
 
 + `Player:LSSendData()`, send to CLIENT the level, xp and nxp (used in HUD)
+
+#### Other
+
++ `Player:LSSendNotif( msg, type, snd )`, where `msg` is the text, `type` the `NOTIFY_` (http://wiki.garrysmod.com/page/Enums/NOTIFY) and `snd` the sound file name
