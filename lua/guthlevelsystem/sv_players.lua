@@ -6,6 +6,7 @@ local Player = FindMetaTable( "Player" )
 --  >   args: nil
 --  >   return: nil
 function Player:LSCreateData()
+    if self:LSHasData() then return end
     local sid = self:SteamID()
 
     local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 0)", sid )
@@ -58,7 +59,7 @@ function Player:LSGetData()
     local lvl = tonumber( result[1].LVL )
 
     self:LSSetLVL( lvl, true )
-    self:LSSetXP( xp, true )
+    self:LSSetXP( xp )
     self:LSCalcNXP()
 
     timer.Simple( .1, function()
@@ -99,10 +100,11 @@ function Player:LSAddXP( num, silent, byPlaying )
         return
     end
 
-    if not silent then
-        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
-        self:LSSendData()
+    self:LSSendData()
 
+    if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+
+    if not silent then
         local notif = byPlaying and LEVELSYSTEM.NotificationXPPlaying or LEVELSYSTEM.NotificationXP
 
         self:LSSendNotif( string.format( notif, num ), 0, LEVELSYSTEM.NotificationSoundXP )
@@ -120,7 +122,7 @@ end
 --  >   Player:LSSetXP
 --  >   args: #1 number
 --  >   return: nil
-function Player:LSSetXP( num, silent )
+function Player:LSSetXP( num )
     if not num or not isnumber( num ) then return end
 
     self.LSxp = num
@@ -139,10 +141,9 @@ function Player:LSSetXP( num, silent )
         return
     end
 
-    if not silent then
-        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
-        self:LSSendData()
-    end
+    self:LSSendData()
+
+    if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
 end
 
 --  >   Player:LSGetXP
@@ -171,10 +172,11 @@ function Player:LSAddLVL( num, silent )
     self.LSxp = 0
     self:LSCalcNXP()
 
-    if not silent then
-        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
-        self:LSSendData()
+    self:LSSendData()
 
+    if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+
+    if not silent then
         self:LSSendNotif( string.format( LEVELSYSTEM.NotificationLVL, self:LSGetLVL() ), 0, LEVELSYSTEM.NotificationSoundLVL )
     end
 end
@@ -189,10 +191,11 @@ function Player:LSSetLVL( num, silent )
     self.LSxp = 0
     self:LSCalcNXP()
 
-    if not silent then
-        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
-        self:LSSendData()
+    self:LSSendData()
 
+    if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+
+    if not silent then
         self:LSSendNotif( string.format( LEVELSYSTEM.NotificationLVL, self:LSGetLVL() ), 0, LEVELSYSTEM.NotificationSoundLVL )
     end
 end
