@@ -10,10 +10,9 @@
 
 ## DarkRP job compatibility
 
-Add this line in your chosed job and change the `5` by the required level :
-`LSlvl = 5,`
+Add this line in your chosed job and change the `x` by the required level : `LSlvl = x,`
 
-Exemple :
+Exemple, `TEAM_RANDOM` is only accessible on level 5 :
 ```
 TEAM_RANDOM = DarkRP.createJob("Random", {
     color = Color(226, 47, 255, 255),
