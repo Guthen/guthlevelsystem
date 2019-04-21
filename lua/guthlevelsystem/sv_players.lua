@@ -13,13 +13,17 @@ function Player:LSCreateData()
 
     if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data on " .. self:Name() ) end
 
+    self:LSSetLVL( 0, true )
+    self:LSSetXP( 0, true )
+    self:LSCalcNXP()
+
     LEVELSYSTEM.Notif( "LS Data has been created on " .. self:Name() )
 end
 
 --  >   Player:LSSaveData
---  >   args: nil
+--  >   args: #1 boolean (OPTIONAL)
 --  >   return: nil
-function Player:LSSaveData()
+function Player:LSSaveData( silent )
     local xp = self:LSGetXP()
     local lvl = self:LSGetLVL()
     local sid = self:SteamID()
@@ -29,7 +33,7 @@ function Player:LSSaveData()
 
     if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Save LS Data on " .. self:Name() ) end
 
-    LEVELSYSTEM.Notif( "LS Data has been saved on " .. self:Name() )
+    if not silent then LEVELSYSTEM.Notif( "LS Data has been saved on " .. self:Name() ) end
 end
 
 --  >   Player:LSGetData
@@ -50,9 +54,12 @@ function Player:LSGetData()
         return self:LSCreateData()
     end
 
-    self:LSSetXP( result[1].XP )
+    local xp = tonumber( result[1].XP )
+    local lvl = tonumber( result[1].LVL )
+
+    self:LSSetLVL( lvl, true )
+    self:LSSetXP( xp, true )
     self:LSCalcNXP()
-    self:LSSetLVL( result[1].LVL )
 
     timer.Simple( .1, function()
         self:LSSendData()
@@ -73,7 +80,7 @@ end
 --  >   Player:LSAddXP
 --  >   args: #1 number
 --  >   return: nil
-function Player:LSAddXP( num )
+function Player:LSAddXP( num, silent, byPlaying )
     if not num or not isnumber( num ) then return end
 
     self.LSxp = ( self.LSxp or 0 ) + num
@@ -81,7 +88,7 @@ function Player:LSAddXP( num )
         local dif = self.LSnxp - self.LSxp
         --print( self.LSnxp, self.LSxp, dif )
 
-        self:LSAddLVL( 1 )
+        self:LSAddLVL( 1, silent )
 
         if dif < 0 then
             timer.Simple( .5, function()
@@ -92,10 +99,14 @@ function Player:LSAddXP( num )
         return
     end
 
-    self:LSSaveData()
-    self:LSSendData()
+    if not silent then
+        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+        self:LSSendData()
 
-    self:LSSendNotif( string.format( "You get %d XP, work harder !", num ) )
+        local notif = byPlaying and LEVELSYSTEM.NotificationXPPlaying or LEVELSYSTEM.NotificationXP
+
+        self:LSSendNotif( string.format( notif, num ), 0, LEVELSYSTEM.NotificationSoundXP )
+    end
 end
 
 --  >   Player:LSCalcNXP
@@ -109,7 +120,7 @@ end
 --  >   Player:LSSetXP
 --  >   args: #1 number
 --  >   return: nil
-function Player:LSSetXP( num )
+function Player:LSSetXP( num, silent )
     if not num or not isnumber( num ) then return end
 
     self.LSxp = num
@@ -117,19 +128,21 @@ function Player:LSSetXP( num )
         local dif = self.LSnxp - self.LSxp
         --print( self.LSnxp, self.LSxp, dif )
 
-        self:LSAddLVL( 1 )
+        self:LSAddLVL( 1, silent )
 
         if dif < 0 then
             timer.Simple( .5, function()
                 if not self:IsValid() then return end
-                self:LSAddXP( -dif )
+                self:LSAddXP( -dif, silent )
             end)
         end
         return
     end
 
-    self:LSSaveData()
-    self:LSSendData()
+    if not silent then
+        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+        self:LSSendData()
+    end
 end
 
 --  >   Player:LSGetXP
@@ -151,33 +164,37 @@ end
 --  >   Player:LSAddLVL
 --  >   args: #1 number
 --  >   return: nil
-function Player:LSAddLVL( num )
+function Player:LSAddLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
     self.LSlvl = ( self.LSlvl or 0 ) + num
     self.LSxp = 0
     self:LSCalcNXP()
 
-    self:LSSaveData()
-    self:LSSendData()
+    if not silent then
+        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+        self:LSSendData()
 
-    self:LSSendNotif( string.format( "You get LVL %d, good job !", self:LSGetLVL() ) )
+        self:LSSendNotif( string.format( LEVELSYSTEM.NotificationLVL, self:LSGetLVL() ), 0, LEVELSYSTEM.NotificationSoundLVL )
+    end
 end
 
 --  >   Player:LSSetLVL
 --  >   args: #1 number
 --  >   return: nil
-function Player:LSSetLVL( num )
+function Player:LSSetLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
     self.LSlvl = num
     self.LSxp = 0
     self:LSCalcNXP()
 
-    self:LSSaveData()
-    self:LSSendData()
+    if not silent then
+        if not LEVELSYSTEM.SaveOnTimer then self:LSSaveData() end
+        self:LSSendData()
 
-    self:LSSendNotif( string.format( "You get LVL %d, good job !", self:LSGetLVL() ) )
+        self:LSSendNotif( string.format( LEVELSYSTEM.NotificationLVL, self:LSGetLVL() ), 0, LEVELSYSTEM.NotificationSoundLVL )
+    end
 end
 
 --  >   Player:LSGetLVL
@@ -189,6 +206,19 @@ end
 
 --  > OTHERS <  --
 
+function Player:LSResetData()
+    local sid = self:SteamID()
+
+    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
+    local result = sql.Query( query )
+
+    if result == false then LEVELSYSTEM.Notif( "SQL Error on trying to Reset LS Data on " .. self:Name() ) end
+
+    self:LSCreateData()
+    self:LSGetData()
+    self:LSSendData()
+end
+
 function Player:LSSendData()
     net.Start( "LEVELSYSTEM:SendData" )
         net.WriteInt( self:LSGetLVL(), 32 )
@@ -197,10 +227,11 @@ function Player:LSSendData()
     net.Send( self )
 end
 
-function Player:LSSendNotif( msg, type )
+function Player:LSSendNotif( msg, type, snd )
     net.Start( "LEVELSYSTEM:SendNotif" )
         net.WriteString( msg or "" )
         net.WriteInt( type or 0, 32 )
+        net.WriteString( snd or "Resource/warning.wav" )
     net.Send( self )
 end
 

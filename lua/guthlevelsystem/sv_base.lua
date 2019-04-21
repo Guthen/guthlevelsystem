@@ -15,7 +15,7 @@ local function load()
     include( "guthlevelsystem/sv_hooks.lua" )
 
     AddCSLuaFile( "guthlevelsystem/sh_config.lua" )
-    
+
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
 
@@ -43,4 +43,4 @@ function LEVELSYSTEM.CreateDataTable( advert )
     LEVELSYSTEM.Notif( "LS Data Table has been created" )
 end
 
-load()
+hook.Add( "Initialize", "LEVELSYSTEM:Load", load() )

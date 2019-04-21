@@ -15,8 +15,9 @@ end
 local function notifPlayer()
     local msg = net.ReadString()
     local type = net.ReadInt( 32 )
+    local snd = net.ReadString()
 
-    surface.PlaySound( LEVELSYSTEM.NotificationSound )
+    surface.PlaySound( snd )
     notification.AddLegacy( msg, type, 3 )
 end
 net.Receive( "LEVELSYSTEM:SendNotif", notifPlayer )

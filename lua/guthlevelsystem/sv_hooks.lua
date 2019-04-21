@@ -1,7 +1,7 @@
 LEVELSYSTEM = LEVELSYSTEM or {}
 
 local function data( ply )
-    if not ply:IsValid() or not ply:IsPlayer() then return end
+    if ply:IsBot() then return end
 
     if not ply:LSHasData() then
         ply:LSCreateData()
@@ -9,7 +9,16 @@ local function data( ply )
         ply:LSGetData()
     end
 end
-hook.Add( "PlayerSpawn", "LEVELSYSTEM:SetData", data )
+hook.Add( "PlayerInitialSpawn", "LEVELSYSTEM:SetData", data )
+
+local function saveData( ply )
+    if ply:IsBot() then return end
+
+    ply:LSSaveData()
+end
+hook.Add( "PlayerDisconnect", "LEVELSYSTEM:SaveData", saveData )
+
+--  > Earn XP <  --
 
 hook.Add( "OnNPCKilled", "LEVELSYSTEM:AddXP", function( npc, ply, inf )
     if not ply:IsValid() or not ply:IsPlayer() then return end
@@ -26,5 +35,21 @@ hook.Add( "PlayerDeath", "LEVELSYSTEM:AddXP", function( ply, _, atk )
     local xp = LEVELSYSTEM.PlayerDeathXP or 100
     atk:LSAddXP( xp )
 end )
+if not LEVELSYSTEM.PlayerDeathEarnXP then hook.Remove( "PlayerDeath", "LEVELSYSTEM:AddXP" ) end
+
+timer.Create( "LEVELSYSTEM:ByPlayingXP", LEVELSYSTEM.ByPlayingTimer, 0, function()
+    for _, v in pairs( player.GetAll() ) do
+        if v:IsBot() then continue end
+        v:LSAddXP( LEVELSYSTEM.ByPlayingXP, nil, true )
+    end
+end )
+
+timer.Create( "LEVELSYSTEM:SaveData", LEVELSYSTEM.SaveTimer, 0, function()
+    for _, v in pairs( player.GetAll() ) do
+        if v:IsBot() then continue end
+        v:LSSaveData()
+    end
+end )
+if not LEVELSYSTEM.SaveOnTimer then timer.Remove( "LEVELSYSTEM:SaveData" ) end
 
 print( "Loaded succesfully" )
