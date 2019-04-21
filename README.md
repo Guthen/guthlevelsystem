@@ -8,6 +8,29 @@
 + Configure the addon in `guthlevelsystem/sh_config.lua`
 + Reboot your server
 
+## DarkRP job compatibility
+
+Add this line in your chosed job and change the `5` by the required level :
+`LSlvl = 5,`
+
+Exemple :
+```
+TEAM_RANDOM = DarkRP.createJob("Random", {
+    color = Color(226, 47, 255, 255),
+    model = {"models/player/eli.mdl"},
+    description = [[waw]],
+    weapons = {},
+    command = "random",
+    max = 1,
+    salary = 0,
+    admin = 0,
+    vote = false,
+    hasLicense = false,
+    candemote = false,
+    LSlvl = 5,
+})
+```
+
 ## For developpers
 
 This addon offers for developpers some functions.
