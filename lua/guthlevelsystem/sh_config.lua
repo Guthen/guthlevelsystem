@@ -18,6 +18,8 @@ LEVELSYSTEM.NotificationXPPlaying   =   "You earn %d XP by playing on the server
 LEVELSYSTEM.NotificationXP          =   "You earn %d XP, work harder !"
 --  > The message sent to the player who earn LVL (%d represent the new level of the player)
 LEVELSYSTEM.NotificationLVL         =   "You get to LVL %d, good job !"
+--  > (DarkRP) The message sent to the player who attempted to change teams but cannot (%d represent the required level and %s the job name)
+LEVELSYSTEM.NotificationJob         =   "You need to be LVL %d to become %s !"
 --  > What sound is played when you received a notification (earn XP)
 LEVELSYSTEM.NotificationSoundXP     =   "Friends/friend_join.wav"
 --  > What sound is played when you received a notification (earn LVL)

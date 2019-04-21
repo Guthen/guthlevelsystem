@@ -62,9 +62,7 @@ function Player:LSGetData()
     self:LSSetXP( xp )
     self:LSCalcNXP()
 
-    timer.Simple( .1, function()
-        self:LSSendData()
-    end )
+    self:LSSendData()
 
     LEVELSYSTEM.Notif( "LS Data has been loaded on " .. self:Name() )
 end

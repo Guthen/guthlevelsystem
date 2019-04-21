@@ -52,4 +52,15 @@ timer.Create( "LEVELSYSTEM:SaveData", LEVELSYSTEM.SaveTimer, 0, function()
 end )
 if not LEVELSYSTEM.SaveOnTimer then timer.Remove( "LEVELSYSTEM:SaveData" ) end
 
+--  > DarkRP <  --
+if DarkRP then
+    hook.Add( "playerCanChangeTeam", "LEVELSYSTEM:CanChangeJob", function( ply, job )
+        local lvl = RPExtraTeams[job].LSlvl
+        print( lvl )
+        if lvl then
+            return ply:LSGetLVL() >= lvl, string.format( LEVELSYSTEM.NotificationJob, lvl, team.GetName( job ) )
+        end
+    end )
+end
+
 print( "Loaded succesfully" )
