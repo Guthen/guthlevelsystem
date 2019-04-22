@@ -6,7 +6,7 @@ local Player = FindMetaTable( "Player" )
 --  >   args: nil
 --  >   return: nil
 function Player:LSCreateData()
-    if self:LSHasData() then return end
+    --if self:LSHasData() then return LEVELSYSTEM.Notif( self:Name() .. " has already data !" ) end
     local sid = self:SteamID()
 
     local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 1 )", sid )
@@ -17,6 +17,8 @@ function Player:LSCreateData()
     self:LSSetLVL( 1, true )
     self:LSSetXP( 0, true )
     self:LSCalcNXP()
+
+    self:LSSendData()
 
     LEVELSYSTEM.Notif( "LS Data has been created on " .. self:Name() )
 end
@@ -43,23 +45,18 @@ end
 function Player:LSGetData()
     local sid = self:SteamID()
 
-    local query = string.format( "SELECT SteamID, XP, LVL FROM guth_ls WHERE SteamID='%s'", sid )
-    local result = sql.Query( query )
+    local query
 
-    if not istable( result ) then return end
+    query = string.format( "SELECT XP FROM guth_ls WHERE SteamID='%s'", sid )
+    local xp = sql.QueryValue( query )
 
-    if #result > 1 then
-        query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
-        sql.Query( query )
-        LEVELSYSTEM.Notif( "LS Data has been erased on " .. self:Name() )
-        return self:LSCreateData()
-    end
+    query = string.format( "SELECT LVL FROM guth_ls WHERE SteamID='%s'", sid )
+    local lvl = sql.QueryValue( query )
 
-    local xp = tonumber( result[1].XP )
-    local lvl = tonumber( result[1].LVL )
+    if not xp or not lvl then return LEVELSYSTEM.Notif( "Failed on trying to Get LS Data on " .. self:Name() ) end
 
-    self:LSSetLVL( lvl, true )
-    self:LSSetXP( xp )
+    self:LSSetLVL( tonumber( lvl ), true )
+    self:LSSetXP( tonumber( xp ) )
     self:LSCalcNXP()
 
     self:LSSendData()
@@ -68,24 +65,31 @@ function Player:LSGetData()
 end
 
 function Player:LSHasData()
-    local query = string.format( "SELECT SteamID FROM guth_ls WHERE SteamID='%s'", sid )
+    local sid = self:SteamID()
+
+    local query = string.format( "SELECT * FROM guth_ls WHERE SteamID='%s'", sid )
     local result = sql.Query( query )
 
-    return result == nil and true or false
+    return result == nil or istable( result ) and true or false
 end
 
 function Player:LSResetData()
-    self:LSSetXP( 0, true )
-    self:LSSetLVL( 0, true )
-    self:LSCalcNXP()
+    local sid = self:SteamID()
 
-    self:LSSendData()
+    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
+    local result = sql.Query( query )
+
+    if result == false then return LEVELSYSTEM.Notif( "Failed on trying to Delete LS Data on " .. self:Name() ) end
+
+    self:LSCreateData()
 end
 
 function Player:LSSendData()
-    self:SetNWInt( "LEVELSYSTEM:LVL", self:LSGetLVL() )
-    self:SetNWInt( "LEVELSYSTEM:NXP", self:LSGetNXP() )
-    self:SetNWInt( "LEVELSYSTEM:XP", self:LSGetXP() )
+    timer.Simple( .1, function()
+        self:SetNWInt( "LEVELSYSTEM:LVL", self:LSGetLVL() )
+        self:SetNWInt( "LEVELSYSTEM:NXP", self:LSGetNXP() )
+        self:SetNWInt( "LEVELSYSTEM:XP", self:LSGetXP() )
+    end )
 end
 
 --  > XP <  --

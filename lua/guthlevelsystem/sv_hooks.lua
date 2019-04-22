@@ -17,7 +17,8 @@ hook.Add( "PlayerDisconnect", "LEVELSYSTEM:SaveData", function( ply )
 end)
 
 hook.Add( "ShutDown", "LEVELSYSTEM:SaveData", function()
-    for _, v in pairs( player.GetAll() ) do
+    if not sql.TableExists( "guth_ls" ) then return end
+    for _, v in pairs( player.GetHumans() ) do
         v:LSSaveData()
     end
 end )
@@ -42,15 +43,13 @@ end )
 if not LEVELSYSTEM.PlayerDeathEarnXP then hook.Remove( "PlayerDeath", "LEVELSYSTEM:AddXP" ) end
 
 timer.Create( "LEVELSYSTEM:ByPlayingXP", LEVELSYSTEM.ByPlayingTimer, 0, function()
-    for _, v in pairs( player.GetAll() ) do
-        if v:IsBot() then continue end
+    for _, v in pairs( player.GetHumans() ) do
         v:LSAddXP( LEVELSYSTEM.ByPlayingXP, nil, true )
     end
 end )
 
 timer.Create( "LEVELSYSTEM:SaveData", LEVELSYSTEM.SaveTimer, 0, function()
-    for _, v in pairs( player.GetAll() ) do
-        if v:IsBot() then continue end
+    for _, v in pairs( player.GetHumans() ) do
         v:LSSaveData()
     end
 end )
@@ -59,10 +58,12 @@ if not LEVELSYSTEM.SaveOnTimer then timer.Remove( "LEVELSYSTEM:SaveData" ) end
 --  > DarkRP <  --
 if DarkRP then
     hook.Add( "playerCanChangeTeam", "LEVELSYSTEM:CanChangeJob", function( ply, job )
-        local lvl = RPExtraTeams[job].LSlvl
+        if ply:IsPlayer() then
+            local lvl = RPExtraTeams[job].LSlvl
 
-        if lvl then
-            return ply:LSGetLVL() >= lvl, string.format( LEVELSYSTEM.NotificationJob, lvl, team.GetName( job ) )
+            if lvl then
+                return ply:LSGetLVL() >= lvl, string.format( LEVELSYSTEM.NotificationJob, lvl, team.GetName( job ) )
+            end
         end
     end )
 end

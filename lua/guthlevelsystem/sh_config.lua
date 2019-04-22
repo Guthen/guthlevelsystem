@@ -40,9 +40,17 @@ LEVELSYSTEM.ByPlayingTimer          =   60
 --  > How many XP we earn when we kill play on the server
 LEVELSYSTEM.ByPlayingXP             =   150
 
---  > HUD Offset Y
-LEVELSYSTEM.HUDOffSetY              =   0
---  > HUD Offset X
-LEVELSYSTEM.HUDOffSetX              =   0
+--  > HUD Font (can be seen here : http://wiki.garrysmod.com/page/Default_Fonts)
+LEVELSYSTEM.HUDFont                 =   "DermaLarge"
+--  > HUD X LVL
+LEVELSYSTEM.HUDXLVL                 =   CLIENT and 30
+--  > HUD Y LVL
+LEVELSYSTEM.HUDYLVL                 =   CLIENT and ScrH()*.75
+--  > HUD X XP
+LEVELSYSTEM.HUDXXP                  =   CLIENT and 30
+--  > HUD Y LVL
+LEVELSYSTEM.HUDYXP                  =   CLIENT and ScrH()*.79
+
+--  > This addon is entirely made by Guthen <  -- 
 
 print( "Loaded succesfully" )

@@ -34,23 +34,27 @@ function LEVELSYSTEM.CreateDataTable( advert )
         return
     end
 
-    local query = "CREATE TABLE guth_ls( SteamID TEXT, XP INTEGER, NXP INTEGER, LVL INTEGER )"
+    local query = "CREATE TABLE guth_ls( SteamID TEXT, XP INTEGER, LVL INTEGER )"
     local result = sql.Query( query )
 
-    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data Table" ) end
+    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data Table : " .. sql.LastError() ) end
 
     LEVELSYSTEM.Notif( "LS Data Table has been created" )
 end
 
 function LEVELSYSTEM.DeleteDataTable()
-    if not sql.TableExists( "guth_ls" ) then return end
+    if not sql.TableExists( "guth_ls" ) then return LEVELSYSTEM.Notif( "SQL Data Table doesn't exists !" ) end
 
-    local query = "DELETE FROM guth_ls"
+    local query = "DROP TABLE guth_ls"
     local result = sql.Query( query )
 
-    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Delete LS Data Table" ) end
+    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Delete LS Data Table : " .. sql.LastError() ) end
 
-    LEVELSYSTEM.Notif( "LS Data Table has been erased" )
+    if not sql.TableExists( "guth_ls" ) then
+        LEVELSYSTEM.Notif( "LS Data Table has been erased" )
+    else
+        LEVELSYSTEM.Notif( "LS Data Table hasn't been erased" )
+    end
 end
 
 hook.Add( "Initialize", "LEVELSYSTEM:Load", load() )
