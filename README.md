@@ -26,7 +26,7 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
     vote = false,
     hasLicense = false,
     candemote = false,
-    LSlvl = 5,
+    LSlvl = 5, -- here is my required lvl to be able to choose the job
 })
 ```
 
