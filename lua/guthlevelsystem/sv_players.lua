@@ -9,12 +9,12 @@ function Player:LSCreateData()
     if self:LSHasData() then return end
     local sid = self:SteamID()
 
-    local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 0)", sid )
+    local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 1 )", sid )
     local result = sql.Query( query )
 
     if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data on " .. self:Name() ) end
 
-    self:LSSetLVL( 0, true )
+    self:LSSetLVL( 1, true )
     self:LSSetXP( 0, true )
     self:LSCalcNXP()
 
@@ -75,24 +75,17 @@ function Player:LSHasData()
 end
 
 function Player:LSResetData()
-    local sid = self:SteamID()
+    self:LSSetXP( 0, true )
+    self:LSSetLVL( 0, true )
+    self:LSCalcNXP()
 
-    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
-    local result = sql.Query( query )
-
-    if result == false then LEVELSYSTEM.Notif( "SQL Error on trying to Reset LS Data on " .. self:Name() ) end
-
-    self:LSCreateData()
-    self:LSGetData()
     self:LSSendData()
 end
 
 function Player:LSSendData()
-    net.Start( "LEVELSYSTEM:SendData" )
-        net.WriteInt( self:LSGetLVL(), 32 )
-        net.WriteInt( self:LSGetXP(), 32 )
-        net.WriteInt( self:LSGetNXP(), 32 )
-    net.Send( self )
+    self:SetNWInt( "LEVELSYSTEM:LVL", self:LSGetLVL() )
+    self:SetNWInt( "LEVELSYSTEM:NXP", self:LSGetNXP() )
+    self:SetNWInt( "LEVELSYSTEM:XP", self:LSGetXP() )
 end
 
 --  > XP <  --
@@ -103,9 +96,11 @@ end
 function Player:LSAddXP( num, silent, byPlaying )
     if not num or not isnumber( num ) then return end
 
+    if self:LSGetLVL() == -1 then self:LSResetData() end
+
     self.LSxp = ( self.LSxp or 0 ) + num
-    if self.LSxp >= ( self.LSnxp or math.huge ) then
-        local dif = self.LSnxp - self.LSxp
+    if self.LSxp >= ( self.LSnxp or 0 ) then
+        local dif = ( self.LSnxp or 0 ) - self.LSxp
         --print( self.LSnxp, self.LSxp, dif )
 
         self:LSAddLVL( 1, silent )
@@ -145,9 +140,8 @@ function Player:LSSetXP( num )
     if not num or not isnumber( num ) then return end
 
     self.LSxp = num
-    if self.LSxp >= self.LSnxp then
-        local dif = self.LSnxp - self.LSxp
-        --print( self.LSnxp, self.LSxp, dif )
+    if self.LSxp >= ( self.LSnxp or 0 ) then
+        local dif = ( self.LSnxp or 0 ) - self.LSxp
 
         self:LSAddLVL( 1, silent )
 

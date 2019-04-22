@@ -20,7 +20,6 @@ local function load()
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
 
     util.AddNetworkString( "LEVELSYSTEM:SendNotif" )
-    util.AddNetworkString( "LEVELSYSTEM:SendData" )
 
     print( "------->LOADED<-------" )
 end
@@ -36,11 +35,22 @@ function LEVELSYSTEM.CreateDataTable( advert )
     end
 
     local query = "CREATE TABLE guth_ls( SteamID TEXT, XP INTEGER, NXP INTEGER, LVL INTEGER )"
-    local _query = sql.Query( query )
+    local result = sql.Query( query )
 
-    if _query == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data Table" ) end
+    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data Table" ) end
 
     LEVELSYSTEM.Notif( "LS Data Table has been created" )
+end
+
+function LEVELSYSTEM.DeleteDataTable()
+    if not sql.TableExists( "guth_ls" ) then return end
+
+    local query = "DELETE FROM guth_ls"
+    local result = sql.Query( query )
+
+    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Delete LS Data Table" ) end
+
+    LEVELSYSTEM.Notif( "LS Data Table has been erased" )
 end
 
 hook.Add( "Initialize", "LEVELSYSTEM:Load", load() )

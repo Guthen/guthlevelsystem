@@ -1,6 +1,6 @@
 LEVELSYSTEM = LEVELSYSTEM or {}
 
-local function data( ply )
+hook.Add( "PlayerInitialSpawn", "LEVELSYSTEM:SetData", function( ply )
     if ply:IsBot() then return end
 
     if not ply:LSHasData() then
@@ -8,15 +8,19 @@ local function data( ply )
     else
         ply:LSGetData()
     end
-end
-hook.Add( "PlayerInitialSpawn", "LEVELSYSTEM:SetData", data )
+end )
 
-local function saveData( ply )
+hook.Add( "PlayerDisconnect", "LEVELSYSTEM:SaveData", function( ply )
     if ply:IsBot() then return end
 
     ply:LSSaveData()
-end
-hook.Add( "PlayerDisconnect", "LEVELSYSTEM:SaveData", saveData )
+end)
+
+hook.Add( "ShutDown", "LEVELSYSTEM:SaveData", function()
+    for _, v in pairs( player.GetAll() ) do
+        v:LSSaveData()
+    end
+end )
 
 --  > Earn XP <  --
 
