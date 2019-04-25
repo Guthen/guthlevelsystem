@@ -101,6 +101,7 @@ function Player:LSAddXP( num, silent, byPlaying )
     if not num or not isnumber( num ) then return end
 
     if self:LSGetLVL() == -1 then self:LSResetData() end
+    if self:LSGetLVL() >= LEVELSYSTEM.MaximumLVL then return end
 
     self.LSxp = ( self.LSxp or 0 ) + num
     if self.LSxp >= ( self.LSnxp or 0 ) then
@@ -142,6 +143,8 @@ end
 --  >   return: nil
 function Player:LSSetXP( num )
     if not num or not isnumber( num ) then return end
+    
+    if self:LSGetLVL() >= LEVELSYSTEM.MaximumLVL then return end
 
     self.LSxp = num
     if self.LSxp >= ( self.LSnxp or 0 ) then
@@ -185,7 +188,7 @@ end
 function Player:LSAddLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
-    self.LSlvl = ( self.LSlvl or 0 ) + num
+    self.LSlvl = math.Clamp( self.LSlvl + num, 1, LEVELSYSTEM.MaximumLVL )
     self.LSxp = 0
     self:LSCalcNXP()
 
@@ -204,7 +207,7 @@ end
 function Player:LSSetLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
-    self.LSlvl = num
+    self.LSlvl = math.Clamp( num, 1, LEVELSYSTEM.MaximumLVL )
     self.LSxp = 0
     self:LSCalcNXP()
 

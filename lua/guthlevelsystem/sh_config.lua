@@ -2,6 +2,8 @@ LEVELSYSTEM = LEVELSYSTEM or {}
 
 --  > Config <  --
 
+LEVELSYSTEM.MaximumLVL              =   50
+
 --  > Should we save data on timer (recommended) or save on every functions calls
 LEVELSYSTEM.SaveOnTimer             =   true
 --  > If 'SaveOnTimer' is on true, the time between each save (in seconds)
@@ -35,9 +37,9 @@ LEVELSYSTEM.PlayerDeathEarnXP       =   true
 --  > How many XP we earn when we kill a Player
 LEVELSYSTEM.PlayerDeathXP           =   50
 
---  > How many seconds we should wait before get XP
+--  > How many seconds we should wait before get XP (def: 60 seconds)
 LEVELSYSTEM.ByPlayingTimer          =   60
---  > How many XP we earn when we kill play on the server
+--  > How many XP we earn when we kill play on the server (def: 150 XP each 60 seconds)
 LEVELSYSTEM.ByPlayingXP             =   150
 
 --  > HUD Font (can be seen here : http://wiki.garrysmod.com/page/Default_Fonts)
@@ -46,11 +48,17 @@ LEVELSYSTEM.HUDFont                 =   "DermaLarge"
 LEVELSYSTEM.HUDXLVL                 =   CLIENT and 30
 --  > HUD Y LVL
 LEVELSYSTEM.HUDYLVL                 =   CLIENT and ScrH()*.75
+--  > HUD LVL Text
+LEVELSYSTEM.HUDTextLVL              =   "Level : "
 --  > HUD X XP
 LEVELSYSTEM.HUDXXP                  =   CLIENT and 30
 --  > HUD Y LVL
 LEVELSYSTEM.HUDYXP                  =   CLIENT and ScrH()*.79
+--  > HUD XP Text
+LEVELSYSTEM.HUDTextXP               =   "XP : "
+--  > HUD LVL Use Percentage
+LEVELSYSTEM.HUDLVLPercentage        =   true
 
---  > This addon is entirely made by Guthen <  -- 
+--  > This addon is entirely made by Guthen <  --
 
 print( "Loaded succesfully" )

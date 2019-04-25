@@ -14,7 +14,11 @@ local function load()
     print( "Loading : Hooks" )
     include( "guthlevelsystem/sv_hooks.lua" )
 
+    print( "Loading : Commands" )
+    include( "guthlevelsystem/sh_commands.lua" )
+
     AddCSLuaFile( "guthlevelsystem/sh_config.lua" )
+    AddCSLuaFile( "guthlevelsystem/sh_commands.lua" )
 
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
