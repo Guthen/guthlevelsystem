@@ -1,4 +1,4 @@
-LEVELSYSTEM = {}
+LEVELSYSTEM = LEVELSYSTEM or {}
 
 local function load()
     print( "--->GU-LEVELSYSTEM<---" )
