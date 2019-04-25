@@ -38,7 +38,9 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 + `guthlevelsystem_set_xp <xp> <name>` : Set XP to `<xp>` to `<name>` (if specified, else XP go to the user who call command) 
 
-+ `guthlevelsystem_add_xp <xp> <name>` : Add XP to `<xp>` to `<name>` (if specified, else XP go to the user who call command) 
++ `guthlevelsystem_add_xp <xp> <name>` : Add XP to `<xp>` to `<name>` (if specified, else XP go to the user who call command)
+
++ `guthlevelsystem_info` : Show info of the addon
 
 ## For developpers
 
