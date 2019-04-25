@@ -30,6 +30,16 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 })
 ```
 
+## Console Commands
+
++ `guthlevelsystem_set_lvl <lvl> <name>` : Set LVL to `<lvl>` to `<name>` (if specified, else LVL go to the user who call command) 
+
++ `guthlevelsystem_add_lvl <lvl> <name>` : Add LVL to `<lvl>` to `<name>` (if specified, else LVL go to the user who call command) 
+
++ `guthlevelsystem_set_xp <xp> <name>` : Set XP to `<xp>` to `<name>` (if specified, else XP go to the user who call command) 
+
++ `guthlevelsystem_add_xp <xp> <name>` : Add XP to `<xp>` to `<name>` (if specified, else XP go to the user who call command) 
+
 ## For developpers
 
 This addon offers for developpers some functions.
