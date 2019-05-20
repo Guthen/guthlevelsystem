@@ -56,16 +56,14 @@ end )
 if not LEVELSYSTEM.SaveOnTimer then timer.Remove( "LEVELSYSTEM:SaveData" ) end
 
 --  > DarkRP <  --
-if DarkRP then
-    hook.Add( "playerCanChangeTeam", "LEVELSYSTEM:CanChangeJob", function( ply, job )
-        if ply:IsPlayer() then
-            local lvl = RPExtraTeams[job].LSlvl
+hook.Add( "playerCanChangeTeam", "LEVELSYSTEM:CanChangeJob", function( ply, job )
+     if ply:IsPlayer() then
+         local lvl = RPExtraTeams[job].LSlvl
 
-            if lvl then
-                return ply:LSGetLVL() >= lvl, string.format( LEVELSYSTEM.NotificationJob, lvl, team.GetName( job ) )
-            end
-        end
-    end )
-end
+         if lvl then
+             return ply:LSGetLVL() >= lvl, string.format( LEVELSYSTEM.NotificationJob, lvl, team.GetName( job ) )
+         end
+     end
+end )
 
 print( "Loaded succesfully" )
