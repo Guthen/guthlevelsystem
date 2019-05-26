@@ -44,7 +44,7 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 ## For developpers
 
-This addon offers for developpers some SERVER functions. If you want to get LVL/XP/NXP on CLIENT, (check the of this addon `cl_hud.lua`) use : 
+This addon offers for developpers some SERVER functions. If you want to get LVL/XP/NXP on CLIENT, (check the `cl_hud.lua` of this addon) use : 
 + `ply:GetNWInt("LEVELSYSTEM:LVL", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:XP", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:NXP", 0)`
