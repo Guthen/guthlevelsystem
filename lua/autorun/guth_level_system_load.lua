@@ -1,6 +1,6 @@
 LEVELSYSTEM = LEVELSYSTEM or {}
 LEVELSYSTEM.Author      =   "Guthen"
-LEVELSYSTEM.Version     =   "1.1"
+LEVELSYSTEM.Version     =   "1.2.1"
 LEVELSYSTEM.Link        =   "https://github.com/Guthen/guthlevelsystem"
 LEVELSYSTEM.Discord     =   "https://discord.gg/eKgkpCf"
 
