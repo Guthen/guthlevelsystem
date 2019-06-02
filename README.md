@@ -5,7 +5,7 @@
 ## Installation 
 
 + Download the addon and extract it in your addons folder.
-+ Configure the addon in `guthlevelsystem/sh_config.lua`
++ Configure the addon in `lua/guthlevelsystem/sh_config.lua`
 + Reboot your server
 
 ## DarkRP job compatibility
