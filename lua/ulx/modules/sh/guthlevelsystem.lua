@@ -7,30 +7,31 @@ function ulx.LSAddXP( ply, trg, xp )
 end
 
 local LSAddXP = ulx.command( "guthlevelsystem", "ulx lsaddxp", ulx.LSaddXP, "!lsaddxp" )
-addXPx:addParam( { type=ULib.cmds.PlayerArg } )
-addXPx:addParam( { type=ULib.cmds.NumArg, hint="xp" } )
-addXPx:defaultAccess( ULib.ACCESS_SUPERADMIN )
-addXPx:help("Add XP to a specified player.")
+LSAddXP:addParam( { type=ULib.cmds.PlayerArg } )
+LSAddXP:addParam( { type=ULib.cmds.NumArg, hint="xp" } )
+LSAddXP:defaultAccess( ULib.ACCESS_SUPERADMIN )
+LSAddXP:help("Add XP to a specified player.")
 
 function ulx.LSSetLVL( ply, trg, lvl )
 	if not lvl then ULib.tsayError( "Level amount is not specified!" ) return end
 	trg:LSSetLVL( lvl )
 	ulx.fancyLogAdmin( ply:Name() .. " set LVL " .. lvl .. " to " .. trg:Name() )
 end
-local LSSetLVL = ulx.command( "guthlevelsystem", "ulx lssetlvl", ulx.setLevel, "!lssetlvl" )
-setLevelx:addParam( { type=ULib.cmds.PlayerArg } )
-setLevelx:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
-setLevelx:defaultAccess( ULib.ACCESS_SUPERADMIN )
-setLevelx:help( "Set LVL to a specified player." ) 
 
+local LSSetLVL = ulx.command( "guthlevelsystem", "ulx lssetlvl", ulx.setLevel, "!lssetlvl" )
+LSSetLVL:addParam( { type=ULib.cmds.PlayerArg } )
+LSSetLVL:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
+LSSetLVL:defaultAccess( ULib.ACCESS_SUPERADMIN )
+LSSetLVL:help( "Set LVL to a specified player." ) 
 
 function ulx.LSAddLVL( ply, trg, lvl )
 	if not lvl then ULib.tsayError( "Level amount is not specified!" ) return end
 	trg:LSAddLVL( lvl )
 	ulx.fancyLogAdmin( ply:Name() .. " add " .. lvl .. "LVL to " .. trg:Name() )
 end
+
 local LSAddLVL = ulx.command( "guthlevelsystem", "ulx lsaddlvl", ulx.setLevel, "!lsaddlvl" )
-setLevelx:addParam( { type=ULib.cmds.PlayerArg } )
-setLevelx:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
-setLevelx:defaultAccess( ULib.ACCESS_SUPERADMIN )
-setLevelx:help( "Add LVL to a specified player." ) 
+LSAddLVL:addParam( { type=ULib.cmds.PlayerArg } )
+LSAddLVL:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
+LSAddLVL:defaultAccess( ULib.ACCESS_SUPERADMIN )
+LSAddLVL:help( "Add LVL to a specified player." ) 
