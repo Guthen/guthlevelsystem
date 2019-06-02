@@ -6,7 +6,7 @@ function ulx.LSAddXP( ply, trg, xp )
 	ulx.fancyLogAdmin( ply:Name() .. " gave " .. xp .. " XP to " .. trg:Name() )
 end
 
-local LSAddXP = ulx.command( "guthlevelsystem", "ulx lsaddxp", ulx.LSaddXP, "!lsaddxp" )
+local LSAddXP = ulx.command( "guthlevelsystem", "ulx lsaddxp", ulx.LSAddXP, "!lsaddxp" )
 LSAddXP:addParam( { type=ULib.cmds.PlayerArg } )
 LSAddXP:addParam( { type=ULib.cmds.NumArg, hint="xp" } )
 LSAddXP:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -18,7 +18,7 @@ function ulx.LSSetLVL( ply, trg, lvl )
 	ulx.fancyLogAdmin( ply:Name() .. " set LVL " .. lvl .. " to " .. trg:Name() )
 end
 
-local LSSetLVL = ulx.command( "guthlevelsystem", "ulx lssetlvl", ulx.setLevel, "!lssetlvl" )
+local LSSetLVL = ulx.command( "guthlevelsystem", "ulx lssetlvl", ulx.LSSetLVL, "!lssetlvl" )
 LSSetLVL:addParam( { type=ULib.cmds.PlayerArg } )
 LSSetLVL:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
 LSSetLVL:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -30,7 +30,7 @@ function ulx.LSAddLVL( ply, trg, lvl )
 	ulx.fancyLogAdmin( ply:Name() .. " add " .. lvl .. "LVL to " .. trg:Name() )
 end
 
-local LSAddLVL = ulx.command( "guthlevelsystem", "ulx lsaddlvl", ulx.setLevel, "!lsaddlvl" )
+local LSAddLVL = ulx.command( "guthlevelsystem", "ulx lsaddlvl", ulx.LSAddLVL, "!lsaddlvl" )
 LSAddLVL:addParam( { type=ULib.cmds.PlayerArg } )
 LSAddLVL:addParam( { type=ULib.cmds.NumArg, hint="lvl" } )
 LSAddLVL:defaultAccess( ULib.ACCESS_SUPERADMIN )
