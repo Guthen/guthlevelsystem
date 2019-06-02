@@ -44,10 +44,12 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 ## For developpers
 
-This addon offers for developpers some SERVER functions. If you want to get LVL/XP/NXP on CLIENT, (check the `cl_hud.lua` of this addon) use : 
+If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) use : 
 + `ply:GetNWInt("LEVELSYSTEM:LVL", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:XP", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:NXP", 0)`
+
+**The following functions are SERVER side only :**
 
 #### XP
 
@@ -86,3 +88,7 @@ This addon offers for developpers some SERVER functions. If you want to get LVL/
 #### Other
 
 + `Player:LSSendNotif( msg, type, snd )`, where `msg` is the text, `type` the `NOTIFY_` (http://wiki.garrysmod.com/page/Enums/NOTIFY) and `snd` the sound file name
+
+### Contact
+
+Feel free to propose update, functionnalities or report bugs and exploits on my Discord or on this GitHub repository.
