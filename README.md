@@ -92,3 +92,5 @@ If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) u
 ### Contact
 
 Feel free to propose update, functionnalities or report bugs and exploits on my Discord or on this GitHub repository.
+
+My Discord : https://discord.gg/eKgkpCf
