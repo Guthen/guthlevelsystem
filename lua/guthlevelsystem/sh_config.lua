@@ -57,7 +57,7 @@ LEVELSYSTEM.HUDYXP                  =   CLIENT and ScrH()*.79
 --  > HUD XP Text
 LEVELSYSTEM.HUDTextXP               =   "XP : "
 --  > HUD LVL Use Percentage
-LEVELSYSTEM.HUDLVLPercentage        =   true
+LEVELSYSTEM.HUDLVLPercentage        =   false
 
 --  > This addon is entirely made by Guthen <  --
 

@@ -9,6 +9,9 @@ local function load()
     print( "Loading : HUD" )
     include( "guthlevelsystem/cl_hud.lua" )
 
+    print( "Loading : PANEL" )
+    include( "guthlevelsystem/cl_panel.lua" )
+
     print( "Loading : Commands" )
     include( "guthlevelsystem/sh_commands.lua" )
 

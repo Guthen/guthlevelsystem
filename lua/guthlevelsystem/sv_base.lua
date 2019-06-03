@@ -1,7 +1,7 @@
 LEVELSYSTEM = LEVELSYSTEM or {}
 
 local function load()
-    print( "--->GU-LEVELSYSTEM<---" )
+    print( "--> [guthlevelsystem] <--" )
 
     LEVELSYSTEM.CreateDataTable( false )
 
@@ -22,14 +22,15 @@ local function load()
 
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
+    AddCSLuaFile( "guthlevelsystem/cl_panel.lua" )
 
     util.AddNetworkString( "LEVELSYSTEM:SendNotif" )
 
-    print( "------->LOADED<-------" )
+    print( "-------> LOADED <-------" )
 end
 
 function LEVELSYSTEM.Notif( txt )
-    print( "GU-LS: " .. txt )
+    print( "[guthlevelsystem] - " .. txt )
 end
 
 function LEVELSYSTEM.CreateDataTable( advert )
