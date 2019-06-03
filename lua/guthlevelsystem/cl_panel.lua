@@ -26,3 +26,5 @@ local function openPanel()
 
 end
 concommand.Add( "guthlevelsystem_panel", openPanel )
+
+print( "Loaded succesfully" )

@@ -10,4 +10,4 @@ else
     include( "guthlevelsystem/cl_base.lua" )
 end
 
-print( "GU-LS: Made by " .. LEVELSYSTEM.Author .. " in version " .. LEVELSYSTEM.Version .. ", type 'guthlevelsystem_info' for more info." )
+print( "[guthlevelsystem] - Made by " .. LEVELSYSTEM.Author .. " in version " .. LEVELSYSTEM.Version .. ", type 'guthlevelsystem_info' for more info." )

@@ -37,3 +37,5 @@ LSAddLVL:addParam( { type = ULib.cmds.PlayerArg } )
 LSAddLVL:addParam( { type = ULib.cmds.NumArg, hint = "lvl" } )
 LSAddLVL:defaultAccess( ULib.ACCESS_SUPERADMIN )
 LSAddLVL:help( "Add LVL to a specified player." )
+
+print( "[guthlevelsystem] - ULX Module loaded succesfully" )

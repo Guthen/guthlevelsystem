@@ -1,7 +1,7 @@
 LEVELSYSTEM = LEVELSYSTEM or {}
 
 local function load()
-    print( "--->GU-LEVELSYSTEM<---" )
+    print( "--> [guthlevelsystem] <--" )
 
     print( "Loading : Configuration" )
     include( "guthlevelsystem/sh_config.lua" )
@@ -15,7 +15,7 @@ local function load()
     print( "Loading : Commands" )
     include( "guthlevelsystem/sh_commands.lua" )
 
-    print( "------->LOADED<-------" )
+    print( "-------> LOADED <-------" )
 end
 
 local function notifPlayer()
