@@ -46,30 +46,30 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 ### Hooks
 
-Since the version 1.3.0, customs hooks have been added ( [SIDE] hook:name : vars, if return ):
-+ [SH] guthlevelsystem:OnLoaded : no return
+Since the version 1.3.0, customs hooks have been added ( [SIDE] `hook:name` : `vars`, if return ):
++ [SH] `guthlevelsystem:OnLoaded` : no return
 
-+ [SV] guthlevelsystem:OnPlayerCreateData : Player, no return
-+ [SV] guthlevelsystem:OnPlayerSaveData : Player, silent, no return
-+ [SV] guthlevelsystem:OnPlayerGetData : Player, no return
-+ [SV] guthlevelsystem:OnPlayerResetData : Player, no return
++ [SV] `guthlevelsystem:OnPlayerCreateData` : `Player`, no return
++ [SV] `guthlevelsystem:OnPlayerSaveData` : `Player`, `silent`, no return
++ [SV] `guthlevelsystem:OnPlayerGetData` : `Player`, no return
++ [SV] `guthlevelsystem:OnPlayerResetData` : `Player`, no return
 
-+ [SV] guthlevelsystem:ShouldPlayerAddXP : Player, xp, silent, byPlaying, return false to add give xp
-+ [SV] guthlevelsystem:OnPlayerAddXP : Player, xp, silent, byPlaying, no return
-+ [SV] guthlevelsystem:ShouldPlayerSetXP : Player, xp, return false to don't set xp
-+ [SV] guthlevelsystem:OnPlayerSetXP : Player, xp, no return
++ [SV] `guthlevelsystem:ShouldPlayerAddXP` : `Player`, `xp`, `silent`, `byPlaying`, return false to add give xp
++ [SV] `guthlevelsystem:OnPlayerAddXP` : `Player`, `xp`, `silent`, `byPlaying`, no return
++ [SV] `guthlevelsystem:ShouldPlayerSetXP` : `Player`, `xp`, return false to don't set xp
++ [SV] `guthlevelsystem:OnPlayerSetXP` : `Player`, `xp`, no return
 
-+ [SV] guthlevelsystem:ShouldPlayerAddLVL : Player, lvl, return false to don't add lvl
-+ [SV] guthlevelsystem:OnPlayerAddLVL : Player, lvl, no return
-+ [SV] guthlevelsystem:ShouldPlayerSetLVL : Player, lvl, silent, return false to don't set lvl
-+ [SV] guthlevelsystem:OnPlayerSetLVL : Player, lvl, silent, no return
++ [SV] `guthlevelsystem:ShouldPlayerAddLVL` : `Player`, `lvl`, return false to don't add lvl
++ [SV] `guthlevelsystem:OnPlayerAddLVL` : `Player`, `lvl`, no return
++ [SV] `guthlevelsystem:ShouldPlayerSetLVL` : `Player`, `lvl`, `silent`, return false to don't set lvl
++ [SV] `guthlevelsystem:OnPlayerSetLVL` : `Player`, `lvl`, `silent`, no return
 
-+ [SV] guthlevelsystem:ShouldPlayerSendNotif : Player, msg, type, snd, return false to don't send notif
-+ [SV] guthlevelsystem:OnPlayerSendNotif : Player, msg, type, snd, no return
++ [SV] `guthlevelsystem:ShouldPlayerSendNotif` : `Player`, `msg`, `type`, `snd`, return false to don't send notif
++ [SV] `guthlevelsystem:OnPlayerSendNotif` : `Player`, `msg`, `type`, `snd`, no return
 
-+ [SV] guthlevelsystem:OnPlayerAddByPlayingXP : Player, playingXP, return a number to set the XP to receive
++ [SV] `guthlevelsystem:OnPlayerAddByPlayingXP` : `Player`, `playingXP`, return a number to set the XP to receive
 
-+ [CL] HUDShouldDraw : "guthlevelsystem:HUD", return false to disable the HUD
++ [CL] `HUDShouldDraw` : `"guthlevelsystem:HUD"`, return false to disable the HUD
 
 ### Customs Functions
 
