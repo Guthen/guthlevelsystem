@@ -2,7 +2,7 @@
 
 ## Work in any gamemode (DarkRP, Sandbox...)
 
-## Installation 
+## Installation
 
 + Download the addon and extract it in your addons folder.
 + Configure the addon in `lua/guthlevelsystem/sh_config.lua`
@@ -32,11 +32,11 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 ## Console Commands
 
-+ `guthlevelsystem_set_lvl <lvl> <name>` : Set LVL `<lvl>` to `<name>` (if specified, else LVL go to the user who call command) 
++ `guthlevelsystem_set_lvl <lvl> <name>` : Set LVL `<lvl>` to `<name>` (if specified, else LVL go to the user who call command)
 
-+ `guthlevelsystem_add_lvl <lvl> <name>` : Add LVL `<lvl>` to `<name>` (if specified, else LVL go to the user who call command) 
++ `guthlevelsystem_add_lvl <lvl> <name>` : Add LVL `<lvl>` to `<name>` (if specified, else LVL go to the user who call command)
 
-+ `guthlevelsystem_set_xp <xp> <name>` : Set XP `<xp>` to `<name>` (if specified, else XP go to the user who call command) 
++ `guthlevelsystem_set_xp <xp> <name>` : Set XP `<xp>` to `<name>` (if specified, else XP go to the user who call command)
 
 + `guthlevelsystem_add_xp <xp> <name>` : Add XP `<xp>` to `<name>` (if specified, else XP go to the user who call command)
 
@@ -44,7 +44,36 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 
 ## For developpers
 
-If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) use : 
+### Hooks
+
+Since the version 1.3.0, customs hooks have been added ( [SIDE] hook:name : vars, if return ):
++ [SH] guthlevelsystem:OnLoaded : no return
+
++ [SV] guthlevelsystem:OnPlayerCreateData : Player, no return
++ [SV] guthlevelsystem:OnPlayerSaveData : Player, silent, no return
++ [SV] guthlevelsystem:OnPlayerGetData : Player, no return
++ [SV] guthlevelsystem:OnPlayerResetData : Player, no return
+
++ [SV] guthlevelsystem:ShouldPlayerAddXP : Player, xp, silent, byPlaying, return false to add give xp
++ [SV] guthlevelsystem:OnPlayerAddXP : Player, xp, silent, byPlaying, no return
++ [SV] guthlevelsystem:ShouldPlayerSetXP : Player, xp, return false to don't set xp
++ [SV] guthlevelsystem:OnPlayerSetXP : Player, xp, no return
+
++ [SV] guthlevelsystem:ShouldPlayerAddLVL : Player, lvl, return false to don't add lvl
++ [SV] guthlevelsystem:OnPlayerAddLVL : Player, lvl, no return
++ [SV] guthlevelsystem:ShouldPlayerSetLVL : Player, lvl, silent, return false to don't set lvl
++ [SV] guthlevelsystem:OnPlayerSetLVL : Player, lvl, silent, no return
+
++ [SV] guthlevelsystem:ShouldPlayerSendNotif : Player, msg, type, snd, return false to don't send notif
++ [SV] guthlevelsystem:OnPlayerSendNotif : Player, msg, type, snd, no return
+
++ [SV] guthlevelsystem:OnPlayerAddByPlayingXP : Player, playingXP, return a number to set the XP to receive
+
++ [CL] HUDShouldDraw : "guthlevelsystem:HUD", return false to disable the HUD
+
+### Customs Functions
+
+If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) use :
 + `ply:GetNWInt("LEVELSYSTEM:LVL", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:XP", 0)`
 + `ply:GetNWInt("LEVELSYSTEM:NXP", 0)`
@@ -53,7 +82,7 @@ If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) u
 
 #### XP
 
-+ `Player:LSAddXP( n, silent, byPlaying )` where `n` is a number, and (OPTIONAL) `silent` (show or hide the notification) and `byPlaying` (if `true`, the notification will be the notification for play to the server) are a boolean 
++ `Player:LSAddXP( n, silent, byPlaying )` where `n` is a number, and (OPTIONAL) `silent` (show or hide the notification) and `byPlaying` (if `true`, the notification will be the notification for play to the server) are a boolean
 
 + `Player:LSSetXP( n )` where `n` is a number
 
