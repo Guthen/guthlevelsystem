@@ -1,4 +1,4 @@
-LEVELSYSTEM = LEVELSYSTEM or {}
+guthlevelsystem = guthlevelsystem or {}
 
 --  > LVL <  --
 
@@ -93,7 +93,7 @@ end )
 concommand.Add( "guthlevelsystem_info", function( ply, _, args )
     local msg = string.format(
         "GU-LS: 'guthlevelsystem' is made by %s.\nThe installated version is %s.\nDownload the addon here : %s.\nJoin freely my Discord : %s.",
-        LEVELSYSTEM.Author, LEVELSYSTEM.Version, LEVELSYSTEM.Link, LEVELSYSTEM.Discord)
+        guthlevelsystem.Author, guthlevelsystem.Version, guthlevelsystem.Link, guthlevelsystem.Discord)
 
     if ply:IsValid() then
         ply:PrintMessage( HUD_PRINTCONSOLE, msg )
