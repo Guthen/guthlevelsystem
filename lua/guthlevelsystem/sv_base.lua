@@ -1,9 +1,9 @@
-LEVELSYSTEM = LEVELSYSTEM or {}
+guthlevelsystem = guthlevelsystem or {}
 
 local function load()
     print( "--> [guthlevelsystem] <--" )
 
-    LEVELSYSTEM.CreateDataTable( false )
+    guthlevelsystem.CreateDataTable( false )
 
     print( "Loading : Configuration" )
     include( "guthlevelsystem/sh_config.lua" )
@@ -22,44 +22,45 @@ local function load()
 
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
-    AddCSLuaFile( "guthlevelsystem/cl_panel.lua" )
 
-    util.AddNetworkString( "LEVELSYSTEM:SendNotif" )
+    util.AddNetworkString( "guthlevelsystem:SendNotif" )
 
     print( "-------> LOADED <-------" )
+
+    hook.Run( "guthlevelsystem:OnLoaded" )
 end
 
-function LEVELSYSTEM.Notif( txt )
+function guthlevelsystem.Notif( txt )
     print( "[guthlevelsystem] - " .. txt )
 end
 
-function LEVELSYSTEM.CreateDataTable( advert )
+function guthlevelsystem.CreateDataTable( advert )
     if sql.TableExists( "guth_ls" ) then
-        if advert or advert == nil then return LEVELSYSTEM.Notif( "SQL Data Table is already created !" ) end
+        if advert or advert == nil then return guthlevelsystem.Notif( "SQL Data Table is already created !" ) end
         return
     end
 
     local query = "CREATE TABLE guth_ls( SteamID TEXT, XP INTEGER, LVL INTEGER )"
     local result = sql.Query( query )
 
-    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Create LS Data Table : " .. sql.LastError() ) end
+    if result == false then return guthlevelsystem.Notif( "SQL Error on trying to Create LS Data Table : " .. sql.LastError() ) end
 
-    LEVELSYSTEM.Notif( "LS Data Table has been created" )
+    guthlevelsystem.Notif( "LS Data Table has been created" )
 end
 
-function LEVELSYSTEM.DeleteDataTable()
-    if not sql.TableExists( "guth_ls" ) then return LEVELSYSTEM.Notif( "SQL Data Table doesn't exists !" ) end
+function guthlevelsystem.DeleteDataTable()
+    if not sql.TableExists( "guth_ls" ) then return guthlevelsystem.Notif( "SQL Data Table doesn't exists !" ) end
 
     local query = "DROP TABLE guth_ls"
     local result = sql.Query( query )
 
-    if result == false then return LEVELSYSTEM.Notif( "SQL Error on trying to Delete LS Data Table : " .. sql.LastError() ) end
+    if result == false then return guthlevelsystem.Notif( "SQL Error on trying to Delete LS Data Table : " .. sql.LastError() ) end
 
     if not sql.TableExists( "guth_ls" ) then
-        LEVELSYSTEM.Notif( "LS Data Table has been erased" )
+        guthlevelsystem.Notif( "LS Data Table has been erased" )
     else
-        LEVELSYSTEM.Notif( "LS Data Table hasn't been erased" )
+        guthlevelsystem.Notif( "LS Data Table hasn't been erased" )
     end
 end
 
-hook.Add( "Initialize", "LEVELSYSTEM:Load", load() )
+hook.Add( "Initialize", "guthlevelsystem:Load", load() )

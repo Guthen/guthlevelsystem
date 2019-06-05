@@ -1,4 +1,4 @@
-LEVELSYSTEM = LEVELSYSTEM or {}
+guthlevelsystem = guthlevelsystem or {}
 
 local function load()
     print( "--> [guthlevelsystem] <--" )
@@ -9,13 +9,12 @@ local function load()
     print( "Loading : HUD" )
     include( "guthlevelsystem/cl_hud.lua" )
 
-    print( "Loading : PANEL" )
-    include( "guthlevelsystem/cl_panel.lua" )
-
     print( "Loading : Commands" )
     include( "guthlevelsystem/sh_commands.lua" )
 
     print( "-------> LOADED <-------" )
+    
+    hook.Run( "guthlevelsystem:OnLoaded" )
 end
 
 local function notifPlayer()
@@ -26,6 +25,6 @@ local function notifPlayer()
     surface.PlaySound( snd )
     notification.AddLegacy( msg, type, 3 )
 end
-net.Receive( "LEVELSYSTEM:SendNotif", notifPlayer )
+net.Receive( "guthlevelsystem:SendNotif", notifPlayer )
 
 load()
