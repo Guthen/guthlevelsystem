@@ -23,6 +23,7 @@ guthlevelsystem.NotificationXP          =   "You earn %d XP, work harder !"
 guthlevelsystem.NotificationLVL         =   "You get to LVL %d, good job !"
 --  > (DarkRP) The message sent to the player who attempted to change teams but cannot (%d represent the required level and %s the job name)
 guthlevelsystem.NotificationJob         =   "You need to be LVL %d to become %s !"
+
 --  > What sound is played when you received a notification (earn XP)
 guthlevelsystem.NotificationSoundXP     =   "Friends/friend_join.wav"
 --  > What sound is played when you received a notification (earn LVL)
@@ -32,15 +33,15 @@ guthlevelsystem.NotificationSoundLVL    =   "Friends/friend_online.wav"
 guthlevelsystem.OnNPCKilledEarnXP       =   true
 --  > How many XP we earn when we kill a NPC (if -1 then we earn XP relative to NPC Max Health)
 guthlevelsystem.OnNPCKilledXP           =   -1
-
 --  > Should we earn XP when we kill a Player
 guthlevelsystem.PlayerDeathEarnXP       =   true
 --  > How many XP we earn when we kill a Player
 guthlevelsystem.PlayerDeathXP           =   50
-
+--  > Should we earn XP when we play on the server
+guthlevelsystem.ByPlayingEarnXP       =   true
 --  > How many seconds we should wait before get XP (def: 60 seconds)
 guthlevelsystem.ByPlayingTimer          =   60
---  > How many XP we earn when we kill play on the server (def: 150 XP each 60 seconds)
+--  > How many XP we earn when we play on the server (def: 150 XP each 60 seconds)
 guthlevelsystem.ByPlayingXP             =   150
 
 --  > Should we show the default HUD

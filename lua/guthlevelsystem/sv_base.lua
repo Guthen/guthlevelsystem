@@ -1,3 +1,5 @@
+util.AddNetworkString( "guthlevelsystem:SendNotif" )
+
 guthlevelsystem = guthlevelsystem or {}
 
 local function load()
@@ -22,8 +24,6 @@ local function load()
 
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
-
-    util.AddNetworkString( "guthlevelsystem:SendNotif" )
 
     print( "-------> LOADED <-------" )
 
