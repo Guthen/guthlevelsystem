@@ -1,4 +1,3 @@
-if true then return end
 guthlevelsystem = guthlevelsystem or {}
 guthlevelsystem.Author      =   "Guthen"
 guthlevelsystem.Version     =   "1.3.2"
