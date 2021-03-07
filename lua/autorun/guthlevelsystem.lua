@@ -1,6 +1,6 @@
 guthlevelsystem = guthlevelsystem or {}
 guthlevelsystem.Author      =   "Guthen"
-guthlevelsystem.Version     =   "1.3.2"
+guthlevelsystem.Version     =   "beta-1.4.1"
 guthlevelsystem.Link        =   "https://github.com/Guthen/guthlevelsystem"
 guthlevelsystem.Discord     =   "https://discord.gg/eKgkpCf"
 

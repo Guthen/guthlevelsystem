@@ -3,11 +3,13 @@ guthlevelsystem = guthlevelsystem or {}
 hook.Add( "PlayerInitialSpawn", "guthlevelsystem:SetData", function( ply )
     if ply:IsBot() then return end
 
-    if not ply:LSHasData() then
-        ply:LSCreateData()
-    else
-        ply:LSGetData()
-    end
+    ply:LSGetData( function( success, message, data )
+        if not data or #data <= 0 then
+            ply:LSCreateData()
+        else
+            ply:LSLoadData()
+        end
+    end ) 
 end )
 
 hook.Add( "PlayerDisconnect", "guthlevelsystem:SaveData", function( ply )

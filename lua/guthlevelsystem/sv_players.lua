@@ -6,23 +6,21 @@ local Player = FindMetaTable( "Player" )
 --  >   args: nil
 --  >   return: nil
 function Player:LSCreateData()
-    --if self:LSHasData() then return guthlevelsystem.Notif( self:Name() .. " has already data !" ) end
-    local sid = self:SteamID()
+    local query = ( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( %s, 0, 1 )" ):format( SQLStr( self:SteamID() ) )
+    guthlevelsystem.Query( query, function( success, message, data )
+        if not success then
+            return guthlevelsystem.Notif( ( "Failed while creating data on %q: %s" ):format( self:GetName(), message ) )
+        end
 
-    local query = string.format( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( '%s', 0, 1 )", sid )
-    local result = sql.Query( query )
+        self:LSSetXP( 0, true )
+        self:LSSetLVL( 1, true )
+        self:LSCalcNXP()
+        self:LSSendData()
 
-    if result == false then return guthlevelsystem.Notif( "SQL Error on trying to Create LS Data on " .. self:Name() ) end
+        guthlevelsystem.Notif( "Data has been created on " .. self:GetName() )
 
-    self:LSSetLVL( 1, true )
-    self:LSSetXP( 0, true )
-    self:LSCalcNXP()
-
-    self:LSSendData()
-
-    guthlevelsystem.Notif( "LS Data has been created on " .. self:Name() )
-
-    hook.Run( "guthlevelsystem:OnPlayerCreateData", self )
+        hook.Run( "guthlevelsystem:OnPlayerCreateData", self )
+    end )
 end
 
 --  >   Player:LSSaveData
@@ -31,65 +29,55 @@ end
 function Player:LSSaveData( silent )
     local xp = self:LSGetXP()
     local lvl = self:LSGetLVL()
-    local sid = self:SteamID()
 
-    local query = string.format( "UPDATE guth_ls SET XP=%d, LVL=%d WHERE SteamID='%s'", xp, lvl, sid )
-    local result = sql.Query( query )
+    local query = ( "UPDATE guth_ls SET XP = %d, LVL = %d WHERE SteamID = %s" ):format( xp, lvl, SQLStr( self:SteamID() ) )
+    guthlevelsystem.Query( query, function( success, message, data )
+        if not success then
+            return guthlevelsystem.Notif( ( "Failed while saving data on %q : %s" ):format( self:GetName(), message ) )
+        end
 
-    if result == false then return guthlevelsystem.Notif( "SQL Error on trying to Save LS Data on " .. self:Name() ) end
-
-    if not silent then guthlevelsystem.Notif( "LS Data has been saved on " .. self:Name() ) end
-
-    hook.Run( "guthlevelsystem:OnPlayerSaveData", self, silent )
+        if not silent then guthlevelsystem.Notif( ( "Data has been saved on %q" ):format( self:Name() ) ) end
+        hook.Run( "guthlevelsystem:OnPlayerSaveData", self, silent )
+    end )
 end
 
---  >   Player:LSGetData
+--  >   Player:LSLoadData
 --  >   args: nil
 --  >   return: nil
-function Player:LSGetData()
-    local sid = self:SteamID()
+function Player:LSLoadData()
+    local query = ( "SELECT XP, LVL FROM guth_ls WHERE SteamID = %s" ):format( SQLStr( self:SteamID() ) )
+    guthlevelsystem.Query( query, function( success, message, data )
+        if not success or not data or #data <= 0 then
+            return not data and guthlevelsystem.Notif( ( "Failed while loading data on %q : %s" ):format( self:GetName(), message ) )
+        end
 
-    local query
+        self:LSSetLVL( tonumber( data[1].LVL ), true )
+        self:LSSetXP( tonumber( data[1].XP ) )
+        self:LSCalcNXP()
+        self:LSSendData()
 
-    query = string.format( "SELECT XP FROM guth_ls WHERE SteamID='%s'", sid )
-    local xp = sql.QueryValue( query )
+        guthlevelsystem.Notif( ( "Data has been loaded on %q" ):format( self:Name() ) )
 
-    query = string.format( "SELECT LVL FROM guth_ls WHERE SteamID='%s'", sid )
-    local lvl = sql.QueryValue( query )
-
-    if not xp or not lvl then return guthlevelsystem.Notif( "Failed on trying to Get LS Data on " .. self:Name() ) end
-
-    self:LSSetLVL( tonumber( lvl ), true )
-    self:LSSetXP( tonumber( xp ) )
-    self:LSCalcNXP()
-
-    self:LSSendData()
-
-    guthlevelsystem.Notif( "LS Data has been loaded on " .. self:Name() )
-
-    hook.Run( "guthlevelsystem:OnPlayerGetData", self )
+        hook.Run( "guthlevelsystem:OnPlayerGetData", self )
+    end )
 end
 
-function Player:LSHasData()
-    local sid = self:SteamID()
-
-    local query = string.format( "SELECT * FROM guth_ls WHERE SteamID='%s'", sid )
-    local result = sql.Query( query )
-
-    return result == nil or istable( result ) and true or false
+function Player:LSGetData( callback )
+    local query = ( "SELECT * FROM guth_ls WHERE SteamID = %s" ):format( SQLStr( self:SteamID() ) )
+    guthlevelsystem.Query( query, callback )
 end
 
 function Player:LSResetData()
-    local sid = self:SteamID()
+    local query = ( "DELETE FROM guth_ls WHERE SteamID='%s'" ):format( SQLStr( self:SteamID() ) )
+    guthlevelsystem.Query( query, function( success, message, data )
+        if not success then
+            return guthlevelsystem.Notif( ( "Failed while reseting data on %q : %s" ):format( self:GetName(), message ) )
+        end
 
-    local query = string.format( "DELETE FROM guth_ls WHERE SteamID='%s'", sid )
-    local result = sql.Query( query )
+        self:LSCreateData()
 
-    if result == false then return guthlevelsystem.Notif( "Failed on trying to Delete LS Data on " .. self:Name() ) end
-
-    self:LSCreateData()
-
-    hook.Run( "guthlevelsystem:OnPlayerResetData", self )
+        hook.Run( "guthlevelsystem:OnPlayerResetData", self )
+    end )
 end
 
 function Player:LSSendData()
@@ -209,7 +197,7 @@ function Player:LSAddLVL( num, silent )
     local should = hook.Run( "guthlevelsystem:ShouldPlayerAddLVL", self, num )
     if should == false then return end
 
-    self.LSlvl = math.Clamp( self.LSlvl + num, 1, guthlevelsystem.MaximumLVL )
+    self.LSlvl = math.Clamp( ( self.LSlvl or 0 ) + num, 1, guthlevelsystem.MaximumLVL )
     self.LSxp = 0
     self:LSCalcNXP()
 

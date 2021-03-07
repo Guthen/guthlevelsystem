@@ -30,6 +30,13 @@ TEAM_RANDOM = DarkRP.createJob("Random", {
 })
 ```
 
+## SQL Drivers
+If you just want a basic saving system (default: SQLite), just ignore that part.
+
+This level system is compatible with [Gabyfle/gSQL](https://github.com/Gabyfle/gSQL/releases) library, which means that you can easily use a different SQL driver such as [MySQLOO](https://github.com/FredyH/MySQLOO) or [tMySQL4](https://github.com/bkacjios/gm_tmysql4) by downloading and installing theses systems on your server.
+
+As said before, you have to install [Gabyfle/gSQL](https://github.com/Gabyfle/gSQL/releases) and the SQL driver of your choice. Once it's done, configure the database file (at the top) of my system located at `lua/guthlevelsystem/sv_data.lua` (it's not located at `sh_config.lua` for security reasons).
+
 ## Console Commands
 
 + `guthlevelsystem_set_lvl <lvl> <name>` : Set LVL `<lvl>` to `<name>` (if specified, else LVL go to the user who call command)
@@ -106,9 +113,9 @@ If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) u
 
 + `Player:LSSaveData()`, save level system data
 
-+ `Player:LSGetData()`, load level system data to put in `Player` (used in `PlayerInitialSpawn` to load data and then use others function)
++ `Player:LSLoadData()`, load level system data to put in `Player` (used in `PlayerInitialSpawn` to load data and then use others function)
 
-+ `Player:LSHasData()`, returns true if `Player` has level system data
++ `Player:LSGetData( callback )`, get all level data and call the `callback` function( boolean success, string message, table data ) 
 
 + `Player:LSResetData()`, reset to zero level system data of `Player`
 
