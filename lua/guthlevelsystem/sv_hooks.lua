@@ -26,13 +26,17 @@ hook.Add( "ShutDown", "guthlevelsystem:SaveData", function()
 end )
 
 --  > Earn XP
-hook.Add( "OnNPCKilled", "guthlevelsystem:AddXP", function( npc, ply, inf )
-    if not ply:IsValid() or not ply:IsPlayer() then return end
+if guthlevelsystem.OnNPCKilledEarnXP then
+    hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg )
+        if not ent:IsNPC() or ent:Health() > 0 then return end
 
-    local xp = guthlevelsystem.OnNPCKilledXP == -1 and npc:GetMaxHealth() or guthlevelsystem.OnNPCKilledXP
-    ply:LSAddXP( xp )
-end )
-if not guthlevelsystem.OnNPCKilledEarnXP then hook.Remove( "OnNPCKilled", "guthlevelsystem:AddXP" ) end
+        local ply = dmg:GetAttacker()
+        if not IsValid( ply ) or not ply:IsPlayer() then return end
+
+        local xp = guthlevelsystem.OnNPCKilledXP == -1 and ent:GetMaxHealth() or guthlevelsystem.OnNPCKilledXP
+        ply:LSAddXP( xp )
+    end )
+end
 
 hook.Add( "PlayerDeath", "guthlevelsystem:AddXP", function( ply, _, atk )
     if not atk:IsValid() or not atk:IsPlayer() then return end
