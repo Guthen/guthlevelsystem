@@ -27,8 +27,8 @@ end )
 
 --  > Earn XP
 if guthlevelsystem.OnNPCKilledEarnXP then
-    hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg )
-        if not ent:IsNPC() or ent:Health() > 0 then return end
+    hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg, take )
+        if not ent:IsNPC() or ent:Health() > 0 or not take then return end
 
         local ply = dmg:GetAttacker()
         if not IsValid( ply ) or not ply:IsPlayer() then return end
