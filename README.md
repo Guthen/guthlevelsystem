@@ -13,7 +13,7 @@
 Add this line in your chosed job and change the `x` by the required level : `LSlvl = x,`
 
 Exemple, `TEAM_RANDOM` is only accessible on level 5 :
-```
+```lua
 TEAM_RANDOM = DarkRP.createJob("Random", {
     color = Color(226, 47, 255, 255),
     model = {"models/player/eli.mdl"},
