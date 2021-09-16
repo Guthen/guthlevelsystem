@@ -88,9 +88,9 @@ Since the version 1.3.0, customs hooks have been added ( [SIDE] `hook:name` : `v
 ### Customs Functions
 
 If you want to get LVL/XP/NXP (specially for CLIENT), (check the `cl_hud.lua`) use :
-+ `ply:GetNWInt("LEVELSYSTEM:LVL", 0)`
-+ `ply:GetNWInt("LEVELSYSTEM:XP", 0)`
-+ `ply:GetNWInt("LEVELSYSTEM:NXP", 0)`
++ `ply:GetNWInt("guthlevelsystem:LVL", 0)`
++ `ply:GetNWInt("guthlevelsystem:XP", 0)`
++ `ply:GetNWInt("guthlevelsystem:NXP", 0)`
 
 **The following functions are SERVER side only :**
 
