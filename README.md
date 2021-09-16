@@ -8,11 +8,18 @@
 + Configure the addon in `lua/guthlevelsystem/sh_config.lua`
 + Reboot your server
 
+## ULX & xAdmin2 compatibility
+Both of ULX & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :
++ `lsaddxp <player> <amount>`: Add `amount` XP to `player`
++ `lsaddlvl <player> <amount>`: Add `amount` LVL to `player`
++ `lssetxp <player> <amount>`: Set `player`'s XP to `amount`
++ `lssetlvl <player> <amount>`: Set `player`'s LVL to `amount`
+
 ## DarkRP job compatibility
 
 Add this line in your chosed job and change the `x` by the required level : `LSlvl = x,`
 
-Exemple, `TEAM_RANDOM` is only accessible on level 5 :
+Example, `TEAM_RANDOM` is only accessible on level 5 :
 ```
 TEAM_RANDOM = DarkRP.createJob("Random", {
     color = Color(226, 47, 255, 255),
