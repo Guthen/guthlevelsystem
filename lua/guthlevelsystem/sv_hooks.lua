@@ -25,7 +25,7 @@ hook.Add( "ShutDown", "guthlevelsystem:SaveData", function()
     end
 end )
 
---  > Earn XP
+--  Earn XP
 if guthlevelsystem.OnNPCKilledEarnXP then
     hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg, take )
         if not ent:IsNPC() or ent:Health() > 0 or not take then return end
@@ -64,7 +64,7 @@ if guthlevelsystem.SaveOnTimer then
     end )
 end
 
---  > DarkRP
+--  DarkRP
 hook.Add( "playerCanChangeTeam", "guthlevelsystem:CanChangeJob", function( ply, job )
      if ply:IsPlayer() then
         local lvl = RPExtraTeams[job].LSlvl

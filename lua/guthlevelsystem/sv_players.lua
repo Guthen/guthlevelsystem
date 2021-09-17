@@ -1,10 +1,10 @@
 local Player = FindMetaTable( "Player" )
 
---  > DATA <  --
+--  DATA
 
---  >   Player:LSCreateData
---  >   args: nil
---  >   return: nil
+--    Player:LSCreateData
+--    args: nil
+--    return: nil
 function Player:LSCreateData()
     local query = ( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( %s, 0, 1 )" ):format( SQLStr( self:SteamID() ) )
     guthlevelsystem.Query( query, function( success, message, data )
@@ -23,9 +23,9 @@ function Player:LSCreateData()
     end )
 end
 
---  >   Player:LSSaveData
---  >   args: #1 boolean (OPTIONAL)
---  >   return: nil
+--    Player:LSSaveData
+--    args: #1 boolean (OPTIONAL)
+--    return: nil
 function Player:LSSaveData( silent )
     local xp = self:LSGetXP()
     local lvl = self:LSGetLVL()
@@ -41,9 +41,9 @@ function Player:LSSaveData( silent )
     end )
 end
 
---  >   Player:LSLoadData
---  >   args: nil
---  >   return: nil
+--    Player:LSLoadData
+--    args: nil
+--    return: nil
 function Player:LSLoadData()
     local query = ( "SELECT XP, LVL FROM guth_ls WHERE SteamID = %s" ):format( SQLStr( self:SteamID() ) )
     guthlevelsystem.Query( query, function( success, message, data )
@@ -88,11 +88,11 @@ function Player:LSSendData()
     end )
 end
 
---  > XP <  --
+--  XP
 
---  >   Player:LSAddXP
---  >   args: #1 number
---  >   return: nil
+--    Player:LSAddXP
+--    args: #1 number
+--    return: nil
 function Player:LSAddXP( num, silent, byPlaying )
     if not num or not isnumber( num ) then return end
 
@@ -131,17 +131,17 @@ function Player:LSAddXP( num, silent, byPlaying )
     hook.Run( "guthlevelsystem:OnPlayerAddXP", self, num, silent, byPlaying )
 end
 
---  >   Player:LSCalcNXP
---  >   args: nil
---  >   return: Player.LSnxp (number)
+--    Player:LSCalcNXP
+--    args: nil
+--    return: Player.LSnxp (number)
 function Player:LSCalcNXP()
     self.LSnxp = self:LSGetLVL() * guthlevelsystem.NXBase * ( guthlevelsystem.NXPMultiplicator or 1 )
     return self.LSnxp
 end
 
---  >   Player:LSSetXP
---  >   args: #1 number
---  >   return: nil
+--    Player:LSSetXP
+--    args: #1 number
+--    return: nil
 function Player:LSSetXP( num )
     if not num or not isnumber( num ) then return end
 
@@ -172,25 +172,25 @@ function Player:LSSetXP( num )
     hook.Run( "guthlevelsystem:OnPlayerSetXP", self, num )
 end
 
---  >   Player:LSGetXP
---  >   args: nil
---  >   return: Player.LSxp or -1 (number)
+--    Player:LSGetXP
+--    args: nil
+--    return: Player.LSxp or -1 (number)
 function Player:LSGetXP()
     return self.LSxp or -1
 end
 
---  >   Player:LSGetNXP
---  >   args: nil
---  >   return: Player.LSnxp or -1 (number)
+--    Player:LSGetNXP
+--    args: nil
+--    return: Player.LSnxp or -1 (number)
 function Player:LSGetNXP()
     return self.LSnxp or -1
 end
 
---  > LVL <  --
+--  LVL
 
---  >   Player:LSAddLVL
---  >   args: #1 number
---  >   return: nil
+--    Player:LSAddLVL
+--    args: #1 number
+--    return: nil
 function Player:LSAddLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
@@ -212,9 +212,9 @@ function Player:LSAddLVL( num, silent )
     hook.Run( "guthlevelsystem:OnPlayerAddLVL", self, num )
 end
 
---  >   Player:LSSetLVL
---  >   args: #1 number
---  >   return: nil
+--    Player:LSSetLVL
+--    args: #1 number
+--    return: nil
 function Player:LSSetLVL( num, silent )
     if not num or not isnumber( num ) then return end
 
@@ -236,14 +236,14 @@ function Player:LSSetLVL( num, silent )
     hook.Run( "guthlevelsystem:OnPlayerSetLVL", self, num, silent )
 end
 
---  >   Player:LSGetLVL
---  >   args: nil
---  >   return: Player.LSlvl or -1 (number)
+--    Player:LSGetLVL
+--    args: nil
+--    return: Player.LSlvl or -1 (number)
 function Player:LSGetLVL()
     return self.LSlvl or -1
 end
 
---  > OTHERS <  --
+--  OTHERS
 
 function Player:LSSendNotif( msg, _type, snd )
     local should = hook.Run( "guthlevelsystem:ShouldPlayerSendNotif", self, msg, _type, snd )

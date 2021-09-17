@@ -1,7 +1,6 @@
 guthlevelsystem = guthlevelsystem or {}
 
---  > LVL <  --
-
+--  LVL
 concommand.Add( "guthlevelsystem_set_lvl", function( ply, _, args )
     if ply:IsValid() and not ply:IsSuperAdmin() then return end
 
@@ -44,8 +43,7 @@ concommand.Add( "guthlevelsystem_add_lvl", function( ply, _, args )
     end
 end )
 
---  > XP <  --
-
+--  XP
 concommand.Add( "guthlevelsystem_set_xp", function( ply, _, args )
     if ply:IsValid() and not ply:IsSuperAdmin() then return end
 
@@ -88,8 +86,7 @@ concommand.Add( "guthlevelsystem_add_xp", function( ply, _, args )
     end
 end )
 
---  > INFO <  --
-
+--  INFO
 concommand.Add( "guthlevelsystem_info", function( ply, _, args )
     local msg = string.format(
         "GU-LS: 'guthlevelsystem' is made by %s.\nThe installed version is %s.\nDownload the addon here : %s.\nJoin freely my Discord : %s.",
