@@ -103,3 +103,5 @@ end, {
     { xAdmin.ARG_PLAYER, xAdmin.GetLanguageString( "target" ) },
     { xAdmin.ARG_NUM, xAdmin.GetLanguageString( "amount" ) },
 } )
+
+print( "[guthlevelsystem] - xAdmin2 Module loaded succesfully" )
