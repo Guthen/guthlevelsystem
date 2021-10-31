@@ -8,8 +8,8 @@
 + Configure the addon in `lua/guthlevelsystem/sh_config.lua`
 + Reboot your server
 
-## ULX & xAdmin2 compatibility
-Both of ULX & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :
+## ULX & SAM & xAdmin2 compatibility
+ULX, SAM & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :
 + `lsaddxp <player> <amount>`: Add `amount` XP to `player`
 + `lsaddlvl <player> <amount>`: Add `amount` LVL to `player`
 + `lssetxp <player> <amount>`: Set `player`'s XP to `amount`
