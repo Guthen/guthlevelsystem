@@ -34,13 +34,14 @@ if guthlevelsystem.OnNPCKilledEarnXP then
         if guthlevelsystem.OnNPCKilledXP == -1 and not ent.guthlevelsystem_max_health then
             ent.guthlevelsystem_max_health = ent:GetMaxHealth() >= ent:Health() and ent:GetMaxHealth() or ent:Health() + dmg:GetDamage()
         end
-        if ent:Health() > 0 then return end
+        if ent:Health() > 0 or ent.guthlevelsystem_took then return end
 
         local ply = dmg:GetAttacker()
         if not IsValid( ply ) or not ply:IsPlayer() then return end
 
         local xp = guthlevelsystem.OnNPCKilledXP == -1 and ent.guthlevelsystem_max_health or guthlevelsystem.OnNPCKilledXP
         ply:LSAddXP( xp )
+        ent.guthlevelsystem_took = true
     end )
 end
 
