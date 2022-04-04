@@ -90,14 +90,22 @@ end
 
 --  XP
 
+function Player:LSGetXPMutliplier()
+    return guthlevelsystem.RankXPMultipliers[self:GetUserGroup()] or 1
+end
+
 --    Player:LSAddXP
 --    args: #1 number
 --    return: nil
 function Player:LSAddXP( num, silent, byPlaying )
-    if not num or not isnumber( num ) then return end
+    if not isnumber( num ) then return end
 
     if self:LSGetLVL() == -1 then self:LSResetData() end
     if self:LSGetLVL() >= guthlevelsystem.MaximumLVL then return end
+
+    --  apply rank xp multiplier
+    local multiplier = self:LSGetXPMutliplier()
+    num = num * multiplier
 
     local should = hook.Run( "guthlevelsystem:ShouldPlayerAddXP", self, num, silent, byPlaying )
     if should == false then return end
@@ -111,7 +119,7 @@ function Player:LSAddXP( num, silent, byPlaying )
 
         if dif < 0 then
             timer.Simple( .5, function()
-                if not self:IsValid() then return end
+                if not IsValid( self ) then return end
                 self:LSAddXP( -dif )
             end)
         end
@@ -125,7 +133,12 @@ function Player:LSAddXP( num, silent, byPlaying )
     if not silent then
         local notif = byPlaying and guthlevelsystem.NotificationXPPlaying or guthlevelsystem.NotificationXP
 
-        self:LSSendNotif( string.format( notif, num ), 0, guthlevelsystem.NotificationSoundXP )
+        self:LSSendNotif( 
+            guthlevelsystem.FormatMessage( notif, { 
+                xp = num,
+                multiplier = not ( multiplier == 1 ) and ( "(x%s)" ):format( multiplier ) or "",
+            } ), 0, guthlevelsystem.NotificationSoundXP 
+        )
     end
 
     hook.Run( "guthlevelsystem:OnPlayerAddXP", self, num, silent, byPlaying )
@@ -143,7 +156,7 @@ end
 --    args: #1 number
 --    return: nil
 function Player:LSSetXP( num )
-    if not num or not isnumber( num ) then return end
+    if not isnumber( num ) then return end
 
     if self:LSGetLVL() >= guthlevelsystem.MaximumLVL then return end
 
@@ -158,7 +171,7 @@ function Player:LSSetXP( num )
 
         if dif < 0 then
             timer.Simple( .5, function()
-                if not self:IsValid() then return end
+                if not IsValid( self ) then return end
                 self:LSAddXP( -dif, silent )
             end)
         end
@@ -192,7 +205,7 @@ end
 --    args: #1 number
 --    return: nil
 function Player:LSAddLVL( num, silent )
-    if not num or not isnumber( num ) then return end
+    if not isnumber( num ) then return end
 
     local should = hook.Run( "guthlevelsystem:ShouldPlayerAddLVL", self, num )
     if should == false then return end
@@ -206,7 +219,7 @@ function Player:LSAddLVL( num, silent )
     if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     if not silent then
-        self:LSSendNotif( string.format( guthlevelsystem.NotificationLVL, self:LSGetLVL() ), 0, guthlevelsystem.NotificationSoundLVL )
+        self:LSSendNotif( guthlevelsystem.FormatMessage( guthlevelsystem.NotificationLVL, { lvl = self:LSGetLVL() } ), 0, guthlevelsystem.NotificationSoundLVL )
     end
 
     hook.Run( "guthlevelsystem:OnPlayerAddLVL", self, num )
@@ -216,7 +229,7 @@ end
 --    args: #1 number
 --    return: nil
 function Player:LSSetLVL( num, silent )
-    if not num or not isnumber( num ) then return end
+    if not isnumber( num ) then return end
 
     local should = hook.Run( "guthlevelsystem:ShouldPlayerSetLVL", self, num, silent )
     if should == false then return end
@@ -230,7 +243,7 @@ function Player:LSSetLVL( num, silent )
     if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     if not silent then
-        self:LSSendNotif( string.format( guthlevelsystem.NotificationLVL, self:LSGetLVL() ), 0, guthlevelsystem.NotificationSoundLVL )
+        self:LSSendNotif( guthlevelsystem.FormatMessage( guthlevelsystem.NotificationLVL, { lvl = self:LSGetLVL() } ), 0, guthlevelsystem.NotificationSoundLVL )
     end
 
     hook.Run( "guthlevelsystem:OnPlayerSetLVL", self, num, silent )

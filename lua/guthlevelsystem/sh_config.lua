@@ -15,14 +15,35 @@ guthlevelsystem.NXBase                  =   400
 --  How much we multiplicate the needed xp to get the next needed xp of the new level
 guthlevelsystem.NXPMultiplicator        =   1.1
 
+--  XP Multiplicators for specific Ranks
+guthlevelsystem.RankXPMultipliers = {
+    --["superadmin"] = 2.5, --  XP of "superadmin" players multiplied by x2.5
+    --["vip"] = 2, --  XP of "vip" players multiplied by x2
+}
+
 --  The message sent to the player who earn XP by playing on the server (%d represent the XP earned)
-guthlevelsystem.NotificationXPPlaying   =   "You earn %d XP by playing on the server !"
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - xp: earned xp
+--    - multiplier: applied rank multiplier (if has any or nothing otherwise)  
+guthlevelsystem.NotificationXPPlaying   =   "You earn {xp} XP by playing on the server {multiplier}!"
 --  The message sent to the player who earn XP (%d represent the XP earned)
-guthlevelsystem.NotificationXP          =   "You earn %d XP, work harder !"
---  The message sent to the player who earn LVL (%d represent the new level of the player)
-guthlevelsystem.NotificationLVL         =   "You get to LVL %d, good job !"
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - xp: earned xp
+--    - multiplier: applied rank multiplier (if has any or nothing otherwise)  
+guthlevelsystem.NotificationXP          =   "You earn {xp} XP, work harder {multiplier}!"
+--  The message sent to the player who earn LVL
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - lvl: player's level
+guthlevelsystem.NotificationLVL         =   "You get to LVL {lvl}, good job!"
 --  (DarkRP) The message sent to the player who attempted to change teams but cannot (%d represent the required level and %s the job name)
-guthlevelsystem.NotificationJob         =   "You need to be LVL %d to become %s !"
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - lvl: player's level
+--    - job: job's name
+guthlevelsystem.NotificationJob         =   "You need to be LVL {lvl} to become {job}!"
 
 --  What sound is played when you received a notification (earn XP)
 guthlevelsystem.NotificationSoundXP     =   "Friends/friend_join.wav"
@@ -51,20 +72,20 @@ guthlevelsystem.HUDFont                 =   "DermaLarge"
 --  HUD X LVL
 guthlevelsystem.HUDXLVL                 =   CLIENT and 30
 --  HUD Y LVL
-guthlevelsystem.HUDYLVL                 =   CLIENT and ScrH()*.75
+guthlevelsystem.HUDYLVL                 =   CLIENT and ScrH() * .75
 --  HUD LVL Text
 guthlevelsystem.HUDTextLVL              =   "Level : "
 --  HUD X XP
 guthlevelsystem.HUDXXP                  =   CLIENT and 30
 --  HUD Y LVL
-guthlevelsystem.HUDYXP                  =   CLIENT and ScrH()*.79
+guthlevelsystem.HUDYXP                  =   CLIENT and ScrH() * .79
 --  HUD XP Text
 guthlevelsystem.HUDTextXP               =   "XP : "
 --  HUD LVL Use Percentage
 guthlevelsystem.HUDLVLPercentage        =   false
 
 --  Chat Command
-guthlevelsystem.CommandChat             =   "!level"
+guthlevelsystem.CommandChat             =   "/level"
 --  Command Message
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:

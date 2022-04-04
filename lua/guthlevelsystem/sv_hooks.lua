@@ -46,7 +46,7 @@ if guthlevelsystem.OnNPCKilledEarnXP then
 end
 
 hook.Add( "PlayerDeath", "guthlevelsystem:AddXP", function( ply, _, atk )
-    if not atk:IsValid() or not atk:IsPlayer() then return end
+    if not IsValid( atk ) or not atk:IsPlayer() then return end
     if ply == atk then return end
 
     local xp = guthlevelsystem.PlayerDeathXP or 100
@@ -78,7 +78,11 @@ hook.Add( "playerCanChangeTeam", "guthlevelsystem:CanChangeJob", function( ply, 
 
         if lvl then
             if ply:LSGetLVL() < lvl then
-                return false, string.format( guthlevelsystem.NotificationJob, lvl, team.GetName( job ) )
+                return false, 
+                    guthlevelsystem.FormatMessage( guthlevelsystem.NotificationJob, {
+                        lvl = lvl, 
+                        job = team.GetName( job )
+                    } )
             end
         end
      end
