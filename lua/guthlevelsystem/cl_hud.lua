@@ -1,6 +1,22 @@
 guthlevelsystem = guthlevelsystem or {}
 
-local _xp = 0
+--  load HUDs
+local path, huds = "guthlevelsystem/hud/", {}
+for i, v in ipairs( file.Find( "lua/" .. path .. "*.lua", "GAME" ) ) do
+    local file_name = v:gsub( "%.lua$", "" )
+
+    local func = include( path .. v )
+    if not func then
+        ErrorNoHalt( ( "guthlevelsystem ─ HUD '%s' can't be load, an error has occured!" ):format( file_name ) )
+        continue
+    elseif not isfunction( func ) then
+        ErrorNoHalt( ( "guthlevelsystem ─ HUD '%s' can't be load, the returned value is not a function!" ):format( file_name ) )
+        continue
+    end
+
+    huds[file_name] = func
+end
+
 hook.Add( "HUDPaintBackground", "guthlevelsystem:HUD", function()
     local should = hook.Run( "HUDShouldDraw", "guthlevelsystem:HUD" )
     if should == false then return end
@@ -8,16 +24,13 @@ hook.Add( "HUDPaintBackground", "guthlevelsystem:HUD", function()
     local ply = LocalPlayer()
     if not IsValid( ply ) then return end
 
-    _xp = Lerp( FrameTime() * 5, _xp or 0, ply:GetNWInt( "guthlevelsystem:XP", 0 ) )
-
-    local lvl = guthlevelsystem.HUDTextLVL .. string.format( "%d", ply:GetNWInt( "guthlevelsystem:LVL", 0 ) )
-    local xp = guthlevelsystem.HUDLVLPercentage and guthlevelsystem.HUDTextXP .. string.format( "%d", _xp / ply:GetNWInt( "guthlevelsystem:NXP", 0 ) * 100 ) .. "%"
-               or guthlevelsystem.HUDTextXP .. string.format( "%d/%d", _xp, ply:GetNWInt( "guthlevelsystem:NXP", 0 ) )
-
-    draw.SimpleText( lvl, guthlevelsystem.HUDFont, guthlevelsystem.HUDXLVL, guthlevelsystem.HUDYLVL, Color( 255, 255, 255 ) )
-    draw.SimpleText( xp, guthlevelsystem.HUDFont, guthlevelsystem.HUDXXP, guthlevelsystem.HUDYXP, Color( 255, 255, 255 ) )
+    if huds[guthlevelsystem.SelectedHUD] then 
+        huds[guthlevelsystem.SelectedHUD]( ply )
+    end
 end )
-if not guthlevelsystem.DrawHUD then hook.Remove( "HUDPaintBackground", "guthlevelsystem:HUD" ) end
+if not guthlevelsystem.DrawHUD then 
+    hook.Remove( "HUDPaintBackground", "guthlevelsystem:HUD" ) 
+end
  
 hook.Add( "OnPlayerChat", "guthlevelsystem:level", function( ply, text )
     if not ( ply == LocalPlayer() ) then return end

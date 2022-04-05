@@ -1,12 +1,19 @@
 # guthlevelsystem
-
 ## Work in any gamemode (DarkRP, Sandbox...)
 
 ## Installation
-
 + Download the addon and extract it in your addons folder.
 + Configure the addon in `lua/guthlevelsystem/sh_config.lua`
 + Reboot your server
+
+## Custom HUDs
+For now, there are **2 default HUDs** that you can choose to use (or not) :
+### default_progress
+![default_progress](https://media.discordapp.net/attachments/579628254814666762/961019202653790278/default_progress.jpg?width=1246&height=701)
+### default_text
+![default_text](https://media.discordapp.net/attachments/579628254814666762/961019202939015208/default_text.jpg?width=1246&height=701)
+
+Custom HUDs are located in `lua/guthlevelsystem/hud` and **you can choose one** by specifying the configuration variable `guthlevelsystem.SelectedHUD` in `sh_config.lua`
 
 ## ULX & SAM & xAdmin2 compatibility
 ULX, SAM & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :

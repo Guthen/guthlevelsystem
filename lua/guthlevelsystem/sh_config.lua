@@ -59,30 +59,21 @@ guthlevelsystem.PlayerDeathEarnXP       =   true
 --  How many XP we earn when we kill a Player
 guthlevelsystem.PlayerDeathXP           =   50
 --  Should we earn XP when we play on the server
-guthlevelsystem.ByPlayingEarnXP       =   true
+guthlevelsystem.ByPlayingEarnXP         =   true
 --  How many seconds we should wait before get XP (def: 60 seconds)
 guthlevelsystem.ByPlayingTimer          =   60
 --  How many XP we earn when we play on the server (def: 150 XP each 60 seconds)
 guthlevelsystem.ByPlayingXP             =   150
 
---  Should we show the default HUD
+--  Should we show the selected HUD
 guthlevelsystem.DrawHUD                 =   true
---  HUD Font (can be seen here : http://wiki.garrysmod.com/page/Default_Fonts)
-guthlevelsystem.HUDFont                 =   "DermaLarge"
---  HUD X LVL
-guthlevelsystem.HUDXLVL                 =   CLIENT and 30
---  HUD Y LVL
-guthlevelsystem.HUDYLVL                 =   CLIENT and ScrH() * .75
---  HUD LVL Text
-guthlevelsystem.HUDTextLVL              =   "Level : "
---  HUD X XP
-guthlevelsystem.HUDXXP                  =   CLIENT and 30
---  HUD Y LVL
-guthlevelsystem.HUDYXP                  =   CLIENT and ScrH() * .79
---  HUD XP Text
-guthlevelsystem.HUDTextXP               =   "XP : "
---  HUD LVL Use Percentage
-guthlevelsystem.HUDLVLPercentage        =   false
+--  Which HUD should we draw?
+--    Have to be the HUD file name from 'lua/guthlevelsystem/hud/' 
+--    See the HUD file to edit its config
+--    defaults:
+--    - default_text
+--    - default_progress
+guthlevelsystem.SelectedHUD             =   "default_progress"
 
 --  Chat Command
 guthlevelsystem.CommandChat             =   "/level"
