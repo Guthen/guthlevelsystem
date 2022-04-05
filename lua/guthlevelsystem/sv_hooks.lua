@@ -28,7 +28,7 @@ end )
 --  Earn XP
 if guthlevelsystem.OnNPCKilledEarnXP then
     hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg, take )
-        if ( not ent:IsNPC() and not ent:IsNextBot() ) or not take then return end
+        if ( not ent:IsNPC() and not ent:IsNextBot() ) then return end
 
         --  setup xp to earn
         if guthlevelsystem.OnNPCKilledXP == -1 and not ent.guthlevelsystem_max_health then
