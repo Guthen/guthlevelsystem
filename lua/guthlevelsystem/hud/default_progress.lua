@@ -10,7 +10,7 @@ local config = {
     BoxProgressPadding = 3, --  gap at top, bottom, left & right of progress box
     BoxProgressCornerRadius = 6, --  radius of box's corners; 0: no corner
     BoxProgressColor = Color( 12, 234, 75, 150 ), --  color used in the progression box
-    IsBoxProgressColorByTeam = true, --  do we set the progress color to the current player's team color?
+    IsBoxProgressColorByTeam = false, --  do we set the progress color to the current player's team color?
                                      --  please note that setting this to true will not take in account BoxProgressColor value 
 
     --  background box
