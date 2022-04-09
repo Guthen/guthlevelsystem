@@ -25,6 +25,13 @@ local config = {
     TextColor = Color( 255, 255, 255, 150 ), --  color of both texts
 }
 
+if config.TextFont == "Trebuchet22" then
+    surface.CreateFont( "Trebuchet22", {
+        font = "Trebuchet MS",
+        size = 22,
+    } )
+end
+
 local function lerp_color( t, a, b )
     return Color( Lerp( t, a.r, b.r ), Lerp( t, a.g, b.g ), Lerp( t, a.b, b.b ), Lerp( t, a.a, b.a ) )
 end

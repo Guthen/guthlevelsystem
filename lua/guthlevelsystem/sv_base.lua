@@ -27,6 +27,11 @@ local function load()
     AddCSLuaFile( "guthlevelsystem/cl_base.lua" )
     AddCSLuaFile( "guthlevelsystem/cl_hud.lua" )
 
+    local path = "guthlevelsystem/hud/"
+    for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
+        AddCSLuaFile( path .. v )
+    end
+
     print( "-------> LOADED <-------" )
 
     hook.Run( "guthlevelsystem:OnLoaded" )
