@@ -91,7 +91,19 @@ end
 --  XP
 
 function Player:LSGetXPMutliplier()
-    return guthlevelsystem.RankXPMultipliers[self:GetUserGroup()] or 1
+    local mul = 1
+
+    --  rank xp multiplier
+    if guthlevelsystem.RankXPMultipliers[self:GetUserGroup()] then
+        mul = mul * guthlevelsystem.RankXPMultipliers[self:GetUserGroup()]
+    end
+
+    --  team xp multiplier
+    if guthlevelsystem.TeamXPMultipliers[self:Team()] then
+        mul = mul * guthlevelsystem.TeamXPMultipliers[self:Team()]
+    end
+
+    return mul
 end
 
 --    Player:LSAddXP
@@ -105,7 +117,7 @@ function Player:LSAddXP( num, silent, byPlaying )
 
     --  apply rank xp multiplier
     local multiplier = self:LSGetXPMutliplier()
-    num = num * multiplier
+    num = math.Round( num * multiplier )
 
     local should = hook.Run( "guthlevelsystem:ShouldPlayerAddXP", self, num, silent, byPlaying )
     if should == false then return end

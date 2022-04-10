@@ -15,10 +15,18 @@ guthlevelsystem.NXBase                  =   400
 --  How much we multiplicate the needed xp to get the next needed xp of the new level
 guthlevelsystem.NXPMultiplicator        =   1.1
 
---  XP Multiplicators for specific Ranks
+--  XP Multipliers for specific Ranks
 guthlevelsystem.RankXPMultipliers = {
     --["superadmin"] = 2.5, --  XP of "superadmin" players multiplied by x2.5
     --["vip"] = 2, --  XP of "vip" players multiplied by x2
+}
+
+--  XP Multipliers for specific Teams
+--   Take note that the multipliers scale between 
+guthlevelsystem.TeamXPMultipliers = {
+    --[TEAM_CHIEF] = 2, --  XP of TEAM_CHIEF players multiplied by x2
+    --[TEAM_CITIZEN] = 0.75, --  XP of TEAM_CITIZEN players multiplied by x0.75
+    --[TEAM_HOBO] = 0, --  XP of TEAM_HOBO players completely disabled
 }
 
 --  The message sent to the player who earn XP by playing on the server (%d represent the XP earned)
