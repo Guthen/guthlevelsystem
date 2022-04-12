@@ -2,7 +2,7 @@ guthlevelsystem = guthlevelsystem or {}
 
 --  load HUDs
 local path, huds = "guthlevelsystem/hud/", {}
-for i, v in ipairs( file.Find( "lua/" .. path .. "*.lua", "GAME" ) ) do
+for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
     local file_name = v:gsub( "%.lua$", "" )
 
     local func = include( path .. v )
