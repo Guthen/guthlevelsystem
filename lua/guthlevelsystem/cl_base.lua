@@ -1,19 +1,15 @@
 guthlevelsystem = guthlevelsystem or {}
 
 local function load()
-    print( "--> [guthlevelsystem] <--" )
-
-    print( "Loading : Configuration" )
+    guthlevelsystem.Print( "Loading sh_config.lua" )
     include( "guthlevelsystem/sh_config.lua" )
 
-    print( "Loading : HUD" )
+    guthlevelsystem.Print( "Loading cl_hud.lua" )
     include( "guthlevelsystem/cl_hud.lua" )
 
-    print( "Loading : Commands" )
+    guthlevelsystem.Print( "Loading sh_commands.lua" )
     include( "guthlevelsystem/sh_commands.lua" )
 
-    print( "-------> LOADED <-------" )
-    
     hook.Run( "guthlevelsystem:OnLoaded" )
 end
 

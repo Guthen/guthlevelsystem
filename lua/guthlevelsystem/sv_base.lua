@@ -3,24 +3,23 @@ util.AddNetworkString( "guthlevelsystem:SendNotif" )
 guthlevelsystem = guthlevelsystem or {}
 
 local function load()
-    print( "--> [guthlevelsystem] <--" )
-
-    print( "Loading : Configuration" )
+    guthlevelsystem.Print( "Loading sh_config.lua" )
     include( "guthlevelsystem/sh_config.lua" )
 
-    print( "Loading : Data" )
+    guthlevelsystem.Print( "Loading sv_data.lua" )
     include( "guthlevelsystem/sv_data.lua" )
     guthlevelsystem.CreateDataTable()
 
-    print( "Loading : Players" )
+    guthlevelsystem.Print( "Loading sv_players.lua" )
     include( "guthlevelsystem/sv_players.lua" )
 
-    print( "Loading : Hooks" )
+    guthlevelsystem.Print( "Loading sv_hooks.lua" )
     include( "guthlevelsystem/sv_hooks.lua" )
 
-    print( "Loading : Commands" )
+    guthlevelsystem.Print( "Loading sh_commands.lua" )
     include( "guthlevelsystem/sh_commands.lua" )
 
+    guthlevelsystem.Print( "Sending files" )
     AddCSLuaFile( "guthlevelsystem/sh_config.lua" )
     AddCSLuaFile( "guthlevelsystem/sh_commands.lua" )
 
@@ -29,10 +28,9 @@ local function load()
 
     local path = "guthlevelsystem/hud/"
     for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
+        guthlevelsystem.Print( "Sending hud/%s", v )
         AddCSLuaFile( path .. v )
     end
-
-    print( "-------> LOADED <-------" )
 
     hook.Run( "guthlevelsystem:OnLoaded" )
 end
@@ -41,4 +39,4 @@ function guthlevelsystem.Notif( txt )
     print( "[guthlevelsystem] - " .. txt )
 end
 
-hook.Add( "Initialize", "guthlevelsystem:Load", load )
+load()

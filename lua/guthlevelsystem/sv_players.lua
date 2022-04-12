@@ -282,5 +282,3 @@ function Player:LSSendNotif( msg, _type, snd )
 
     hook.Run( "guthlevelsystem:OnPlayerSendNotif", self, msg, _type, snd )
 end
-
-print( "Loaded succesfully" )

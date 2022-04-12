@@ -16,6 +16,7 @@ for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
 
     huds[file_name] = func
 end
+guthlevelsystem.Print( "Loaded %d HUDs", table.Count( huds ) )
 
 hook.Add( "HUDPaintBackground", "guthlevelsystem:HUD", function()
     local should = hook.Run( "HUDShouldDraw", "guthlevelsystem:HUD" )
@@ -78,5 +79,3 @@ hook.Add( "OnPlayerChat", "guthlevelsystem:level", function( ply, text )
     chat.AddText( guthlevelsystem.CommandHighlightColor, "[LEVEL] ", unpack( formatted_text ) )
     return true
 end )
-
-print( "Loaded succesfully" )

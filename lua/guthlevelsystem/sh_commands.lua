@@ -98,5 +98,3 @@ concommand.Add( "guthlevelsystem_info", function( ply, _, args )
         print( msg )
     end
 end )
-
-print( "Loaded succesfully" )

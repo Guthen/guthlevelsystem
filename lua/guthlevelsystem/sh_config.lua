@@ -95,5 +95,3 @@ guthlevelsystem.CommandChat             =   "/level"
 guthlevelsystem.CommandFormatMessage    =   "You are at level {lvl} and to {xp}/{nxp} XP ({percent}%) from next level."
 --  Arguments Highlight Color
 guthlevelsystem.CommandHighlightColor   =   Color( 230, 110, 40 )
-
-print( "Loaded succesfully" )

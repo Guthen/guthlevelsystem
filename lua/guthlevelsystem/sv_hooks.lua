@@ -87,5 +87,3 @@ hook.Add( "playerCanChangeTeam", "guthlevelsystem:CanChangeJob", function( ply, 
         end
      end
 end )
-
-print( "Loaded succesfully" )

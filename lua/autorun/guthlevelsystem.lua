@@ -4,6 +4,14 @@ guthlevelsystem.Version     =   "1.8.3"
 guthlevelsystem.Link        =   "https://github.com/Guthen/guthlevelsystem"
 guthlevelsystem.Discord     =   "https://discord.gg/eKgkpCf"
 
+function guthlevelsystem.Print( msg, ... ) 
+    if ... then
+        msg = msg:format( ... )
+    end
+
+    print( "[guthlevelsystem] ─ " .. msg )
+end
+
 function guthlevelsystem.FormatMessage( msg, args )
     local formatted_text = ""
 
@@ -43,4 +51,4 @@ else
     include( "guthlevelsystem/cl_base.lua" )
 end
 
-print( "[guthlevelsystem] - Made by " .. guthlevelsystem.Author .. " in version " .. guthlevelsystem.Version .. ", type 'guthlevelsystem_info' for more info." )
+guthlevelsystem.Print( "Made by %s in version %s, type 'guthlevelsystem_info' for more info.", guthlevelsystem.Author, guthlevelsystem.Version )
