@@ -17,17 +17,21 @@ guthlevelsystem.NXPMultiplicator        =   1.1
 
 --  XP Multipliers for specific Ranks
 guthlevelsystem.RankXPMultipliers = {
-    --["superadmin"] = 2.5, --  XP of "superadmin" players multiplied by x2.5
-    --["vip"] = 2, --  XP of "vip" players multiplied by x2
+	--["superadmin"] = 2.5, --  XP of "superadmin" players multiplied by x2.5
+	--["vip"] = 2, --  XP of "vip" players multiplied by x2
 }
 
 --  XP Multipliers for specific Teams
---   Take note that the multipliers scale between 
-guthlevelsystem.TeamXPMultipliers = {
-    --[TEAM_CHIEF] = 2, --  XP of TEAM_CHIEF players multiplied by x2
-    --[TEAM_CITIZEN] = 0.75, --  XP of TEAM_CITIZEN players multiplied by x0.75
-    --[TEAM_HOBO] = 0, --  XP of TEAM_HOBO players completely disabled
-}
+--   Take note that the multipliers scale with each other
+hook.Add( "PostGamemodeLoaded", "guthlevelsystem:TeamXPMultipliers", function()
+	guthlevelsystem.TeamXPMultipliers = {
+		--[TEAM_CHIEF] = 2, --  XP of TEAM_CHIEF players multiplied by x2
+		--[TEAM_CITIZEN] = 0.75, --  XP of TEAM_CITIZEN players multiplied by x0.75
+		--[TEAM_HOBO] = 0, --  XP of TEAM_HOBO players completely disabled
+	}
+	
+	guthlevelsystem.Print( "%d Team XP Multipliers loaded", table.Count( guthlevelsystem.TeamXPMultipliers ) )
+end )
 
 --  The message sent to the player who earn XP by playing on the server (%d represent the XP earned)
 --    Arguments must be enclosed with '{}'
