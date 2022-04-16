@@ -33,6 +33,14 @@ hook.Add( "PostGamemodeLoaded", "guthlevelsystem:TeamXPMultipliers", function()
 	guthlevelsystem.Print( "%d Team XP Multipliers loaded", table.Count( guthlevelsystem.TeamXPMultipliers ) )
 end )
 
+--  List of weapon classes mapped by the required level for a player to be able to give the SWEP using the SpawnMenu (works for Sandbox-based gamemodes)
+--   This will bypass most of the administration systems constraints (such as FAdmin & ULX), this means that 
+--   anyone having the required level will be able to give the SWEP to himself despite being an admin or not 
+guthlevelsystem.GiveSWEPsRequiredLevels = {
+	--["weapon_rpg"] = 25, --  'weapon_rpg' can only be given by players from at least level 25
+	--["weapon_pistol"] = 5, --  'weapon_pistol' can only be given by players from at least level 5
+}
+
 --  The message sent to the player who earn XP by playing on the server (%d represent the XP earned)
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:

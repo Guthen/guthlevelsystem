@@ -71,6 +71,13 @@ if guthlevelsystem.SaveOnTimer then
     end )
 end
 
+hook.Add( "PlayerGiveSWEP", "!!!guthlevelsystem:GiveSWEPsRequiredLevels", function( ply, class, swep )
+    local required_level = guthlevelsystem.GiveSWEPsRequiredLevels[class]
+    if required_level and ply:LSGetLVL() >= required_level then
+        return true
+    end
+end )
+
 --  DarkRP
 hook.Add( "playerCanChangeTeam", "guthlevelsystem:CanChangeJob", function( ply, job )
      if ply:IsPlayer() then
