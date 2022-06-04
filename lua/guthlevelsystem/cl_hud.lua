@@ -18,7 +18,10 @@ for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
 end
 guthlevelsystem.Print( "Loaded %d HUDs", table.Count( huds ) )
 
+local toggle_convar = CreateClientConVar(  "guthlevelsystem_hud_enabled", "1", true, false, "Toggle visibility of guthlevelsystem's HUD", 0, 1 )
 hook.Add( "HUDPaintBackground", "guthlevelsystem:HUD", function()
+    if not toggle_convar:GetBool() then return end
+
     local should = hook.Run( "HUDShouldDraw", "guthlevelsystem:HUD" )
     if should == false then return end
 
