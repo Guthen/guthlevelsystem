@@ -138,9 +138,8 @@ function Player:LSAddXP( num, silent, byPlaying )
         return
     end
 
+    self:LSSaveData()
     self:LSSendData()
-
-    if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     if not silent then
         local notif = byPlaying and guthlevelsystem.NotificationXPPlaying or guthlevelsystem.NotificationXP
@@ -190,9 +189,8 @@ function Player:LSSetXP( num )
         return
     end
 
+    self:LSSaveData()
     self:LSSendData()
-
-    if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     hook.Run( "guthlevelsystem:OnPlayerSetXP", self, num )
 end
@@ -226,9 +224,8 @@ function Player:LSAddLVL( num, silent )
     self.LSxp = 0
     self:LSCalcNXP()
 
+    self:LSSaveData()
     self:LSSendData()
-
-    if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     if not silent then
         self:LSSendNotif( guthlevelsystem.FormatMessage( guthlevelsystem.NotificationLVL, { lvl = self:LSGetLVL() } ), 0, guthlevelsystem.NotificationSoundLVL )
@@ -250,9 +247,8 @@ function Player:LSSetLVL( num, silent )
     self.LSxp = 0
     self:LSCalcNXP()
 
+    self:LSSaveData()
     self:LSSendData()
-
-    if not guthlevelsystem.SaveOnTimer then self:LSSaveData() end
 
     if not silent then
         self:LSSendNotif( guthlevelsystem.FormatMessage( guthlevelsystem.NotificationLVL, { lvl = self:LSGetLVL() } ), 0, guthlevelsystem.NotificationSoundLVL )

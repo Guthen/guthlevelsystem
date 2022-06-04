@@ -5,11 +5,6 @@ guthlevelsystem = guthlevelsystem or {}
 --  The maximum LVL that player can get
 guthlevelsystem.MaximumLVL              =   50
 
---  Should we save data on timer (recommended) or save on every functions calls
-guthlevelsystem.SaveOnTimer             =   true
---  If 'SaveOnTimer' is on true, the time between each save (in seconds)
-guthlevelsystem.SaveTimer               =   300
-
 --  How much we multiplicate the level to this to get the next needed xp of the new level
 guthlevelsystem.NXBase                  =   400
 --  How much we multiplicate the needed xp to get the next needed xp of the new level

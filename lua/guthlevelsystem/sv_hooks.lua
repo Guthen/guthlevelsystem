@@ -63,14 +63,6 @@ if guthlevelsystem.ByPlayingEarnXP then
     end )
 end
 
-if guthlevelsystem.SaveOnTimer then 
-    timer.Create( "guthlevelsystem:SaveData", guthlevelsystem.SaveTimer, 0, function()
-        for _, v in pairs( player.GetHumans() ) do
-            v:LSSaveData()
-        end
-    end )
-end
-
 hook.Add( "PlayerGiveSWEP", "!!!guthlevelsystem:GiveSWEPsRequiredLevels", function( ply, class, swep )
     local required_level = guthlevelsystem.GiveSWEPsRequiredLevels[class]
     if required_level and ply:LSGetLVL() >= required_level then
