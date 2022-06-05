@@ -79,6 +79,7 @@ end )
 --  DarkRP job
 hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_job", function( ply, job )
 	 if IsValid( ply ) then
+		local level = RPExtraTeams[job].LSlvl or RPExtraTeams[job].level
 		if level then
 			if ply:gls_get_level() < level then
 				return false, 
