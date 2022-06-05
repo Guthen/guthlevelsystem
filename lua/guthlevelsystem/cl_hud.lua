@@ -41,9 +41,9 @@ hook.Add( "OnPlayerChat", "guthlevelsystem:level", function( ply, text )
 	if not text:StartWith( guthlevelsystem.CommandChat ) then return end
 
 	local args = {
-		level = ply:GetNWInt( "guthlevelsystem:LVL", 0 ),
-		xp = ply:GetNWInt( "guthlevelsystem:XP", 0 ), 
-		nxp = ply:GetNWInt( "guthlevelsystem:NXP", 0 ),
+		level = ply:gls_get_level(),
+		xp = ply:gls_get_xp(), 
+		nxp = ply:gls_get_nxp(),
 	}
 	args.percent = math.floor( args.xp / args.nxp * 100 )
 

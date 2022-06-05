@@ -18,9 +18,9 @@ Custom HUDs are located in `lua/guthlevelsystem/hud` and **you can choose one** 
 ## ULX & SAM & xAdmin2 compatibility
 ULX, SAM & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :
 + `gls_add_xp <player> <amount>`: Add `amount` XP to `player`
-+ `gls_add_level <player> <amount>`: Add `amount` LVL to `player`
++ `gls_add_level <player> <amount>`: Add `amount` level to `player`
 + `gls_set_xp <player> <amount>`: Set `player`'s XP to `amount`
-+ `gls_set_level <player> <amount>`: Set `player`'s LVL to `amount`
++ `gls_set_level <player> <amount>`: Set `player`'s level to `amount`
 
 ## DarkRP job compatibility
 Add this line in your chosed job and change the `x` by the required level : `LSlvl = x,`
@@ -51,8 +51,8 @@ This level system is compatible with [Gabyfle/gSQL](https://github.com/Gabyfle/g
 As said before, you have to install [Gabyfle/gSQL](https://github.com/Gabyfle/gSQL/releases) and the SQL driver of your choice. Once it's done, configure the database file (at the top) of my system located at `lua/guthlevelsystem/sv_data.lua` (it's not located at `sh_config.lua` for security reasons).
 
 ## Console Commands
-+ `guthlevelsystem_set_lvl <level> <name>` : Set LVL `<level>` to `<name>` (if specified, else LVL go to the user who call command)
-+ `guthlevelsystem_add_lvl <level> <name>` : Add LVL `<level>` to `<name>` (if specified, else LVL go to the user who call command)
++ `guthlevelsystem_set_lvl <level> <name>` : Set level `<level>` to `<name>` (if specified, else level go to the user who call command)
++ `guthlevelsystem_add_lvl <level> <name>` : Add level `<level>` to `<name>` (if specified, else level go to the user who call command)
 + `guthlevelsystem_set_xp <xp> <name>` : Set XP `<xp>` to `<name>` (if specified, else XP go to the user who call command)
 + `guthlevelsystem_add_xp <xp> <name>` : Add XP `<xp>` to `<name>` (if specified, else XP go to the user who call command)
 + `guthlevelsystem_info` : Show info of the addon
@@ -63,19 +63,19 @@ Since the version 1.3.0, customs hooks have been added:
 + [SH] `guthlevelsystem:OnLoaded` : no return
 
 + [SV] `guthlevelsystem:OnPlayerCreateData` : `Player`, no return
-+ [SV] `guthlevelsystem:OnPlayerSaveData` : `Player`, `silent`, no return
++ [SV] `guthlevelsystem:on_player_save_data` : `Player`, `silent`, no return
 + [SV] `guthlevelsystem:OnPlayerGetData` : `Player`, no return
-+ [SV] `guthlevelsystem:OnPlayerResetData` : `Player`, no return
++ [SV] `guthlevelsystem:on_player_reset_data` : `Player`, no return
 
 + [SV] `guthlevelsystem:ShouldPlayerAddXP` : `Player`, `xp`, `silent`, `byPlaying`, return false to add give xp
 + [SV] `guthlevelsystem:OnPlayerAddXP` : `Player`, `xp`, `silent`, `byPlaying`, no return
 + [SV] `guthlevelsystem:ShouldPlayerSetXP` : `Player`, `xp`, return false to don't set xp
 + [SV] `guthlevelsystem:OnPlayerSetXP` : `Player`, `xp`, no return
 
-+ [SV] `guthlevelsystem:ShouldPlayerAddLVL` : `Player`, `level`, return false to don't add level
-+ [SV] `guthlevelsystem:OnPlayerAddLVL` : `Player`, `level`, no return
-+ [SV] `guthlevelsystem:ShouldPlayerSetLVL` : `Player`, `level`, `silent`, return false to don't set level
-+ [SV] `guthlevelsystem:OnPlayerSetLVL` : `Player`, `level`, `silent`, no return
++ [SV] `guthlevelsystem:ShouldPlayerAddlevel` : `Player`, `level`, return false to don't add level
++ [SV] `guthlevelsystem:OnPlayerAddlevel` : `Player`, `level`, no return
++ [SV] `guthlevelsystem:ShouldPlayerSetlevel` : `Player`, `level`, `silent`, return false to don't set level
++ [SV] `guthlevelsystem:OnPlayerSetlevel` : `Player`, `level`, `silent`, no return
 
 + [SV] `guthlevelsystem:ShouldPlayerSendNotif` : `Player`, `msg`, `type`, `snd`, return false to don't send notif
 + [SV] `guthlevelsystem:OnPlayerSendNotif` : `Player`, `msg`, `type`, `snd`, no return

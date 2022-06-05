@@ -12,23 +12,25 @@ function PLAYER:gls_init_data()
 		self:gls_set_raw_level( 1 )
 		self:gls_update_nxp()
 
-		guthlevelsystem.print( "data has been created on %q", self:GetName() )
+		guthlevelsystem.print( "data has been created on %q (%s)", self:GetName(), self:SteamID() )
 		hook.Run( "guthlevelsystem:OnPlayerCreateData", self )
 	end )
 end
 
 function PLAYER:gls_save_data()
-	local xp = self:gls_get_xp()
-	local level = self:gls_get_level()
-
-	local query = ( "UPDATE guth_ls SET XP = %d, LVL = %d WHERE SteamID = %s" ):format( xp, level, SQLStr( self:SteamID() ) )
-	guthlevelsystem.Query( query, function( success, message, data )
-		if not success then
-			return guthlevelsystem.error( "failed while saving data on %q : %s", self:GetName(), message )
-		end
-
-		guthlevelsystem.print( "data has been saved on %q", self:Name() ) 
-		hook.Run( "guthlevelsystem:OnPlayerSaveData", self, silent )
+	timer.Create( "guthlevelsystem:save_data:" .. ( self:SteamID64() or "N/A" ), 1, 1, function()  --  prevent multiple saving at once
+		local xp = self:gls_get_xp()
+		local level = self:gls_get_level()
+	
+		local query = ( "UPDATE guth_ls SET XP = %d, LVL = %d WHERE SteamID = %s" ):format( xp, level, SQLStr( self:SteamID() ) )
+		guthlevelsystem.Query( query, function( success, message, data )
+			if not success then
+				return guthlevelsystem.error( "failed while saving data on %q : %s", self:GetName(), message )
+			end
+	
+			guthlevelsystem.debug_print( "data has been saved on %q (%s)", self:GetName(), self:SteamID() ) 
+			hook.Run( "guthlevelsystem:on_player_save_data", self )
+		end )
 	end )
 end
 
@@ -43,7 +45,7 @@ function PLAYER:gls_load_data()
 		self:gls_set_raw_xp( tonumber( data[1].XP ) )
 		self:gls_update_nxp()
 
-		guthlevelsystem.print( "data has been loaded on %q", self:Name() )
+		guthlevelsystem.print( "data has been loaded on %q", self:GetName() )
 	end )
 end
 
@@ -60,115 +62,54 @@ function PLAYER:gls_reset_data()
 		end
 
 		self:gls_init_data()
-
-		hook.Run( "guthlevelsystem:OnPlayerResetData", self )
+		hook.Run( "guthlevelsystem:on_player_reset_data", self )
 	end )
 end
 
 --  raw setter
 function PLAYER:gls_set_raw_level( level )
-	self:SetNWInt( "guthlevelsystem:LVL", level )
+	self:SetNWInt( "guthlevelsystem:level", math.Round( level ) )
 end
 
 function PLAYER:gls_set_raw_xp( xp )
-	self:SetNWInt( "guthlevelsystem:XP", xp )
+	self:SetNWInt( "guthlevelsystem:xp", math.Round( xp ) )
 end
 
 function PLAYER:gls_set_raw_nxp( nxp )
-	self:SetNWInt( "guthlevelsystem:NXP", nxp )
+	self:SetNWInt( "guthlevelsystem:nxp", math.Round( nxp ) )
 end
 
 --  XP
 function PLAYER:gls_get_xp_multiplier()
-	local mul = 1
+	local multiplier = 1
 
 	--  rank xp multiplier
 	if guthlevelsystem.RankXPMultipliers[self:GetUserGroup()] then
-		mul = mul * guthlevelsystem.RankXPMultipliers[self:GetUserGroup()]
+		multiplier = multiplier * guthlevelsystem.RankXPMultipliers[self:GetUserGroup()]
 	end
 
 	--  team xp multiplier
 	if guthlevelsystem.TeamXPMultipliers[self:Team()] then
-		mul = mul * guthlevelsystem.TeamXPMultipliers[self:Team()]
+		multiplier = multiplier * guthlevelsystem.TeamXPMultipliers[self:Team()]
 	end
+
+	--  custom multiplier (not cumulable!)
+	multiplier = multiplier * ( hook.Run( "guthlevelsystem:custom_xp_multiplier", self, mul ) or 1 )
 	
-	return mul
+	return multiplier
 end
 
 function PLAYER:gls_update_nxp()
 	self:gls_set_raw_nxp( guthlevelsystem.NXPFormula( self, self:gls_get_level() ) )
 end
 
-function PLAYER:gls_add_xp( num, is_silent )
-	--  apply xp multiplier
-	local multiplier = self:gls_get_xp_multiplier()
-	num = math.Round( num * multiplier )
-
-	local diff_level, diff_xp = self:gls_set_xp( self:gls_get_xp() + num, true )
-
-	--  notify w/ multiplier
-	if not is_silent then
-		self:gls_default_notify_level( diff_level )
-		self:gls_default_notify_xp( diff_xp, multiplier )
-	end
-
-	return diff_level, diff_xp
-	--[[ if not isnumber( num ) then return end
-
-	if self:gls_get_level() == -1 then self:gls_reset_data() end
-	if self:gls_get_level() >= guthlevelsystem.MaximumLevel then return end
-
-	--  apply rank xp multiplier
-	local multiplier = self:gls_get_xp_multiplier()
-	num = math.Round( num * multiplier )
-
-	local should = hook.Run( "guthlevelsystem:ShouldPlayerAddXP", self, num, silent, byPlaying )
-	if should == false then return end
-
-	self.LSxp = ( self.LSxp or 0 ) + num
-	if self.LSxp >= ( self.LSnxp or 0 ) then
-		local dif = ( self.LSnxp or 0 ) - self.LSxp
-		--print( self.LSnxp, self.LSxp, dif )
-
-		self:gls_add_level( 1, silent )
-
-		if dif < 0 then
-			timer.Simple( .5, function()
-				if not IsValid( self ) then return end
-				self:gls_add_xp( -dif )
-			end)
-		end
-		return
-	end
-
-	self:gls_save_data()
-
-	if not silent then
-		local notif = byPlaying and guthlevelsystem.NotificationXPPlaying or guthlevelsystem.NotificationXP
-
-		self:gls_notify( 
-			guthlevelsystem.format_message( notif, { 
-				xp = num,
-				multiplier = not ( multiplier == 1 ) and ( "(x%s)" ):format( multiplier ) or "",
-			} ), 0, guthlevelsystem.NotificationSoundXP 
-		)
-	end
-
-	hook.Run( "guthlevelsystem:OnPlayerAddXP", self, num, silent, byPlaying ) ]]
-end
-
-
-
 function PLAYER:gls_set_xp( num, is_silent )
 	local level = self:gls_get_level()
 	if level >= guthlevelsystem.MaximumLevel then return end
 
-	--[[ local should = hook.Run( "guthlevelsystem:ShouldPlayerSetXP", self, num )
-	if should == false then return end ]]
-
 	local nxp = self:gls_get_nxp()
 	local xp, level = num, level
-
+	
 	--  decrease
 	if xp <= 0 then
 		while ( xp <= 0 ) do
@@ -184,49 +125,69 @@ function PLAYER:gls_set_xp( num, is_silent )
 			nxp = guthlevelsystem.NXPFormula( self, level )
 		end
 	end
-
+	
 	local diff_level, diff_xp = level - self:gls_get_level(), math.Round( num - self:gls_get_xp() ) 
+
+	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, diff_xp )
+	if should == false then return end
+
 	self:gls_set_raw_level( level )
 	self:gls_set_raw_xp( xp )
 	self:gls_set_raw_nxp( nxp )
-
+	
 	self:gls_save_data()
-
+	
 	--  notify
 	if not is_silent then
 		self:gls_default_notify_level( diff_level )
 		self:gls_default_notify_xp( diff_xp, 1 )
 	end
 
-	--[[ hook.Run( "guthlevelsystem:OnPlayerSetXP", self, num ) ]]
+	hook.Run( "guthlevelsystem:on_player_earn", self, diff_level, diff_xp )
 	return diff_level, diff_xp
 end
 
+function PLAYER:gls_add_xp( num, is_silent )
+	--  apply xp multiplier
+	local multiplier = self:gls_get_xp_multiplier()
+	num = math.Round( num * multiplier )
 
----  Level
+	local diff_level, diff_xp = self:gls_set_xp( self:gls_get_xp() + num, true )
+
+	--  notify w/ multiplier
+	if not is_silent and diff_level and diff_xp then
+		self:gls_default_notify_level( diff_level )
+		self:gls_default_notify_xp( diff_xp, multiplier )
+	end
+
+	return diff_level, diff_xp
+end
+
+--  Level
+function PLAYER:gls_set_level( num, is_silent )
+	local diff_level = num - self:gls_get_level()
+
+	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, 0 )
+	if should == false then return end
+
+	self:gls_set_raw_level( math.Clamp( num, 1, guthlevelsystem.MaximumLevel ) )
+	self:gls_set_raw_xp( 0 )
+	self:gls_update_nxp()
+	
+	self:gls_save_data()
+	
+	if not is_silent then
+		self:gls_default_notify_level( diff_level )
+	end
+	
+	hook.Run( "guthlevelsystem:on_player_earn", self, diff_level, 0 )
+end
+
 function PLAYER:gls_add_level( num, is_silent )
 	return self:gls_set_level( self:gls_get_level() + num, is_silent )
 end
 
-function PLAYER:gls_set_level( num )
-	--[[ local should = hook.Run( "guthlevelsystem:ShouldPlayerSetLVL", self, num, silent )
-	if should == false then return end ]]
-
-	local diff_level = num - self:gls_get_level()
-	self:gls_set_raw_level( math.Clamp( num, 1, guthlevelsystem.MaximumLevel ) )
-	self:gls_set_raw_xp( 0 )
-	self:gls_update_nxp()
-
-	self:gls_save_data()
-
-	if not is_silent then
-		self:gls_default_notify_level( diff_level )
-	end
-
-	return diff_level
-	--[[ hook.Run( "guthlevelsystem:OnPlayerSetLVL", self, num, silent ) ]]
-end
-
+--  notifications
 function PLAYER:gls_notify( msg, type, snd )
 	net.Start( "guthlevelsystem:notify" )
 		net.WriteString( msg or "" )

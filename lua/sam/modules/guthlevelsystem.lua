@@ -65,7 +65,7 @@ sam.command.new( "gls_add_level" )
 		default = 1,
 	} )
 
-	:Help( "Add LVL to a specified player." )
+	:Help( "Add level to a specified player." )
 
 	:OnExecute( function( ply, targets, level )
 		targets[1]:gls_add_level( level )
@@ -91,13 +91,13 @@ sam.command.new( "gls_set_level" )
 		default = 1,
 	} )
 
-	:Help( "Set LVL to a specified player." )
+	:Help( "Set level to a specified player." )
 
 	:OnExecute( function( ply, targets, level )
 		targets[1]:gls_set_level( level )
 
 		if sam.is_command_silent then return end
-		sam.player.send_message( nil, "{A} set {T} to LVL {V}!", {
+		sam.player.send_message( nil, "{A} set {T} to level {V}!", {
 			A = ply,
 			V = level,
 			T = targets,

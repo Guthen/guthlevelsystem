@@ -26,7 +26,7 @@ end, {
 	{ xAdmin.ARG_NUM, xAdmin.GetLanguageString( "amount" ) },
 } )
 
-xAdmin.RegisterCommand( "gls_add_level", "Add LVL", "Add LVL to a specified player", "%s add %d LVL to %s", CATEGORY_NAME, function( admin, args )
+xAdmin.RegisterCommand( "gls_add_level", "Add level", "Add level to a specified player", "%s add %d level to %s", CATEGORY_NAME, function( admin, args )
 	local targets = xAdmin.GetTargetsFromArg( admin, "gls_add_level", args[1] )
 	local amount = tonumber( args[2] )
 
@@ -78,7 +78,7 @@ end, {
 	{ xAdmin.ARG_NUM, xAdmin.GetLanguageString( "amount" ) },
 } )
 
-xAdmin.RegisterCommand( "gls_set_level", "Set LVL", "Set LVL to a specified player", "%s set %s to LVL %d", CATEGORY_NAME, function( admin, args )
+xAdmin.RegisterCommand( "gls_set_level", "Set level", "Set level to a specified player", "%s set %s to level %d", CATEGORY_NAME, function( admin, args )
 	local targets = xAdmin.GetTargetsFromArg( admin, "gls_set_level", args[1] )
 	local amount = tonumber( args[2] )
 

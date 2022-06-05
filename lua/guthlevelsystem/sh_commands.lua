@@ -26,7 +26,7 @@ concommand.Add( "guthlevelsystem_set_level", function( ply, _, args )
 		if SERVER then 
 			target:gls_set_level( level ) 
 		end
-		print( "GU-LS: " .. target:Name() .. " has been set to LVL " .. level )
+		print( "GU-LS: " .. target:Name() .. " has been set to level " .. level )
 	end
 end )
 
