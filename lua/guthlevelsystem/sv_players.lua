@@ -100,7 +100,19 @@ function PLAYER:gls_update_nxp()
 end
 
 function PLAYER:gls_add_xp( num, is_silent )
-	return self:gls_set_xp( self:gls_get_xp() + num, is_silent )
+	--  apply xp multiplier
+	local multiplier = self:gls_get_xp_multiplier()
+	num = math.Round( num * multiplier )
+
+	local diff_level, diff_xp = self:gls_set_xp( self:gls_get_xp() + num, true )
+
+	--  notify w/ multiplier
+	if not is_silent then
+		self:gls_default_notify_level( diff_level )
+		self:gls_default_notify_xp( diff_xp, multiplier )
+	end
+
+	return diff_level, diff_xp
 	--[[ if not isnumber( num ) then return end
 
 	if self:gls_get_level() == -1 then self:gls_reset_data() end
@@ -154,10 +166,6 @@ function PLAYER:gls_set_xp( num, is_silent )
 	--[[ local should = hook.Run( "guthlevelsystem:ShouldPlayerSetXP", self, num )
 	if should == false then return end ]]
 
-	--  apply xp multiplier
-	local multiplier = self:gls_get_xp_multiplier()
-	num = math.Round( num * multiplier )
-
 	local nxp = self:gls_get_nxp()
 	local xp, level = num, level
 
@@ -187,59 +195,36 @@ function PLAYER:gls_set_xp( num, is_silent )
 	--  notify
 	if not is_silent then
 		self:gls_default_notify_level( diff_level )
-		self:gls_default_notify_xp( diff_xp, multiplier )
+		self:gls_default_notify_xp( diff_xp, 1 )
 	end
 
-	--[[ self.LSxp = num
-	if self.LSxp >= ( self.LSnxp or 0 ) then
-		local dif = ( self.LSnxp or 0 ) - self.LSxp
-
-		self:gls_add_level( 1, silent )
-
-		if dif < 0 then
-			timer.Simple( .5, function()
-				if not IsValid( self ) then return end
-				self:gls_add_xp( -dif, silent )
-			end)
-		end
-		return
-	end ]]
-
-
 	--[[ hook.Run( "guthlevelsystem:OnPlayerSetXP", self, num ) ]]
-	return diff_level, diff_xp, multiplier
+	return diff_level, diff_xp
 end
 
 
 ---  Level
-function PLAYER:gls_add_level( num )
-	--[[ local should = hook.Run( "guthlevelsystem:ShouldPlayerAddLVL", self, num )
-	if should == false then return end ]]
-
-	self:gls_set_level( self:gls_get_level() + num )
-
-	--[[ if not silent then
-		self:gls_notify( guthlevelsystem.format_message( guthlevelsystem.NotificationLevel, { level = self:gls_get_level() } ), 0, guthlevelsystem.NotificationSoundLVL )
-	end
-
-	hook.Run( "guthlevelsystem:OnPlayerAddLVL", self, num ) ]]
+function PLAYER:gls_add_level( num, is_silent )
+	return self:gls_set_level( self:gls_get_level() + num, is_silent )
 end
 
 function PLAYER:gls_set_level( num )
 	--[[ local should = hook.Run( "guthlevelsystem:ShouldPlayerSetLVL", self, num, silent )
 	if should == false then return end ]]
 
+	local diff_level = num - self:gls_get_level()
 	self:gls_set_raw_level( math.Clamp( num, 1, guthlevelsystem.MaximumLevel ) )
 	self:gls_set_raw_xp( 0 )
 	self:gls_update_nxp()
 
 	self:gls_save_data()
 
-	--[[ if not silent then
-		self:gls_notify( guthlevelsystem.format_message( guthlevelsystem.NotificationLevel, { level = self:gls_get_level() } ), 0, guthlevelsystem.NotificationSoundLVL )
+	if not is_silent then
+		self:gls_default_notify_level( diff_level )
 	end
 
-	hook.Run( "guthlevelsystem:OnPlayerSetLVL", self, num, silent ) ]]
+	return diff_level
+	--[[ hook.Run( "guthlevelsystem:OnPlayerSetLVL", self, num, silent ) ]]
 end
 
 function PLAYER:gls_notify( msg, type, snd )
