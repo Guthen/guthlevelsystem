@@ -18,12 +18,12 @@ local config = {
 
 local _xp = 0
 return function( ply )
-    _xp = Lerp( FrameTime() * 5, _xp or 0, ply:GetNWInt( "guthlevelsystem:XP", 0 ) )
+    _xp = Lerp( FrameTime() * 5, _xp or 0, ply:gls_get_xp() )
 
-    local lvl = config.LevelText:format( ply:GetNWInt( "guthlevelsystem:LVL", 0 ) )
-    local xp = config.XPIsPercent and config.XPText:format( math.Round( _xp / ply:GetNWInt( "guthlevelsystem:NXP", 0 ) * 100 ) .. "%" ) 
-               or config.XPText:format( math.Round( _xp ) .. "/" .. ply:GetNWInt( "guthlevelsystem:NXP", 0 ) )
+    local level, nxp = ply:gls_get_level(), ply:gls_get_nxp()
+    local xp_text = config.XPIsPercent and config.XPText:format( math.Round( _xp / nxp * 100 ) .. "%" ) 
+               or config.XPText:format( math.Round( _xp ) .. "/" .. nxp )
 
-    draw.SimpleText( lvl, config.TextFont, config.LevelX, config.LevelY, color_white )
-    draw.SimpleText( xp, config.TextFont, config.XPX, config.XPY, color_white )
+    draw.SimpleText( config.LevelText:format( level ), config.TextFont, config.LevelX, config.LevelY, color_white )
+    draw.SimpleText( xp_text, config.TextFont, config.XPX, config.XPY, color_white )
 end

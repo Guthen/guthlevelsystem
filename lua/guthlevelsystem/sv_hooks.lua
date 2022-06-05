@@ -1,88 +1,86 @@
 guthlevelsystem = guthlevelsystem or {}
 
 hook.Add( "PlayerInitialSpawn", "guthlevelsystem:SetData", function( ply )
-    if ply:IsBot() then return end
+	if ply:IsBot() then return end
 
-    ply:LSGetData( function( success, message, data )
-        if not data or #data <= 0 then
-            ply:LSCreateData()
-        else
-            ply:LSLoadData()
-        end
-    end ) 
-end )
-
-hook.Add( "PlayerDisconnect", "guthlevelsystem:SaveData", function( ply )
-    if ply:IsBot() then return end
-
-    ply:LSSaveData()
-end)
-
-hook.Add( "ShutDown", "guthlevelsystem:SaveData", function()
-    if not sql.TableExists( "guth_ls" ) then return end
-    for _, v in pairs( player.GetHumans() ) do
-        v:LSSaveData()
-    end
+	ply:gls_get_data( function( success, message, data )
+		if not data or #data <= 0 then
+			ply:gls_init_data()
+		else
+			ply:gls_load_data()
+		end
+	end ) 
 end )
 
 --  Earn XP
 if guthlevelsystem.OnNPCKilledEarnXP then
-    hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg, take )
-        if ( not ent:IsNPC() and not ent:IsNextBot() ) then return end
+	hook.Add( "PostEntityTakeDamage", "guthlevelsystem:AddXP", function( ent, dmg, take )
+		if ( not ent:IsNPC() and not ent:IsNextBot() ) then return end
 
-        --  setup xp to earn
-        if guthlevelsystem.OnNPCKilledXP == -1 and not ent.guthlevelsystem_max_health then
-            ent.guthlevelsystem_max_health = ent:GetMaxHealth() >= ent:Health() and ent:GetMaxHealth() or ent:Health() + dmg:GetDamage()
-        end
-        if ent:Health() > 0 or ent.guthlevelsystem_took then return end
+		--  setup xp to earn
+		if guthlevelsystem.OnNPCKilledXP == -1 and not ent.guthlevelsystem_max_health then
+			ent.guthlevelsystem_max_health = ent:GetMaxHealth() >= ent:Health() and ent:GetMaxHealth() or ent:Health() + dmg:GetDamage()
+		end
+		if ent:Health() > 0 or ent.guthlevelsystem_took then return end
 
-        local ply = dmg:GetAttacker()
-        if not IsValid( ply ) or not ply:IsPlayer() then return end
+		local ply = dmg:GetAttacker()
+		if not IsValid( ply ) or not ply:IsPlayer() then return end
 
-        local xp = guthlevelsystem.OnNPCKilledXP == -1 and ent.guthlevelsystem_max_health or guthlevelsystem.OnNPCKilledXP
-        ply:LSAddXP( xp )
-        ent.guthlevelsystem_took = true
-    end )
+		local xp = guthlevelsystem.OnNPCKilledXP == -1 and ent.guthlevelsystem_max_health or guthlevelsystem.OnNPCKilledXP
+		ply:gls_add_xp( xp )
+		ent.guthlevelsystem_took = true
+	end )
 end
 
 hook.Add( "PlayerDeath", "guthlevelsystem:AddXP", function( ply, _, atk )
-    if not IsValid( atk ) or not atk:IsPlayer() then return end
-    if ply == atk then return end
+	if not IsValid( atk ) or not atk:IsPlayer() then return end
+	if ply == atk then return end
 
-    local xp = guthlevelsystem.PlayerDeathXP or 100
-    atk:LSAddXP( xp )
+	local xp = guthlevelsystem.PlayerDeathXP or 100
+	atk:gls_add_xp( xp )
 end )
 if not guthlevelsystem.PlayerDeathEarnXP then hook.Remove( "PlayerDeath", "guthlevelsystem:AddXP" ) end
 
 if guthlevelsystem.ByPlayingEarnXP then
-    timer.Create( "guthlevelsystem:ByPlayingXP", guthlevelsystem.ByPlayingTimer, 0, function()
-        for _, v in pairs( player.GetHumans() ) do
-            local m = hook.Run( "guthlevelsystem:OnPlayerAddByPlayingXP", v, guthlevelsystem.ByPlayingXP )
-            v:LSAddXP( isnumber( m ) and m or guthlevelsystem.ByPlayingXP, nil, true )
-        end
-    end )
+	timer.Create( "guthlevelsystem:ByPlayingXP", guthlevelsystem.ByPlayingTimer, 0, function()
+		for _, v in pairs( player.GetHumans() ) do
+			local m = hook.Run( "guthlevelsystem:OnPlayerAddByPlayingXP", v, guthlevelsystem.ByPlayingXP )
+			local diff_level, diff_xp, multiplier = v:gls_add_xp( isnumber( m ) and m or guthlevelsystem.ByPlayingXP, true )
+			if diff_level and diff_xp and multiplier then
+				v:gls_default_notify_level( diff_level ) 
+				v:gls_notify( 
+					guthlevelsystem.format_message( guthlevelsystem.NotificationXPPlaying, {
+						xp = diff_xp,
+						multiplier = guthlevelsystem.format_multiplier( multiplier ),
+					} ),
+					0,
+					guthlevelsystem.NotificationSoundXP
+				)
+			end
+		end
+	end )
 end
 
 hook.Add( "PlayerGiveSWEP", "!!!guthlevelsystem:GiveSWEPsRequiredLevels", function( ply, class, swep )
-    local required_level = guthlevelsystem.GiveSWEPsRequiredLevels[class]
-    if required_level and ply:LSGetLVL() >= required_level then
-        return true
-    end
+	local required_level = guthlevelsystem.GiveSWEPsRequiredLevels[class]
+	if required_level and ply:gls_get_level() >= required_level then
+		return true
+	end
 end )
 
 --  DarkRP
 hook.Add( "playerCanChangeTeam", "guthlevelsystem:CanChangeJob", function( ply, job )
-     if ply:IsPlayer() then
-        local lvl = RPExtraTeams[job].LSlvl
+	 if ply:IsPlayer() then
+		local level = RPExtraTeams[job].LSlvl
 
-        if lvl then
-            if ply:LSGetLVL() < lvl then
-                return false, 
-                    guthlevelsystem.FormatMessage( guthlevelsystem.NotificationJob, {
-                        lvl = lvl, 
-                        job = team.GetName( job )
-                    } )
-            end
-        end
-     end
+		if level then
+			if ply:gls_get_level() < level then
+				return false, 
+					guthlevelsystem.format_message( guthlevelsystem.NotificationJob, {
+						level = level, 
+						job = team.GetName( job )
+					} )
+			end
+		end
+	 end
 end )

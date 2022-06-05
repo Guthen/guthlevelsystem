@@ -2,108 +2,108 @@ if SAM_LOADED then return end
 
 sam.command.set_category( "guthlevelsystem" )
 
-sam.command.new( "lsaddxp" )
-    :SetPermission( "lsaddxp", "superadmin" )
+sam.command.new( "gls_add_xp" )
+	:SetPermission( "gls_add_xp", "superadmin" )
 
-    :AddArg( "player", {
-        single_player = true,
-    } )
-    :AddArg( "number", {
-        hint = "xp",
-        default = 1,
-    } )
+	:AddArg( "player", {
+		single_player = true,
+	} )
+	:AddArg( "number", {
+		hint = "xp",
+		default = 1,
+	} )
 
-    :Help( "Add XP to a specified player." )
+	:Help( "Add XP to a specified player." )
 
-    :OnExecute( function( ply, targets, xp )
-        targets[1]:LSAddXP( xp )
+	:OnExecute( function( ply, targets, xp )
+		targets[1]:gls_add_xp( xp )
 
-        if sam.is_command_silent then return end
-	    sam.player.send_message( nil, "{A} add {V} XP to {T}!", {
-            A = ply,
-            V = xp,
-            T = targets,
-        } )
-    end )
+		if sam.is_command_silent then return end
+		sam.player.send_message( nil, "{A} add {V} XP to {T}!", {
+			A = ply,
+			V = xp,
+			T = targets,
+		} )
+	end )
 
-    :End()
+	:End()
 
-sam.command.new( "lssetxp" )
-    :SetPermission( "lssetxp", "superadmin" )
+sam.command.new( "gls_set_xp" )
+	:SetPermission( "gls_set_xp", "superadmin" )
 
-    :AddArg( "player", {
-        single_player = true,
-    } )
-    :AddArg( "number", {
-        hint = "xp",
-        default = 1,
-    } )
+	:AddArg( "player", {
+		single_player = true,
+	} )
+	:AddArg( "number", {
+		hint = "xp",
+		default = 1,
+	} )
 
-    :Help( "Set XP to a specified player." )
+	:Help( "Set XP to a specified player." )
 
-    :OnExecute( function( ply, targets, xp )
-        targets[1]:LSSetXP( xp )
+	:OnExecute( function( ply, targets, xp )
+		targets[1]:gls_set_xp( xp )
 
-        if sam.is_command_silent then return end
-	    sam.player.send_message( nil, "{A} set {T} to {V} XP!", {
-            A = ply,
-            V = xp,
-            T = targets,
-        } )
-    end )
+		if sam.is_command_silent then return end
+		sam.player.send_message( nil, "{A} set {T} to {V} XP!", {
+			A = ply,
+			V = xp,
+			T = targets,
+		} )
+	end )
 
-    :End()
+	:End()
 
-sam.command.new( "lsaddlvl" )
-    :SetPermission( "lsaddlvl", "superadmin" )
+sam.command.new( "gls_add_level" )
+	:SetPermission( "gls_add_level", "superadmin" )
 
-    :AddArg( "player", {
-        single_player = true,
-    } )
-    :AddArg( "number", {
-        hint = "lvl",
-        default = 1,
-    } )
+	:AddArg( "player", {
+		single_player = true,
+	} )
+	:AddArg( "number", {
+		hint = "level",
+		default = 1,
+	} )
 
-    :Help( "Add LVL to a specified player." )
+	:Help( "Add LVL to a specified player." )
 
-    :OnExecute( function( ply, targets, lvl )
-        targets[1]:LSAddLVL( lvl )
+	:OnExecute( function( ply, targets, level )
+		targets[1]:gls_add_level( level )
 
-        if sam.is_command_silent then return end
-	    sam.player.send_message( nil, "{A} set Level {V} to {T}!", {
-            A = ply,
-            V = lvl,
-            T = targets,
-        } )
-    end )
+		if sam.is_command_silent then return end
+		sam.player.send_message( nil, "{A} set Level {V} to {T}!", {
+			A = ply,
+			V = level,
+			T = targets,
+		} )
+	end )
 
-    :End()
+	:End()
 
-sam.command.new( "lssetlvl" )
-    :SetPermission( "lssetlvl", "superadmin" )
+sam.command.new( "gls_set_level" )
+	:SetPermission( "gls_set_level", "superadmin" )
 
-    :AddArg( "player", {
-        single_player = true,
-    } )
-    :AddArg( "number", {
-        hint = "lvl",
-        default = 1,
-    } )
+	:AddArg( "player", {
+		single_player = true,
+	} )
+	:AddArg( "number", {
+		hint = "level",
+		default = 1,
+	} )
 
-    :Help( "Set LVL to a specified player." )
+	:Help( "Set LVL to a specified player." )
 
-    :OnExecute( function( ply, targets, lvl )
-        targets[1]:LSSetLVL( lvl )
+	:OnExecute( function( ply, targets, level )
+		targets[1]:gls_set_level( level )
 
-        if sam.is_command_silent then return end
-        sam.player.send_message( nil, "{A} set {T} to LVL {V}!", {
-            A = ply,
-            V = lvl,
-            T = targets,
-        } )
-    end )
+		if sam.is_command_silent then return end
+		sam.player.send_message( nil, "{A} set {T} to LVL {V}!", {
+			A = ply,
+			V = level,
+			T = targets,
+		} )
+	end )
 
-    :End()
+	:End()
 
-print( "[guthlevelsystem] - SAM Module loaded succesfully" )
+guthlevelsystem.print( "sam module loaded!" )

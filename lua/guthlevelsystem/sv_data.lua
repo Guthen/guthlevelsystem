@@ -38,16 +38,16 @@ function guthlevelsystem.CreateDataTable()
             guthlevelsystem.DatabaseUser, guthlevelsystem.DatabasePassword, guthlevelsystem.DatabasePort, 
             function( success, message )
                 if not success then
-                    return guthlevelsystem.Notif( ( "Failed while connecting to database : %s (gSQL)" ):format( message ) )
+                    return guthlevelsystem.error( "failed while connecting to database: %s (gSQL)", message )
                 end
 
                 --  create database
                 timer.Simple( 0, function()  --  avoid indexing errors
                     db:query( query, {}, function( success, message, data )
                         if not success then
-                            return guthlevelsystem.Notif( ( "Failed while creating database : %s (gSQL)" ):format( message ) )
+                            return guthlevelsystem.error( "failed while creating database: %s (gSQL)", message )
                         end
-                        guthlevelsystem.Notif( "Database connection successfully established (gSQL)" )
+                        guthlevelsystem.print( "database connection successfully established (gSQL)" )
                     end )
                 end )
             end
@@ -55,18 +55,18 @@ function guthlevelsystem.CreateDataTable()
     --  sqlite
     else
         local result = sql.Query( query )
-        if result == false then return guthlevelsystem.Notif( "Failed while creating database : " .. sql.LastError() ) end
+        if result == false then return guthlevelsystem.error( "failed while creating database: " .. sql.LastError() ) end
         
-        guthlevelsystem.Notif( "Database connection successfully established" )
+        guthlevelsystem.print( "database connection successfully established" )
     end
 end
 
 function guthlevelsystem.DeleteDataTable()
     guthlevelsystem.Query( "DROP TABLE guth_ls", function( success, message, data )
         if not success then
-            return guthlevelsystem.Notif( ( "Failed while dropping database : %s" ):format( self:GetName(), message ) )
+            return guthlevelsystem.error( "failed while dropping database: %s", self:GetName(), message )
         end
 
-        guthlevelsystem.Notif( "Database has been dropped" )
+        guthlevelsystem.print( "database has been deleted" )
     end )
 end

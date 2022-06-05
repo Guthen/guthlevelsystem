@@ -21,4 +21,13 @@
 + **REMOVE** : `SaveOnTimer` config option & timer (see [#6](https://github.com/Guthen/guthlevelsystem/issues/6))
 
 ## v1.8.7 ─ Toggle HUD visibility through Client ConVar
+### 04/06/2022
 +  **ADD** : Client ConVar `guthlevelsystem_hud_enabled <1 or 0>` to toggle HUD visibility (see [#5](https://github.com/Guthen/guthlevelsystem/issues/5))
+
+### v2.0.0 ─ Code Refactoring & Prestige System
+### 04/06/2022
++  **ADD** : Github version checker
++  **UPDATE** : prints are now colored depending of the type of information (error, warning & info)
++  **UPDATE** : `guthlevelsystem_info` command has been renamed to `guthlevelsystem_about`
++  **CODE REFACTOR** : all functions names are now under **snake_case** naming convention
++  **CODE REFACTOR** : XP & Level setters functions are no longer recursive 

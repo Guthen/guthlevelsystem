@@ -11,7 +11,7 @@ local config = {
     BoxProgressCornerRadius = 6, --  radius of box's corners; 0: no corner
     BoxProgressColor = Color( 12, 234, 75, 150 ), --  color used in the progression box
     IsBoxProgressColorByTeam = false, --  do we set the progress color to the current player's team color?
-                                     --  please note that setting this to true will not take in account BoxProgressColor value 
+                                      --  please note that setting this to true will not take in account BoxProgressColor value 
 
     --  background box
     BoxBackgroundCornerRadius = 6, --  radius of box's corners; 0: no corner
@@ -21,6 +21,7 @@ local config = {
     TextPadding = 8, --  gap at left and right of both texts; default: 8px
     TextLevel = "Level %d", --  level text format; "%d" will be replaced with the level
     TextProgress = "%d%%", --  progress text format; "%d" will be replaced with the xp percent & "%%" will become automatically a "%"
+    TextIsProgress = false, 
     TextFont = "Trebuchet22", --  font of both texts, see https://wiki.facepunch.com/gmod/Default_Fonts for default fonts
     TextColor = Color( 255, 255, 255, 150 ), --  color of both texts
 }
@@ -36,12 +37,16 @@ local function lerp_color( t, a, b )
     return Color( Lerp( t, a.r, b.r ), Lerp( t, a.g, b.g ), Lerp( t, a.b, b.b ), Lerp( t, a.a, b.a ) )
 end
 
-local ratio, progress_color = 0, config.BoxProgressColor
+local progress_color = config.BoxProgressColor
+local xp = 0
 return function( ply )
     --  variables
     local x = ScrW() / 2 - config.BoxW / 2
-    ratio = Lerp( FrameTime() * config.SmoothSpeed, ratio, ply:GetNWInt( "guthlevelsystem:XP", 0 ) / ply:GetNWInt( "guthlevelsystem:NXP", 0 ) )
+    xp = Lerp( FrameTime() * config.SmoothSpeed, xp, ply:gls_get_xp() )
 
+    local nxp = ply:gls_get_nxp()
+    local ratio = xp / nxp
+    
     if config.IsBoxProgressColorByTeam then
         progress_color = lerp_color( FrameTime() * config.SmoothSpeed, progress_color, ColorAlpha( team.GetColor( ply:Team() ), progress_color.a ) )
     end
@@ -53,6 +58,7 @@ return function( ply )
     draw.RoundedBox( config.BoxProgressCornerRadius, x + config.BoxProgressPadding, config.BoxY + config.BoxProgressPadding, math.max( 0, config.BoxW * ratio - config.BoxProgressPadding * 2 ), config.BoxH - config.BoxProgressPadding * 2, progress_color )
 
     --  text
-    draw.SimpleText( config.TextLevel:format( ply:GetNWInt( "guthlevelsystem:LVL", 0 ) ), config.TextFont, x + config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
-    draw.SimpleText( config.TextProgress:format( ratio * 100 ), config.TextFont, x + config.BoxW - config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER )
+    local right_text = config.TextIsProgress and config.TextProgress:format( ratio * 100 ) or ( "%d/%d XP" ):format( xp, nxp )
+    draw.SimpleText( config.TextLevel:format( ply:gls_get_level() ), config.TextFont, x + config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
+    draw.SimpleText( right_text, config.TextFont, x + config.BoxW - config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER )
 end
