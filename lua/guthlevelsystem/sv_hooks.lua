@@ -76,6 +76,32 @@ hook.Add( "PlayerGiveSWEP", "!!!guthlevelsystem:give_swep_required_levels", func
 	end
 end )
 
+--  prestige
+hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_chat )
+	if text:StartWith( guthlevelsystem.PrestigeCommand ) then
+		local arg = text:Split( " " )[2]
+		
+		if arg == "y" or arg == "yes" then
+			if ply:gls_is_eligible_to_prestige() then
+				ply:gls_add_prestige( 1 )
+			else
+				ply:PrintMessage( HUD_PRINTTALK, "You are not eligible to earn a new prestige!" )
+			end
+		elseif arg == "reset" then
+			if ply:gls_get_level() == guthlevelsystem.MaximumLevel and ply:gls_get_prestige() == guthlevelsystem.MaximumPrestige then
+				ply:gls_set_prestige( 0 )
+				ply:PrintMessage( HUD_PRINTTALK, "Your progress have been resetted, have fun!" )
+			else
+				ply:PrintMessage( HUD_PRINTTALK, "You can only reset your progress when you are at maximum level and prestige!" )
+			end
+		else
+			ply:PrintMessage( HUD_PRINTTALK, ( "Earning a new prestige reset your Level & XP to zero but might gives you more opportunity on this server. Your are currently %s to enter to the next prestige." ):format( ply:gls_is_eligible_to_prestige() and "able (/prestige y)" or "unable" ) )
+		end
+		
+		return ""
+	end
+end )
+
 --  DarkRP job
 hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_job", function( ply, job )
 	 if IsValid( ply ) then

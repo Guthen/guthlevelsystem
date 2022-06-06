@@ -10,22 +10,33 @@ guthlevelsystem.MaximumLevel = 50
 guthlevelsystem.PrestigeEnabled = true
 --  Maximum Prestige that players can reach
 guthlevelsystem.MaximumPrestige = 12
+guthlevelsystem.PrestigeAlertMessage = "Congratulations, you reach the maximum level! You have unlocked the ability to gain a new prestige and to reset your progression by typing '{command}'. This decision is permanent, there is no come back!"
+guthlevelsystem.PrestigeCommand = "/prestige"
 
---  Base number scaled by the current level for the new Level 
+--  Base number scaled by the current level
 guthlevelsystem.NXBase = 400
 --  Multiplicator of the previous Level's Next XP 
 guthlevelsystem.NXPMultiplicator = .25
+--  Base number scaled by the current prestige
+guthlevelsystem.NXPPrestigeBase = 50
 --  Formula of the Next maximum XP to reach the next Level
---    By default, it's `player_level * guthlevelsystem.NXBase + player_previous_nxp * guthlevelsystem.NXPMultiplicator`
+--    By default, it's `level * guthlevelsystem.NXBase + previous_nxp * guthlevelsystem.NXPMultiplicator + prestige * guthlevelsystem.NXPPrestigeMultiplicator`
 --    NOTE: use `level` instead of `ply:gls_get_level()`, it's internally required! 
 guthlevelsystem.NXPFormula = function( ply, level )
 	local nxp = 0
-	
+
+	--  compute nxp considering all previous nxp 
 	for i = 1, level do
-		nxp = ( i * guthlevelsystem.NXBase + nxp * guthlevelsystem.NXPMultiplicator )
+		nxp = i * guthlevelsystem.NXBase + nxp * guthlevelsystem.NXPMultiplicator
 	end
 
-	return nxp
+	--  scale by prestige
+	local prestige = ply:gls_get_prestige()
+	if prestige > 0 then
+		nxp = nxp + prestige * guthlevelsystem.NXPPrestigeBase
+	end
+
+	return math.Round( nxp )
 end
 
 --  XP Multipliers for specific Ranks
@@ -54,6 +65,21 @@ guthlevelsystem.GiveSWEPsRequiredLevels = {
 	--["weapon_pistol"] = 5, --  'weapon_pistol' can only be given by players from at least level 5
 }
 
+--  The message sent to the player who earn prestige(s)
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - prestige: player's prestige
+guthlevelsystem.NotificationPrestige = "Congratulations, you get to prestige {prestige}!"
+--  The message sent to the player who earn level(s)
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - level: player's level
+guthlevelsystem.NotificationLevelEarn = "You get to level {level}, good job!"
+--  The message sent to the player who loss level(s)
+--    Arguments must be enclosed with '{}'
+--    Available arguments are:
+--    - level: player's level
+guthlevelsystem.NotificationLevelLoss = "You fell to level {level}, watch out!"
 --  The message sent to the player who earn XP by playing on the server
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:
@@ -72,16 +98,6 @@ guthlevelsystem.NotificationXPEarn = "You earn {xp} XP, work harder {multiplier}
 --    - xp: earned xp
 --    - multiplier: applied rank multiplier (if has any or nothing otherwise)  
 guthlevelsystem.NotificationXPLoss = "You loss {xp} XP, watch out {multiplier}!"
---  The message sent to the player who earn level(s)
---    Arguments must be enclosed with '{}'
---    Available arguments are:
---    - level: player's level
-guthlevelsystem.NotificationLevelEarn = "You get to level {level}, good job!"
---  The message sent to the player who loss level(s)
---    Arguments must be enclosed with '{}'
---    Available arguments are:
---    - level: player's level
-guthlevelsystem.NotificationLevelLoss = "You fell to level {level}, watch out!"
 --  (DarkRP) The message sent to the player who attempted to change teams but cannot (%d represent the required level and %s the job name)
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:

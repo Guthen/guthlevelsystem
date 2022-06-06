@@ -1,5 +1,9 @@
 local PLAYER = FindMetaTable( "Player" )
 
+function PLAYER:gls_get_prestige()
+    return self:GetNWInt( "guthlevelsystem:prestige", 0 )
+end
+
 function PLAYER:gls_get_level()
     return self:GetNWInt( "guthlevelsystem:level", 0 )
 end

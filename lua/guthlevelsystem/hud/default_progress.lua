@@ -19,6 +19,7 @@ local config = {
 
     --  texts
     TextPadding = 8, --  gap at left and right of both texts; default: 8px
+    TextPrestige = "Prestige %d", --  prestige text format, if `guthlevelsystem.PrestigeEnabled` is `true`; "%d" will be replaced with the prestige
     TextLevel = "Level %d", --  level text format; "%d" will be replaced with the level
     TextProgress = "%d%%", --  progress text format; "%d" will be replaced with the xp percent & "%%" will become automatically a "%"
     TextIsProgress = false, 
@@ -61,4 +62,9 @@ return function( ply )
     local right_text = config.TextIsProgress and config.TextProgress:format( ratio * 100 ) or ( "%d/%d XP" ):format( xp, nxp )
     draw.SimpleText( config.TextLevel:format( ply:gls_get_level() ), config.TextFont, x + config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
     draw.SimpleText( right_text, config.TextFont, x + config.BoxW - config.TextPadding, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER )
+
+    --  prestige
+    if guthlevelsystem.PrestigeEnabled then
+        draw.SimpleText( config.TextPrestige:format( ply:gls_get_prestige() ), config.TextFont, x + config.BoxW / 2, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    end
 end
