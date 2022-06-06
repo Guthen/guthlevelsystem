@@ -154,18 +154,20 @@ if SERVER then
 	util.AddNetworkString( "guthlevelsystem:notify" )
 
 	guthlevelsystem.load_file( "guthlevelsystem/sv_data.lua" )
-	guthlevelsystem.CreateDataTable()
-
+	
 	guthlevelsystem.load_file( "guthlevelsystem/sv_players.lua" )
 	guthlevelsystem.load_file( "guthlevelsystem/sv_hooks.lua" )
-
+	
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
-
+	
 	--  sending huds files
 	local path = "guthlevelsystem/hud/"
 	for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
 		guthlevelsystem.load_file( path .. v, "cl_" )
 	end
+
+	--  init database
+	guthlevelsystem.init_data_table()
 else
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
 
@@ -178,6 +180,6 @@ else
 		notification.AddLegacy( msg, type, 3 )
 	end )
 end
-hook.Run( "guthlevelsystem:OnLoaded" )
+hook.Run( "guthlevelsystem:on_loaded" )
 
 guthlevelsystem.print( "v%s loaded; type 'guthlevelsystem_about' for more informations on this addon.", guthlevelsystem.Version )

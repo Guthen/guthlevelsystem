@@ -2,8 +2,8 @@ local PLAYER = FindMetaTable( "Player" )
 
 -- data
 function PLAYER:gls_init_data()
-	local query = ( "INSERT INTO guth_ls( SteamID, XP, LVL ) VALUES ( %s, 0, 1 )" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.Query( query, function( success, message, data )
+	local query = ( "INSERT INTO guthlevelsystem_players( steamid, xp, lvl, prestige ) VALUES ( %s, 0, 1, 0 )" ):format( SQLStr( self:SteamID() ) )
+	guthlevelsystem.query( query, function( success, message, data )
 		if not success then
 			return guthlevelsystem.error( "failed while creating data on %q: %s", self:GetName(), message )
 		end
@@ -21,9 +21,10 @@ function PLAYER:gls_save_data()
 	timer.Create( "guthlevelsystem:save_data:" .. ( self:SteamID64() or "N/A" ), 1, 1, function()  --  prevent multiple saving at once
 		local xp = self:gls_get_xp()
 		local level = self:gls_get_level()
+		local prestige = 0 --  TODO
 	
-		local query = ( "UPDATE guth_ls SET XP = %d, LVL = %d WHERE SteamID = %s" ):format( xp, level, SQLStr( self:SteamID() ) )
-		guthlevelsystem.Query( query, function( success, message, data )
+		local query = ( "UPDATE guthlevelsystem_players SET xp = %d, lvl = %d, prestige = %d WHERE steamid = %s" ):format( xp, level, prestige, SQLStr( self:SteamID() ) )
+		guthlevelsystem.query( query, function( success, message, data )
 			if not success then
 				return guthlevelsystem.error( "failed while saving data on %q : %s", self:GetName(), message )
 			end
@@ -35,14 +36,15 @@ function PLAYER:gls_save_data()
 end
 
 function PLAYER:gls_load_data()
-	local query = ( "SELECT XP, LVL FROM guth_ls WHERE SteamID = %s" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.Query( query, function( success, message, data )
+	local query = ( "SELECT xp, lvl, prestige FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( self:SteamID() ) )
+	guthlevelsystem.query( query, function( success, message, data )
 		if not success or not data or #data <= 0 then
 			return not data and guthlevelsystem.error( "failed while loading data on %q : %s", self:GetName(), message )
 		end
 
-		self:gls_set_raw_level( tonumber( data[1].LVL ), true )
-		self:gls_set_raw_xp( tonumber( data[1].XP ) )
+		self:gls_set_raw_level( tonumber( data[1].lvl ), true )
+		self:gls_set_raw_xp( tonumber( data[1].xp ) )
+		--self:gls_set_raw_prestige( tonumber( data[1].prestige )) --  TODO
 		self:gls_update_nxp()
 
 		guthlevelsystem.print( "data has been loaded on %q", self:GetName() )
@@ -50,13 +52,13 @@ function PLAYER:gls_load_data()
 end
 
 function PLAYER:gls_get_data( callback )
-	local query = ( "SELECT * FROM guth_ls WHERE SteamID = %s" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.Query( query, callback )
+	local query = ( "SELECT * FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( self:SteamID() ) )
+	guthlevelsystem.query( query, callback )
 end
 
 function PLAYER:gls_reset_data()
-	local query = ( "DELETE FROM guth_ls WHERE SteamID='%s'" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.Query( query, function( success, message, data )
+	local query = ( "DELETE FROM guthlevelsystem_players WHERE steamid='%s'" ):format( SQLStr( self:SteamID() ) )
+	guthlevelsystem.query( query, function( success, message, data )
 		if not success then
 			return guthlevelsystem.error( "failed while reseting data on %q : %s", self:GetName(), message )
 		end

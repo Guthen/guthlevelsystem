@@ -16,6 +16,7 @@ guthlevelsystem.NXBase = 400
 --  Multiplicator of the previous Level's Next XP 
 guthlevelsystem.NXPMultiplicator = .25
 --  Formula of the Next maximum XP to reach the next Level
+--    By default, it's `player_level * guthlevelsystem.NXBase + player_previous_nxp * guthlevelsystem.NXPMultiplicator`
 --    NOTE: use `level` instead of `ply:gls_get_level()`, it's internally required! 
 guthlevelsystem.NXPFormula = function( ply, level )
 	local nxp = 0

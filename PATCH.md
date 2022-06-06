@@ -27,9 +27,12 @@
 ### v2.0.0 ─ Code Refactoring & Prestige System
 ### 04/06/2022
 +  **ADD** : Github Version Checker
-+  **ADD** : DarkRP Job support for variable `level` 
-+  **UPDATE** : XP 'Earn by Events' Configuration are now editable functions instead of numbers
 +  **UPDATE** : prints are now colored depending of the type of information (error, warning, debug & info)
 +  **UPDATE** : `guthlevelsystem_info` command has been renamed to `guthlevelsystem_about`
 +  **CODE REFACTOR** : all functions names are now under **snake_case** naming convention
 +  **CODE REFACTOR** : XP & Level setters functions are no longer recursive 
+### 05/06/2022
++  **ADD** : DarkRP Job support for variable `level` 
++  **UPDATE** : XP 'Earn by Events' Configuration are now editable functions instead of numbers
+### 06/06/2022
++  **ADD** : SQL Database Migrations for Prestige system
