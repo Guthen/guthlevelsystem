@@ -45,7 +45,7 @@ return function( ply )
     xp = Lerp( FrameTime() * config.SmoothSpeed, xp, ply:gls_get_xp() )
 
     local nxp = ply:gls_get_nxp()
-    local ratio = xp / nxp
+    local ratio = math.Clamp( xp / nxp, 0, 1 )
     
     if config.IsBoxProgressColorByTeam then
         progress_color = lerp_color( FrameTime() * config.SmoothSpeed, progress_color, ColorAlpha( team.GetColor( ply:Team() ), progress_color.a ) )
