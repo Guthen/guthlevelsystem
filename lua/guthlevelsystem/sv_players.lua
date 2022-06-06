@@ -105,7 +105,7 @@ end
 
 function PLAYER:gls_set_xp( num, is_silent )
 	local level = self:gls_get_level()
-	if level >= guthlevelsystem.MaximumLevel then return end
+	if num >= 0 and level >= guthlevelsystem.MaximumLevel then return end
 
 	local nxp = self:gls_get_nxp()
 	local xp, level = num, level
@@ -116,6 +116,13 @@ function PLAYER:gls_set_xp( num, is_silent )
 			level = level - 1
 			nxp = guthlevelsystem.NXPFormula( self, level )
 			xp = xp + nxp
+			
+			--  limit
+			if level <= 1 then
+				level = 1  --  avoid level 0 
+				xp = 0
+				break
+			end
 		end
 	--  increase
 	else
@@ -123,6 +130,12 @@ function PLAYER:gls_set_xp( num, is_silent )
 			level = level + 1
 			xp = xp - nxp
 			nxp = guthlevelsystem.NXPFormula( self, level )
+			
+			--  limit
+			if level >= guthlevelsystem.MaximumLevel then
+				xp = 0
+				break
+			end
 		end
 	end
 	
@@ -135,6 +148,7 @@ function PLAYER:gls_set_xp( num, is_silent )
 	self:gls_set_raw_xp( xp )
 	self:gls_set_raw_nxp( nxp )
 	
+	guthlevelsystem.debug_print( "%q (%s) earned %d level(s) and %d XP", self:GetName(), self:SteamID(), diff_level, diff_xp )
 	self:gls_save_data()
 	
 	--  notify
@@ -160,7 +174,7 @@ function PLAYER:gls_add_xp( num, is_silent )
 		self:gls_default_notify_xp( diff_xp, multiplier )
 	end
 
-	return diff_level, diff_xp
+	return diff_level, diff_xp, multiplier
 end
 
 --  Level
@@ -174,6 +188,7 @@ function PLAYER:gls_set_level( num, is_silent )
 	self:gls_set_raw_xp( 0 )
 	self:gls_update_nxp()
 	
+	guthlevelsystem.debug_print( "%q (%s) earned %d level(s)", self:GetName(), self:SteamID(), diff_level )
 	self:gls_save_data()
 	
 	if not is_silent then

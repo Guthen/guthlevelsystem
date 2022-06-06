@@ -3,6 +3,11 @@ guthlevelsystem = guthlevelsystem or {}
 ---  Level System Configuration
 --  Maximum Level that players can reach
 guthlevelsystem.MaximumLevel = 50
+
+--  Is Prestige system enabled?
+--   The prestige system is similar to Call of Duty franchise, once a player reach the maximum level, he is able to claim a new prestige
+--   Doing so, the player's Level will be reset to Level 1. He can do so until he reach the maximum prestige.
+guthlevelsystem.PrestigeEnabled = true
 --  Maximum Prestige that players can reach
 guthlevelsystem.MaximumPrestige = 12
 
@@ -13,11 +18,13 @@ guthlevelsystem.NXPMultiplicator = .25
 --  Formula of the Next maximum XP to reach the next Level
 --    NOTE: use `level` instead of `ply:gls_get_level()`, it's internally required! 
 guthlevelsystem.NXPFormula = function( ply, level )
-	--  recursive function!
-	if level == 0 then
-		return 0
+	local nxp = 0
+	
+	for i = 1, level do
+		nxp = ( i * guthlevelsystem.NXBase + nxp * guthlevelsystem.NXPMultiplicator )
 	end
-	return level * guthlevelsystem.NXBase + guthlevelsystem.NXPFormula( ply, level - 1 ) * guthlevelsystem.NXPMultiplicator
+
+	return nxp
 end
 
 --  XP Multipliers for specific Ranks
