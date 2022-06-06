@@ -14,7 +14,7 @@ hook.Add( "PlayerInitialSpawn", "guthlevelsystem:set_data", function( ply )
 end )
 
 --  earn xp on npc kill
-if guthlevelsystem.OnNPCKilledEarnXP then
+if guthlevelsystem.settings.event_npc_kill.enabled then
 	hook.Add( "PostEntityTakeDamage", "guthlevelsystem:add_xp", function( ent, dmg, take )
 		if ( not ent:IsNPC() and not ent:IsNextBot() ) then return end
 
@@ -27,7 +27,7 @@ if guthlevelsystem.OnNPCKilledEarnXP then
 		local ply = dmg:GetAttacker()
 		if not IsValid( ply ) or not ply:IsPlayer() then return end
 
-		ply:gls_add_xp( guthlevelsystem.NPCKilledXPFormula( npc, ent.guthlevelsystem_max_health ) )
+		ply:gls_add_xp( guthlevelsystem.settings.event_npc_kill.formula( npc, ent.guthlevelsystem_max_health ) )
 		ent.guthlevelsystem_took = true
 	end )
 else
@@ -35,31 +35,31 @@ else
 end
 
 --  earn xp on player kill
-if guthlevelsystem.PlayerKillEarnXP then 
+if guthlevelsystem.settings.event_player_kill.enabled then 
 	hook.Add( "PlayerDeath", "guthlevelsystem:add_xp", function( ply, _, atk )
 		if not IsValid( atk ) or not atk:IsPlayer() then return end
 		if ply == atk then return end
 
-		atk:gls_add_xp( guthlevelsystem.PlayerKillXPFormula( ply ) )
+		atk:gls_add_xp( guthlevelsystem.settings.event_player_kill.formula( ply ) )
 	end )
 else
 	hook.Remove( "PlayerDeath", "guthlevelsystem:add_xp" ) 
 end
 
 --  earn xp while playing
-if guthlevelsystem.ByPlayingEarnXP then
-	timer.Create( "guthlevelsystem:by_playing_xp", guthlevelsystem.ByPlayingTimer, 0, function()
+if guthlevelsystem.settings.event_time_playing.enabled then
+	timer.Create( "guthlevelsystem:by_playing_xp", guthlevelsystem.settings.event_time_playing.interval, 0, function()
 		for _, v in pairs( player.GetHumans() ) do
-			local diff_level, diff_xp, multiplier = v:gls_add_xp( guthlevelsystem.ByPlayingXPFormula( v ), true )
+			local diff_level, diff_xp, multiplier = v:gls_add_xp( guthlevelsystem.settings.event_time_playing.formula( v ), true )
 			if diff_level and diff_xp and multiplier then
 				v:gls_default_notify_level( diff_level ) 
 				v:gls_notify( 
-					guthlevelsystem.format_message( guthlevelsystem.NotificationXPPlaying, {
+					guthlevelsystem.format_message( guthlevelsystem.settings.event_time_playing.earn_notification, {
 						xp = diff_xp,
 						multiplier = guthlevelsystem.format_multiplier( multiplier ),
 					} ),
 					0,
-					guthlevelsystem.NotificationSoundXP
+					guthlevelsystem.settings.sound_notification_xp
 				)
 			end
 		end
@@ -70,7 +70,7 @@ end
 
 --  give sweps
 hook.Add( "PlayerGiveSWEP", "!!!guthlevelsystem:give_swep_required_levels", function( ply, class, swep )
-	local required_level = guthlevelsystem.GiveSWEPsRequiredLevels[class]
+	local required_level = guthlevelsystem.settings.give_sweps_required_levels[class]
 	if required_level and ply:gls_get_level() >= required_level then
 		return true
 	end
@@ -78,7 +78,7 @@ end )
 
 --  prestige
 hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_chat )
-	if text:StartWith( guthlevelsystem.PrestigeCommand ) then
+	if text:StartWith( guthlevelsystem.settings.prestige.command ) then
 		local arg = text:Split( " " )[2]
 		
 		if arg == "y" or arg == "yes" then
@@ -88,7 +88,7 @@ hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_
 				ply:PrintMessage( HUD_PRINTTALK, "You are not eligible to earn a new prestige!" )
 			end
 		elseif arg == "reset" then
-			if ply:gls_get_level() == guthlevelsystem.MaximumLevel and ply:gls_get_prestige() == guthlevelsystem.MaximumPrestige then
+			if ply:gls_get_level() == guthlevelsystem.settings.maximum_level and ply:gls_get_prestige() == guthlevelsystem.settings.prestige.maximum_prestige then
 				ply:gls_set_prestige( 0 )
 				ply:PrintMessage( HUD_PRINTTALK, "Your progress have been resetted, have fun!" )
 			else
@@ -109,7 +109,7 @@ hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_job", function( ply
 		if level then
 			if ply:gls_get_level() < level then
 				return false, 
-					guthlevelsystem.format_message( guthlevelsystem.NotificationJob, {
+					guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_job, {
 						level = level, 
 						job = team.GetName( job )
 					} )

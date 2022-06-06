@@ -36,3 +36,5 @@
 +  **UPDATE** : XP 'Earn by Events' Configuration are now editable functions instead of numbers
 ### 06/06/2022
 +  **ADD** : SQL Database Migrations for Prestige system
++  **ADD** : Prestige System
++  **CODE REFACTOR** : configuration variables are now under **snake_case** naming convention and organized in their relative tables 

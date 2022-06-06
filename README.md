@@ -13,7 +13,7 @@ For now, there are **2 default HUDs** that you can choose to use (or not) :
 ### default_text
 ![default_text](https://media.discordapp.net/attachments/579628254814666762/961019202939015208/default_text.jpg?width=1246&height=701)
 
-Custom HUDs are located in `lua/guthlevelsystem/hud` and **you can choose one** by specifying the configuration variable `guthlevelsystem.SelectedHUD` in `sh_config.lua`
+Custom HUDs are located in `lua/guthlevelsystem/hud` and **you can choose one** by specifying the configuration variable `guthlevelsystem.settings.hud.selected` in `sh_config.lua`
 
 ## ULX & SAM & xAdmin2 compatibility
 ULX, SAM & xAdmin2 have common commands implemented for managing levels and XPs of players, such as :

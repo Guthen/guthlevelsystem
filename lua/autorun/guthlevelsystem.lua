@@ -100,6 +100,43 @@ function guthlevelsystem.format_message( msg, args )
 	return formatted_text
 end
 
+function guthlevelsystem.colored_format_message( msg, args )
+	args = args or {}
+
+	local formatted_text, word = {}, ""
+
+	local function format_word( word )
+		local key = word:match( "^{(.+)}$" )
+		if key then
+			word = tostring( args[key] or "?" )
+			formatted_text[#formatted_text + 1] = guthlevelsystem.settings.level_command.highlight_color
+		else
+			formatted_text[#formatted_text + 1] = color_white
+		end
+		formatted_text[#formatted_text + 1] = word
+	end
+
+	for l in msg:gmatch( "." ) do
+		local force_implement = false
+		if l == "{" and #word > 0 then
+			format_word( word )
+			word = ""
+		end
+		
+		word = word .. l
+		if l == " " or l == "}" then
+			format_word( word )
+			word = ""
+		end
+	end
+
+	if #word > 0 then
+		format_word( word )
+	end
+
+	return formatted_text
+end
+
 function guthlevelsystem.format_multiplier( multiplier )
 	return not ( multiplier == 1 ) and ( "(x%s)" ):format( multiplier ) or ""
 end
@@ -152,6 +189,7 @@ guthlevelsystem.load_file( "guthlevelsystem/sh_commands.lua" )
 guthlevelsystem.load_file( "guthlevelsystem/sh_players.lua" )
 if SERVER then
 	util.AddNetworkString( "guthlevelsystem:notify" )
+	util.AddNetworkString( "guthlevelsystem:tchat" )
 
 	guthlevelsystem.load_file( "guthlevelsystem/sv_data.lua" )
 	
@@ -170,15 +208,6 @@ if SERVER then
 	guthlevelsystem.init_data_table()
 else
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
-
-	net.Receive( "guthlevelsystem:notify", function()
-		local msg = net.ReadString()
-		local type = net.ReadUInt( 3 )
-		local snd = net.ReadString()
-	
-		surface.PlaySound( snd )
-		notification.AddLegacy( msg, type, 3 )
-	end )
 end
 hook.Run( "guthlevelsystem:on_loaded" )
 

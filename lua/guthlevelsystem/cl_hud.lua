@@ -28,17 +28,21 @@ hook.Add( "HUDPaintBackground", "guthlevelsystem:HUD", function()
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
-	if huds[guthlevelsystem.SelectedHUD] then 
-		huds[guthlevelsystem.SelectedHUD]( ply )
+	if huds[guthlevelsystem.settings.hud.selected] then 
+		huds[guthlevelsystem.settings.hud.selected]( ply )
 	end
 end )
-if not guthlevelsystem.DrawHUD then 
+if not guthlevelsystem.settings.hud.enabled then 
 	hook.Remove( "HUDPaintBackground", "guthlevelsystem:HUD" ) 
+end
+
+local function tchat_message( args )
+	chat.AddText( guthlevelsystem.settings.level_command.highlight_color, "[LEVEL] ", unpack( args ) )
 end
  
 hook.Add( "OnPlayerChat", "guthlevelsystem:level", function( ply, text )
 	if not ( ply == LocalPlayer() ) then return end
-	if not text:StartWith( guthlevelsystem.CommandChat ) then return end
+	if not text:StartWith( guthlevelsystem.settings.level_command.command ) then return end
 
 	local args = {
 		level = ply:gls_get_level(),
@@ -47,38 +51,27 @@ hook.Add( "OnPlayerChat", "guthlevelsystem:level", function( ply, text )
 	}
 	args.percent = math.floor( args.xp / args.nxp * 100 )
 
-	--  format text with colors
-	local formatted_text, word = {}, ""
-
-	local function format_word( word )
-		local key = word:match( "^{(.+)}$" )
-		if key then
-			word = tostring( args[key] or "?" )
-			formatted_text[#formatted_text + 1] = guthlevelsystem.CommandHighlightColor
-		else
-			formatted_text[#formatted_text + 1] = color_white
-		end
-		formatted_text[#formatted_text + 1] = word
-	end
-
-	for l in guthlevelsystem.CommandFormatMessage:gmatch( "." ) do
-		local force_implement = false
-		if l == "{" and #word > 0 then
-			format_word( word )
-			word = ""
-		end
-		
-		word = word .. l
-		if l == " " or l == "}" then
-			format_word( word )
-			word = ""
-		end
-	end
-
-	if #word > 0 then
-		format_word( word )
-	end
-
-	chat.AddText( guthlevelsystem.CommandHighlightColor, "[LEVEL] ", unpack( formatted_text ) )
+	tchat_message( guthlevelsystem.colored_format_message( guthlevelsystem.settings.level_command.message, args ) )
 	return true
+end )
+
+--  notifications
+net.Receive( "guthlevelsystem:notify", function()
+	local msg = net.ReadString()
+	local type = net.ReadUInt( 3 )
+	local snd = net.ReadString()
+
+	surface.PlaySound( snd )
+	notification.AddLegacy( msg, type, 3 )
+end )
+
+net.Receive( "guthlevelsystem:tchat", function()
+	local args = {}
+	for i = 1, net.ReadUInt( 5 ) do
+		local is_text = net.ReadBool()
+		args[#args + 1] = is_text and net.ReadString() or net.ReadColor()
+	end
+
+	--  print
+	tchat_message( args )
 end )

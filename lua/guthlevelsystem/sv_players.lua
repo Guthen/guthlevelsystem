@@ -93,7 +93,7 @@ function PLAYER:gls_set_prestige( num, is_silent )
 	local should = hook.Run( "guthlevelsystem:can_player_earn_prestige", self, diff_prestige )
 	if should == false then return end
 
-	self:gls_set_raw_prestige( math.Clamp( num, 0, guthlevelsystem.MaximumPrestige ) )
+	self:gls_set_raw_prestige( math.Clamp( num, 0, guthlevelsystem.settings.prestige.maximum_prestige ) )
 	self:gls_set_raw_level( 1 )
 	self:gls_set_raw_xp( 0 )
 	self:gls_update_nxp()
@@ -114,20 +114,20 @@ function PLAYER:gls_add_prestige( num, is_silent )
 end
 
 function PLAYER:gls_is_eligible_to_prestige()
-	return self:gls_get_level() >= guthlevelsystem.MaximumLevel and self:gls_get_xp() >= self:gls_get_nxp() and self:gls_get_prestige() < guthlevelsystem.MaximumPrestige
+	return self:gls_get_level() >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() and self:gls_get_prestige() < guthlevelsystem.settings.prestige.maximum_prestige
 end
 
 local function check_and_alert_for_prestige( ply )
-	if guthlevelsystem.PrestigeEnabled and ply:gls_is_eligible_to_prestige() then
-		ply:PrintMessage( HUD_PRINTTALK, guthlevelsystem.format_message( guthlevelsystem.PrestigeAlertMessage, {
-			command = guthlevelsystem.PrestigeCommand .. " yes",
+	if guthlevelsystem.settings.prestige.enabled and ply:gls_is_eligible_to_prestige() then
+		ply:PrintMessage( HUD_PRINTTALK, guthlevelsystem.format_message( guthlevelsystem.settings.prestige.alert_message, {
+			command = guthlevelsystem.settings.prestige.command .. " yes",
 		} ) )
 	end
 end
 
 --  level
 function PLAYER:gls_set_level( num, is_silent )
-	num = math.Clamp( num, 1, guthlevelsystem.MaximumLevel )
+	num = math.Clamp( num, 1, guthlevelsystem.settings.maximum_level )
 	local diff_level = num - self:gls_get_level()
 	if diff_level == 0 then return end
 	
@@ -161,13 +161,13 @@ function PLAYER:gls_get_xp_multiplier()
 	local multiplier = 1
 
 	--  rank xp multiplier
-	if guthlevelsystem.RankXPMultipliers[self:GetUserGroup()] then
-		multiplier = multiplier * guthlevelsystem.RankXPMultipliers[self:GetUserGroup()]
+	if guthlevelsystem.settings.rank_xp_multipliers[self:GetUserGroup()] then
+		multiplier = multiplier * guthlevelsystem.settings.rank_xp_multipliers[self:GetUserGroup()]
 	end
 
 	--  team xp multiplier
-	if guthlevelsystem.TeamXPMultipliers[self:Team()] then
-		multiplier = multiplier * guthlevelsystem.TeamXPMultipliers[self:Team()]
+	if guthlevelsystem.settings.team_xp_multipliers[self:Team()] then
+		multiplier = multiplier * guthlevelsystem.settings.team_xp_multipliers[self:Team()]
 	end
 
 	--  custom multiplier (not cumulable!)
@@ -177,12 +177,12 @@ function PLAYER:gls_get_xp_multiplier()
 end
 
 function PLAYER:gls_update_nxp()
-	self:gls_set_raw_nxp( guthlevelsystem.NXPFormula( self, self:gls_get_level() ) )
+	self:gls_set_raw_nxp( guthlevelsystem.settings.nxp_formula( self, self:gls_get_level() ) )
 end
 
 function PLAYER:gls_set_xp( num, is_silent )
 	local level = self:gls_get_level()
-	if num >= 0 and level >= guthlevelsystem.MaximumLevel and self:gls_get_xp() >= self:gls_get_nxp() then return end
+	if num >= 0 and level >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() then return end
 
 	local nxp = self:gls_get_nxp()
 	local xp, level = num, level
@@ -191,7 +191,7 @@ function PLAYER:gls_set_xp( num, is_silent )
 	if xp <= 0 then
 		while ( xp <= 0 ) do
 			level = level - 1
-			nxp = guthlevelsystem.NXPFormula( self, level )
+			nxp = guthlevelsystem.settings.nxp_formula( self, level )
 			xp = xp + nxp
 			
 			--  limit
@@ -208,13 +208,13 @@ function PLAYER:gls_set_xp( num, is_silent )
 			xp = xp - nxp
 			
 			--  limit
-			if level > guthlevelsystem.MaximumLevel then
-				level = guthlevelsystem.MaximumLevel
+			if level > guthlevelsystem.settings.maximum_level then
+				level = guthlevelsystem.settings.maximum_level
 				xp = nxp
 				break
 			end
 			
-			nxp = guthlevelsystem.NXPFormula( self, level )
+			nxp = guthlevelsystem.settings.nxp_formula( self, level )
 		end
 	end
 	
@@ -272,7 +272,7 @@ function PLAYER:gls_default_notify_prestige( diff_prestige )
 	local prestige = self:gls_get_prestige()
 	if diff_prestige > 0 then
 		self:gls_notify( 
-			guthlevelsystem.format_message( guthlevelsystem.NotificationPrestige, {
+			guthlevelsystem.format_message( guthlevelsystem.settings.prestige.earn_notification, {
 				prestige = prestige,
 			} ),
 			0,
@@ -285,19 +285,19 @@ function PLAYER:gls_default_notify_level( diff_level )
 	local level = self:gls_get_level()
 	if diff_level > 0 then
 		self:gls_notify( 
-			guthlevelsystem.format_message( guthlevelsystem.NotificationLevelEarn, {
+			guthlevelsystem.format_message( guthlevelsystem.settings.notification_earn_level, {
 				level = level,
 			} ),
 			0,
-			guthlevelsystem.NotificationSoundLevel
+			guthlevelsystem.settings.sound_notification_level
 		)
 	elseif diff_level < 0 then
 		self:gls_notify( 
-			guthlevelsystem.format_message( guthlevelsystem.NotificationLevelLoss, {
+			guthlevelsystem.format_message( guthlevelsystem.settings.notification_loss_level, {
 				level = level,
 			} ),
 			1,
-			guthlevelsystem.NotificationSoundLevel
+			guthlevelsystem.settings.sound_notification_level
 		)
 	end
 end
@@ -305,21 +305,40 @@ end
 function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 	if diff_xp > 0 then
 		self:gls_notify( 
-			guthlevelsystem.format_message( guthlevelsystem.NotificationXPEarn, {
+			guthlevelsystem.format_message( guthlevelsystem.settings.notification_earn_xp, {
 				xp = diff_xp,
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),
 			} ),
 			0,
-			guthlevelsystem.NotificationSoundXP
+			guthlevelsystem.settings.sound_notification_xp
 		)
 	elseif diff_xp < 0 then
 		self:gls_notify( 
-			guthlevelsystem.format_message( guthlevelsystem.NotificationXPLoss, {
+			guthlevelsystem.format_message( guthlevelsystem.settings.notification_loss_xp, {
 				xp = diff_xp,
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),
 			} ),
 			1,
-			guthlevelsystem.NotificationSoundXP
+			guthlevelsystem.settings.sound_notification_xp
 		)
 	end
+end
+
+function PLAYER:gls_colored_message( msg, args )
+	local data = guthlevelsystem.colored_format_message( msg, args )
+	if not data then return guthlevelsystem.error( "failed to colored format message: %q", msg ) end
+
+	net.Start( "guthlevelsystem:tchat" )
+		net.WriteUInt( #data, 5 )
+		for i, v in ipairs( data ) do
+			local is_text = isstring( v ) 
+			net.WriteBool( is_text )
+
+			if is_text then
+				net.WriteString( v )
+			else
+				net.WriteColor( v )
+			end
+		end
+	net.Send( self )
 end
