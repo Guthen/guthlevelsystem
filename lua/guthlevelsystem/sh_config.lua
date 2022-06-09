@@ -83,6 +83,8 @@ guthlevelsystem.settings.give_sweps_required_levels = {
 	--["weapon_pistol"] = 5, --  'weapon_pistol' can only be given by players from at least level 5
 }
 
+--  Are notifications displayed on screen center or by using default gmod notification system?
+guthlevelsystem.settings.notification_is_hud_printcenter = false
 --  The message sent to the player who earn level(s)
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:

@@ -57,12 +57,16 @@ end )
 
 --  notifications
 net.Receive( "guthlevelsystem:notify", function()
-	local msg = net.ReadString()
-	local type = net.ReadUInt( 3 )
-	local snd = net.ReadString()
-
-	surface.PlaySound( snd )
-	notification.AddLegacy( msg, type, 3 )
+	if guthlevelsystem.settings.notification_is_hud_printcenter then
+		surface.PlaySound( net.ReadString() )
+	else
+		local msg = net.ReadString()
+		local type = net.ReadUInt( 3 )
+		local snd = net.ReadString()
+	
+		surface.PlaySound( snd )
+		notification.AddLegacy( msg, type, 3 )
+	end
 end )
 
 net.Receive( "guthlevelsystem:tchat", function()

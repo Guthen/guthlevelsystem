@@ -261,11 +261,19 @@ end
 
 --  notifications
 function PLAYER:gls_notify( msg, type, snd )
-	net.Start( "guthlevelsystem:notify" )
-	net.WriteString( msg or "" )
-	net.WriteUInt( type or 0, 3 )
-	net.WriteString( snd or "Resource/warning.wav" )
-	net.Send( self )
+	if guthlevelsystem.settings.notification_is_hud_printcenter then
+		self:PrintMessage( HUD_PRINTCENTER, msg )
+
+		net.Start( "guthlevelsystem:notify" )
+			net.WriteString( snd or "Resource/warning.wav" )
+		net.Send( self )
+	else
+		net.Start( "guthlevelsystem:notify" )
+			net.WriteString( msg or "" )
+			net.WriteUInt( type or 0, 3 )
+			net.WriteString( snd or "Resource/warning.wav" )
+		net.Send( self )
+	end
 end
 
 function PLAYER:gls_default_notify_prestige( diff_prestige )
