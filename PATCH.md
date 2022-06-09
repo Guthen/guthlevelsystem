@@ -38,3 +38,5 @@
 +  **ADD** : SQL Database Migrations for Prestige system
 +  **ADD** : Prestige System
 +  **CODE REFACTOR** : configuration variables are now under **snake_case** naming convention and organized in their relative tables 
+### 09/06/2022
++  **ADD** : Configuration for HUD_PRINTCENTER notifications

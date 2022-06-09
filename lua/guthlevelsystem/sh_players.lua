@@ -12,6 +12,16 @@ function PLAYER:gls_get_xp()
     return self:GetNWInt( "guthlevelsystem:xp", 0 )
 end
 
+function PLAYER:gls_get_xp_for_maximum_level()
+    local xp = -self:gls_get_xp()
+    
+    for i = self:gls_get_level(), guthlevelsystem.settings.maximum_level do
+        xp = xp + guthlevelsystem.settings.nxp_formula( self, i )
+    end
+
+    return xp
+end
+
 function PLAYER:gls_get_nxp()
     return self:GetNWInt( "guthlevelsystem:nxp", 0 )
 end

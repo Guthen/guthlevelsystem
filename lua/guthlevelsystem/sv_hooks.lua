@@ -85,17 +85,27 @@ hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_
 			if ply:gls_is_eligible_to_prestige() then
 				ply:gls_add_prestige( 1 )
 			else
-				ply:PrintMessage( HUD_PRINTTALK, "You are not eligible to earn a new prestige!" )
+				if ply:gls_get_prestige() < guthlevelsystem.settings.prestige.maximum_prestige then
+					ply:gls_colored_message( guthlevelsystem.settings.prestige.not_eligible_message, { 
+						total_xp = string.Comma( ply:gls_get_xp_for_maximum_level() ),
+					} )
+				else
+					ply:gls_colored_message( guthlevelsystem.settings.prestige.not_eligible_maximum_prestige_message, {} )
+				end
 			end
 		elseif arg == "reset" then
-			if ply:gls_get_level() == guthlevelsystem.settings.maximum_level and ply:gls_get_prestige() == guthlevelsystem.settings.prestige.maximum_prestige then
+			if ply:gls_get_level() == guthlevelsystem.settings.maximum_level and ply:gls_get_prestige() == guthlevelsystem.settings.prestige.maximum_prestige and ply:gls_get_xp() == ply:gls_get_nxp() then
 				ply:gls_set_prestige( 0 )
-				ply:PrintMessage( HUD_PRINTTALK, "Your progress have been resetted, have fun!" )
+				ply:gls_colored_message( guthlevelsystem.settings.prestige.reset_message, {} )
 			else
-				ply:PrintMessage( HUD_PRINTTALK, "You can only reset your progress when you are at maximum level and prestige!" )
+				ply:gls_colored_message( guthlevelsystem.settings.prestige.reset_fail_message, {} )
 			end
 		else
-			ply:PrintMessage( HUD_PRINTTALK, ( "Earning a new prestige reset your Level & XP to zero but might gives you more opportunity on this server. Your are currently %s to enter to the next prestige." ):format( ply:gls_is_eligible_to_prestige() and "able (/prestige y)" or "unable" ) )
+			ply:gls_colored_message( guthlevelsystem.settings.prestige.status_message, {
+				total_xp = string.Comma( ply:gls_get_xp_for_maximum_level() ),
+				command_accept = guthlevelsystem.settings.prestige.command .. " yes",
+				command_reset = guthlevelsystem.settings.prestige.command .. " reset",
+			} )
 		end
 		
 		return ""

@@ -24,6 +24,30 @@ guthlevelsystem.settings.prestige = {
 	--    - next_prestige: next player's prestige
 	--    - command: `guthlevelsystem.settings.prestige.command`
 	alert_message = "Congratulations, you reach the maximum level! You have unlocked the ability to go to the prestige {next_prestige}, type '{command}' for more infos.",
+	--  Message displayed when a player try the '/prestige yes' command but is not eligible 
+	--    Arguments must be enclosed with '{}'
+	--    Available arguments are:
+	--    - total_xp: amount of XP needed to pass the next prestige
+	--    - has_next_prestige: boolean value checking if the player can earn a new prestige (prestige < guthlevelsystem.settings.prestige.maximum_prestige)
+	not_eligible_message = "You are not eligible to earn a new prestige! You still need {total_xp} XP to be able to enter the next prestige.",
+	--  Message displayed when a player try the '/prestige yes' command but is not eligible because of he already reach the maximum prestige
+	not_eligible_maximum_prestige_message = "You can't go further, you are already at the maximum prestige.",
+	--  Message displayed when a player enter the '/prestige' command
+	--    Arguments must be enclosed with '{}'
+	--    Available arguments are:
+	--    - total_xp: amount of XP needed to pass the next prestige
+	--    - command_accept: `guthlevelsystem.settings.prestige.command yes`
+	--    - command_reset: `guthlevelsystem.settings.prestige.command reset`
+	status_message = [[
+Earning a new prestige reset your Level & XP to zero but might gives you more opportunity on this server. You need {total_xp} XP to be able to pass the next prestige.
+The available commands are:
+- {command_accept} : to pass the next prestige,
+- {command_reset} : to reset your progress once you are at maximum level
+]],
+	--  Message displayed when a player enter the '/prestige reset' command & succeed
+	reset_message = "Your progress have been reset, have fun!",
+	--  Message displayed when a player enter the '/prestige reset' command & failed
+	reset_fail_message = "You can only reset your progress when you are at maximum level and prestige!",
 
 	--  The message sent to the player who earn prestige(s)
 	--    Arguments must be enclosed with '{}'
@@ -33,7 +57,7 @@ guthlevelsystem.settings.prestige = {
 }
 
 --  Base number scaled by the current level
-guthlevelsystem.settings.nx_base = 400
+guthlevelsystem.settings.nx_base = 100
 --  Multiplier of the previous Level's Next XP 
 guthlevelsystem.settings.nx_multiplier = .25
 --  Formula of the Next maximum XP to reach the next Level

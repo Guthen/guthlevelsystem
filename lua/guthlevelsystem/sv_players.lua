@@ -119,9 +119,10 @@ end
 
 local function check_and_alert_for_prestige( ply )
 	if guthlevelsystem.settings.prestige.enabled and ply:gls_is_eligible_to_prestige() then
-		ply:PrintMessage( HUD_PRINTTALK, guthlevelsystem.format_message( guthlevelsystem.settings.prestige.alert_message, {
-			command = guthlevelsystem.settings.prestige.command .. " yes",
-		} ) )
+		ply:gls_colored_message( guthlevelsystem.settings.prestige.alert_message, {
+			next_prestige = ply:gls_get_prestige() + 1,
+			command = guthlevelsystem.settings.prestige.command,
+		} )
 	end
 end
 
@@ -181,8 +182,10 @@ function PLAYER:gls_update_nxp()
 end
 
 function PLAYER:gls_set_xp( num, is_silent )
+	local diff_xp = math.Round( num - self:gls_get_xp() )
+
 	local level = self:gls_get_level()
-	if num >= 0 and level >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() then return end
+	if diff_xp >= 0 and level >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() then return end
 
 	local nxp = self:gls_get_nxp()
 	local xp, level = num, level
@@ -218,7 +221,7 @@ function PLAYER:gls_set_xp( num, is_silent )
 		end
 	end
 	
-	local diff_level, diff_xp = level - self:gls_get_level(), math.Round( num - self:gls_get_xp() ) 
+	local diff_level = level - self:gls_get_level() 
 
 	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, diff_xp )
 	if should == false then return end
@@ -333,20 +336,11 @@ function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 end
 
 function PLAYER:gls_colored_message( msg, args )
-	local data = guthlevelsystem.colored_format_message( msg, args )
-	if not data then return guthlevelsystem.error( "failed to colored format message: %q", msg ) end
+	assert( isstring( msg ), "#1 argument 'msg' must be a string" )
+	assert( istable( args ), "#2 argument 'args' must be a table" )
 
 	net.Start( "guthlevelsystem:tchat" )
-		net.WriteUInt( #data, 5 )
-		for i, v in ipairs( data ) do
-			local is_text = isstring( v ) 
-			net.WriteBool( is_text )
-
-			if is_text then
-				net.WriteString( v )
-			else
-				net.WriteColor( v )
-			end
-		end
+		net.WriteString( msg )
+		net.WriteTable( args )
 	net.Send( self )
 end

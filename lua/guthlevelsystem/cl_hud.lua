@@ -70,12 +70,9 @@ net.Receive( "guthlevelsystem:notify", function()
 end )
 
 net.Receive( "guthlevelsystem:tchat", function()
-	local args = {}
-	for i = 1, net.ReadUInt( 5 ) do
-		local is_text = net.ReadBool()
-		args[#args + 1] = is_text and net.ReadString() or net.ReadColor()
-	end
+	local msg = net.ReadString()
+	local args = net.ReadTable()
 
 	--  print
-	tchat_message( args )
+	tchat_message( guthlevelsystem.colored_format_message( msg, args ) )
 end )

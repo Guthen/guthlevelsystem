@@ -117,7 +117,6 @@ function guthlevelsystem.colored_format_message( msg, args )
 	end
 
 	for l in msg:gmatch( "." ) do
-		local force_implement = false
 		if l == "{" and #word > 0 then
 			format_word( word )
 			word = ""
