@@ -317,7 +317,7 @@ function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 	if diff_xp > 0 then
 		self:gls_notify( 
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_earn_xp, {
-				xp = diff_xp,
+				xp = string.Comma( diff_xp ),
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),
 			} ),
 			0,
@@ -326,7 +326,7 @@ function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 	elseif diff_xp < 0 then
 		self:gls_notify( 
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_loss_xp, {
-				xp = diff_xp,
+				xp = string.Comma( diff_xp ),
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),
 			} ),
 			1,
