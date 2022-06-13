@@ -113,17 +113,30 @@ hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_
 end )
 
 --  DarkRP job
-hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_job", function( ply, job )
-	 if IsValid( ply ) then
-		local level = RPExtraTeams[job].LSlvl or RPExtraTeams[job].level
-		if level then
-			if ply:gls_get_level() < level then
-				return false, 
-					guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_job, {
-						level = level, 
-						job = team.GetName( job )
-					} )
-			end
+hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_team", function( ply, job )
+	if not IsValid( ply ) then return end
+
+	local data = RPExtraTeams[job]
+	local job_level, job_prestige, has_level_priority = data.LSlvl or data.level or 0, data.prestige or 0, data.has_level_priority
+	if job_level <= 0 and job_prestige <= 0 then return end
+
+	local level, prestige = ply:gls_get_level(), ply:gls_get_prestige()
+
+	if has_level_priority then
+		if not ( level >= job_level and prestige >= job_prestige ) then 
+			return false, guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_level_priority_job, {
+				level = job_level, 
+				prestige = job_prestige,
+				job = team.GetName( job ),
+			} )
+		end 
+	else
+		if not ( level >= job_level and prestige >= job_prestige or prestige > job_prestige ) then
+			return false, guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_job, {
+				level = job_level, 
+				prestige = job_prestige,
+				job = team.GetName( job ),
+			} )
 		end
-	 end
+	end
 end )

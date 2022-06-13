@@ -134,12 +134,16 @@ guthlevelsystem.settings.notification_earn_xp = "You earn {xp} XP, work harder {
 --    - xp: earned xp
 --    - multiplier: applied rank multiplier (if has any or nothing otherwise)  
 guthlevelsystem.settings.notification_loss_xp = "You loss {xp} XP, watch out {multiplier}!"
---  (DarkRP) The message sent to the player who attempted to change teams but cannot (%d represent the required level and %s the job name)
+--  (DarkRP) The message sent to the player who attempted to change team but cannot
 --    Arguments must be enclosed with '{}'
 --    Available arguments are:
---    - level: player's level
+--    - level: job's level
+--    - prestige: job's prestige
 --    - job: job's name
-guthlevelsystem.settings.notification_fail_job = "You need to be level {level} to become {job}!"
+guthlevelsystem.settings.notification_fail_job = "You need to be level {level} of prestige {prestige} to become {job}!"
+--  (DarkRP) The message sent to the player who attempted to change team but cannot with 'has_level_required' enabled on the job
+--   Same arguments as above
+guthlevelsystem.settings.notification_fail_level_priority_job = "You need to be prestige {prestige} & must be at least at the level {level} to become {job}!"
 
 --  Sound to play when you receive a XP notification
 guthlevelsystem.settings.sound_notification_xp = "Friends/friend_join.wav"

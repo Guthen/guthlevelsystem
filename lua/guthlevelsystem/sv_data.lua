@@ -67,7 +67,8 @@ function guthlevelsystem.migrate()
         migrations[i] = file.Read( migrations_path .. v, "LUA" )
     end
 
-    --  create migration table
+    --  create migration table 
+    --   (thankx to https://github.com/Erlite/Advisor/blob/master/lua/advisor-modules/sql/sv_migrations.lua)
     local query = [[
         CREATE TABLE IF NOT EXISTS guthlevelsystem_version(
             version INTEGER NOT NULL
