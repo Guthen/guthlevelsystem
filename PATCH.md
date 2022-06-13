@@ -27,6 +27,7 @@
 ### v2.0.0 ─ Code Refactoring & Prestige System
 ### 04/06/2022
 +  **ADD** : Github Version Checker
++  **ADD** : Add `guthlevelsystem_debug` convar to enable debug messages
 +  **UPDATE** : prints are now colored depending of the type of information (error, warning, debug & info)
 +  **UPDATE** : `guthlevelsystem_info` command has been renamed to `guthlevelsystem_about`
 +  **CODE REFACTOR** : all functions names are now under **snake_case** naming convention
@@ -40,5 +41,6 @@
 +  **CODE REFACTOR** : configuration variables are now under **snake_case** naming convention and organized in their relative tables 
 ### 09/06/2022
 +  **ADD** : Configuration for HUD_PRINTCENTER notifications
-##" 13/06/2022
++  **ADD** : Add Prestige commands to ULX
+### 13/06/2022
 +  **ADD** : Add Prestige commands to guthlevelsystem, SAM & xAdmin2

@@ -60,18 +60,18 @@ The available commands are:
 }
 
 --  Base number scaled by the current level
-guthlevelsystem.settings.nx_base = 100
+guthlevelsystem.settings.nxp_base = 100
 --  Multiplier of the previous Level's Next XP 
-guthlevelsystem.settings.nx_multiplier = .25
+guthlevelsystem.settings.nxp_multiplier = .25
 --  Formula of the Next maximum XP to reach the next Level
---    By default, it's `level * guthlevelsystem.settings.nx_base + previous_nxp * guthlevelsystem.settings.nx_multiplier + prestige * guthlevelsystem.NXPPrestigeMultiplicator`
+--    By default, it's `level * guthlevelsystem.settings.nxp_base + previous_nxp * guthlevelsystem.settings.nxp_multiplier + prestige * guthlevelsystem.settings.prestige.nxp_base`
 --    NOTE: use `level` instead of `ply:gls_get_level()`, it's internally required! 
 guthlevelsystem.settings.nxp_formula = function( ply, level )
 	local nxp = 0
 
 	--  compute nxp considering all previous nxp 
 	for i = 1, level do
-		nxp = i * guthlevelsystem.settings.nx_base + nxp * guthlevelsystem.settings.nx_multiplier
+		nxp = i * guthlevelsystem.settings.nxp_base + nxp * guthlevelsystem.settings.nxp_multiplier
 	end
 
 	--  scale by prestige
