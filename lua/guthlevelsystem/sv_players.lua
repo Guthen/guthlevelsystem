@@ -287,7 +287,7 @@ function PLAYER:gls_default_notify_prestige( diff_prestige )
 				prestige = prestige,
 			} ),
 			0,
-			guthlevelsystem.NotificationSoundPrestige
+			guthlevelsystem.settings.prestige.sound_notification
 		)
 	end
 end

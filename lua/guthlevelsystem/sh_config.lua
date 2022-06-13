@@ -54,6 +54,9 @@ The available commands are:
 	--    Available arguments are:
 	--    - prestige: player's prestige
 	earn_notification = "Congratulations, you get to prestige {prestige}!",
+	
+	--  Sound to play when you receive a prestige notification
+	sound_notification = "Friends/message.wav",
 }
 
 --  Base number scaled by the current level
@@ -138,9 +141,9 @@ guthlevelsystem.settings.notification_loss_xp = "You loss {xp} XP, watch out {mu
 --    - job: job's name
 guthlevelsystem.settings.notification_fail_job = "You need to be level {level} to become {job}!"
 
---  What sound is played when you received a notification (earn XP)
+--  Sound to play when you receive a XP notification
 guthlevelsystem.settings.sound_notification_xp = "Friends/friend_join.wav"
---  What sound is played when you received a notification (earn level)
+--  Sound to play when you receive a level notification
 guthlevelsystem.settings.sound_notification_level = "Friends/friend_online.wav"
 
 ---  Events
