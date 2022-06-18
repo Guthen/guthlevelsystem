@@ -21,7 +21,10 @@ local migrations_path = "guthlevelsystem/migrations/"
 local db
 function guthlevelsystem.query( query, callback )
     if Gsql then
-        if not db then return false, "Database not initialized" end
+        if not db then 
+            callback( false, "database not initialized!" )
+            return
+        end
 
         db:query( query, {}, callback )
     else
@@ -42,8 +45,10 @@ function guthlevelsystem.init_data_table()
                     return guthlevelsystem.error( "failed while connecting to database: %s (gSQL)", message )
                 end
 
-                guthlevelsystem.print( "database connection successfully established (gSQL)" )
-                guthlevelsystem.migrate()
+                timer.Simple( 0, function()  --  avoid aborting cause `db` wouldn't be initialized
+                    guthlevelsystem.print( "database connection successfully established (gSQL)" )
+                    guthlevelsystem.migrate()
+                end )
             end
         )
     --  sqlite
