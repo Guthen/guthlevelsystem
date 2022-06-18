@@ -1,24 +1,32 @@
 ---   Database Configuration
 --  The following configuration will only be used if you have installed gSQL (https://github.com/Gabyfle/gSQL/releases).
 --  Otherwise, SQLite is used (so gSQL is not a necessary dependency).
-guthlevelsystem.DatabaseDriver = "sqlite"  --  either "sqlite", "mysqloo" or "tmysql"
-                                           --  WARNING: you also have to install MySQLOO (https://github.com/FredyH/MySQLOO)
-                                           --  or tMySQL4 (https://github.com/bkacjios/gm_tmysql4) if you want to use them
-
---  If you use SQLite's driver, the following configuration are useless.
-guthlevelsystem.DatabaseHost = "localhost"
-guthlevelsystem.DatabasePort = 3306
-guthlevelsystem.DatabaseName = "?"
-guthlevelsystem.DatabaseUser = "root"
-guthlevelsystem.DatabasePassword = ""
+guthlevelsystem.settings.database = {
+    --  either "sqlite", "mysqloo" or "tmysql"
+    --  WARNING: you also have to install MySQLOO (https://github.com/FredyH/MySQLOO)
+    --  or tMySQL4 (https://github.com/bkacjios/gm_tmysql4) if you want to use them
+    driver = "sqlite",
+    --  If you use SQLite's driver, the following configuration are useless.
+    host = "localhost",
+    port = 3306,
+    name = "?",
+    user = "root",
+    pass = "",
+}
 
 ----
 ----
+
+local migrations = {}
+local migrations_path = "guthlevelsystem/migrations/"
 
 local db
-function guthlevelsystem.Query( query, callback )
+function guthlevelsystem.query( query, callback )
     if Gsql then
-        if not db then return false, "Database not initialized" end
+        if not db then 
+            callback( false, "database not initialized!" )
+            return
+        end
 
         db:query( query, {}, callback )
     else
@@ -28,45 +36,89 @@ function guthlevelsystem.Query( query, callback )
     end
 end
 
-function guthlevelsystem.CreateDataTable()
-    local query = "CREATE TABLE IF NOT EXISTS guth_ls( SteamID TEXT, XP INTEGER, LVL INTEGER )"
-
+function guthlevelsystem.init_data_table()
     --  gSQL
     if Gsql then
         db = Gsql:new( 
-            guthlevelsystem.DatabaseDriver, guthlevelsystem.DatabaseHost, guthlevelsystem.DatabaseName,
-            guthlevelsystem.DatabaseUser, guthlevelsystem.DatabasePassword, guthlevelsystem.DatabasePort, 
+            guthlevelsystem.settings.database.driver, guthlevelsystem.settings.database,
             function( success, message )
                 if not success then
-                    return guthlevelsystem.Notif( ( "Failed while connecting to database : %s (gSQL)" ):format( message ) )
+                    return guthlevelsystem.error( "failed while connecting to database: %s (gSQL)", message )
                 end
 
-                --  create database
-                timer.Simple( 0, function()  --  avoid indexing errors
-                    db:query( query, {}, function( success, message, data )
-                        if not success then
-                            return guthlevelsystem.Notif( ( "Failed while creating database : %s (gSQL)" ):format( message ) )
-                        end
-                        guthlevelsystem.Notif( "Database connection successfully established (gSQL)" )
-                    end )
+                timer.Simple( 0, function()  --  avoid aborting cause `db` wouldn't be initialized
+                    guthlevelsystem.print( "database connection successfully established (gSQL)" )
+                    guthlevelsystem.migrate()
                 end )
             end
         )
     --  sqlite
     else
-        local result = sql.Query( query )
-        if result == false then return guthlevelsystem.Notif( "Failed while creating database : " .. sql.LastError() ) end
-        
-        guthlevelsystem.Notif( "Database connection successfully established" )
+        guthlevelsystem.print( "database connection successfully established" )
+        guthlevelsystem.migrate()
     end
 end
 
-function guthlevelsystem.DeleteDataTable()
-    guthlevelsystem.Query( "DROP TABLE guth_ls", function( success, message, data )
-        if not success then
-            return guthlevelsystem.Notif( ( "Failed while dropping database : %s" ):format( self:GetName(), message ) )
+function guthlevelsystem.run_migration( id, callback )
+    local query = migrations[id]
+    if not query then return guthlevelsystem.error( "migration %d not found, aborting..", id ) end
+
+    guthlevelsystem.query( query, callback )
+end
+
+function guthlevelsystem.migrate()
+    --  retrieve all migrations
+    migrations = {}
+    for i, v in ipairs( file.Find( migrations_path .. "/*.sql", "LUA" ) ) do
+        migrations[i] = file.Read( migrations_path .. v, "LUA" )
+    end
+
+    --  create migration table 
+    --   (thankx to https://github.com/Erlite/Advisor/blob/master/lua/advisor-modules/sql/sv_migrations.lua)
+    local query = [[
+        CREATE TABLE IF NOT EXISTS guthlevelsystem_version(
+            version INTEGER NOT NULL
+        );
+        INSERT INTO guthlevelsystem_version SELECT 0 WHERE NOT EXISTS ( SELECT * FROM guthlevelsystem_version );
+
+        SELECT version FROM guthlevelsystem_version LIMIT 1;
+    ]]
+
+    guthlevelsystem.query( query, function( success, message, data )
+        if not success then return guthlevelsystem.error( "failed to migrate: %s", message ) end
+        
+        local current_version = data[1].version
+        local diff_version = #migrations - current_version
+        if diff_version == 0 then
+            guthlevelsystem.print( "database is up-to-date, no migrations to run" )
+            return
+        elseif diff_version < 0 then 
+            return 
         end
 
-        guthlevelsystem.Notif( "Database has been dropped" )
+        --  migrating..
+        guthlevelsystem.print( "%d version(s) of difference, migrating..", diff_version )
+
+        local i = current_version + 1
+        local function run_next_migration()
+            if i > #migrations then 
+                guthlevelsystem.query( "UPDATE guthlevelsystem_version SET version = " .. #migrations, function( success, message )
+                    if not success then return guthlevelsystem.error( "failed to set migration version: %s", message ) end
+                    
+                    guthlevelsystem.print( "migration successfully finished!" )
+                end )
+                return 
+            end
+
+            guthlevelsystem.query( migrations[i], function( success, message )
+                if not success then return guthlevelsystem.error( "failed to run migration %d: %s", i, message ) end
+
+                guthlevelsystem.print( "migration %d successfull!", i )
+                i = i + 1
+
+                run_next_migration()
+            end )
+        end
+        run_next_migration()
     end )
 end

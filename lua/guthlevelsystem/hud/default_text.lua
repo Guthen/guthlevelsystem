@@ -1,29 +1,36 @@
 local config = {
-    TextFont             =   "DermaLarge", --  font of both texts, see https://wiki.facepunch.com/gmod/Default_Fonts for default fonts
+	--  position
+	PrestigeX = 30, --  X coordinate
+	PrestigeY = ScrH() * .71, --  Y coordinate
+	LevelX = 30, --  X coordinate
+	LevelY = ScrH() * .75, -- Y coordinate
+	XPX = 30, --  X coordinate
+	XPY = ScrH() * .79, --  Y coordinate
 
-    --  level text
-    LevelX               =   30, --  X coordinate
-    LevelY               =   ScrH() * .75, -- Y coordinate
-    LevelText            =   "Level : %s", --  text format
-    
-    --  xp text
-    XPX                  =   30, --  X coordinate
-    XPY                  =   ScrH() * .79, --  Y coordinate
-    XPText               =   "XP : %s", --  text format
-    XPIsPercent          =   false, --  do we show a percent or a text on the format of "XP/NXP"
-                                    --  e.g.: XPIsPercent = true => "XP : 50%"
-                                    --        XPIsPercent = false => "XP : 100/200"
+	--  texts
+	TextPrestige = "Prestige: %d", --  prestige text format, if `guthlevelsystem.settings.prestige.enabled` is `true`; "%d" will be replaced with the prestige
+    TextLevel = "Level: %d", --  level text format; "%d" will be replaced with the level
+	TextXP = "XP: %s", --  text format
+	XPIsPercent = false,--  do we show a percent or a text on the format of "XP/NXP"
+						--  e.g.: XPIsPercent = true => "XP : 50%"
+						--        XPIsPercent = false => "XP : 100/200"
+	TextFont =   "DermaLarge", --  font of both texts, see https://wiki.facepunch.com/gmod/Default_Fonts for default fonts
+	TextColor = Color( 255, 255, 255, 150 ), --  color of both texts
 }
 
 
 local _xp = 0
 return function( ply )
-    _xp = Lerp( FrameTime() * 5, _xp or 0, ply:GetNWInt( "guthlevelsystem:XP", 0 ) )
+	_xp = Lerp( FrameTime() * 5, _xp or 0, ply:gls_get_xp() )
 
-    local lvl = config.LevelText:format( ply:GetNWInt( "guthlevelsystem:LVL", 0 ) )
-    local xp = config.XPIsPercent and config.XPText:format( math.Round( _xp / ply:GetNWInt( "guthlevelsystem:NXP", 0 ) * 100 ) .. "%" ) 
-               or config.XPText:format( math.Round( _xp ) .. "/" .. ply:GetNWInt( "guthlevelsystem:NXP", 0 ) )
+	local level, nxp = ply:gls_get_level(), ply:gls_get_nxp()
+	local xp_text = config.XPIsPercent and config.TextXP:format( math.Round( _xp / nxp * 100 ) .. "%" ) or config.TextXP:format( math.Round( _xp ) .. "/" .. nxp )
 
-    draw.SimpleText( lvl, config.TextFont, config.LevelX, config.LevelY, color_white )
-    draw.SimpleText( xp, config.TextFont, config.XPX, config.XPY, color_white )
+	--  text
+	draw.SimpleText( config.TextLevel:format( level ), config.TextFont, config.LevelX, config.LevelY, config.TextColor )
+	draw.SimpleText( xp_text, config.TextFont, config.XPX, config.XPY, config.TextColor )
+	
+	if guthlevelsystem.settings.prestige.enabled then
+		draw.SimpleText( config.TextPrestige:format( ply:gls_get_prestige() ), config.TextFont, config.PrestigeX, config.PrestigeY, config.TextColor )
+	end
 end
