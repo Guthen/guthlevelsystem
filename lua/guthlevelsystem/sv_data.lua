@@ -1,16 +1,18 @@
 ---   Database Configuration
 --  The following configuration will only be used if you have installed gSQL (https://github.com/Gabyfle/gSQL/releases).
 --  Otherwise, SQLite is used (so gSQL is not a necessary dependency).
-guthlevelsystem.DatabaseDriver = "sqlite"  --  either "sqlite", "mysqloo" or "tmysql"
-                                           --  WARNING: you also have to install MySQLOO (https://github.com/FredyH/MySQLOO)
-                                           --  or tMySQL4 (https://github.com/bkacjios/gm_tmysql4) if you want to use them
-
---  If you use SQLite's driver, the following configuration are useless.
-guthlevelsystem.DatabaseHost = "localhost"
-guthlevelsystem.DatabasePort = 3306
-guthlevelsystem.DatabaseName = "?"
-guthlevelsystem.DatabaseUser = "root"
-guthlevelsystem.DatabasePassword = ""
+guthlevelsystem.settings.database = {
+    --  either "sqlite", "mysqloo" or "tmysql"
+    --  WARNING: you also have to install MySQLOO (https://github.com/FredyH/MySQLOO)
+    --  or tMySQL4 (https://github.com/bkacjios/gm_tmysql4) if you want to use them
+    driver = "sqlite",
+    --  If you use SQLite's driver, the following configuration are useless.
+    host = "localhost",
+    port = 3306,
+    name = "?",
+    user = "root",
+    pass = "",
+}
 
 ----
 ----
@@ -38,8 +40,7 @@ function guthlevelsystem.init_data_table()
     --  gSQL
     if Gsql then
         db = Gsql:new( 
-            guthlevelsystem.DatabaseDriver, guthlevelsystem.DatabaseHost, guthlevelsystem.DatabaseName,
-            guthlevelsystem.DatabaseUser, guthlevelsystem.DatabasePassword, guthlevelsystem.DatabasePort, 
+            guthlevelsystem.settings.database.driver, guthlevelsystem.settings.database,
             function( success, message )
                 if not success then
                     return guthlevelsystem.error( "failed while connecting to database: %s (gSQL)", message )
