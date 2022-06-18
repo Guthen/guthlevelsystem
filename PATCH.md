@@ -24,7 +24,7 @@
 ### 04/06/2022
 +  **ADD** : Client ConVar `guthlevelsystem_hud_enabled <1 or 0>` to toggle HUD visibility (see [#5](https://github.com/Guthen/guthlevelsystem/issues/5))
 
-### v2.0.0 ─ Code Refactoring & Prestige System
+## v2.0.0 ─ Code Refactoring & Prestige System
 ### 04/06/2022
 +  **ADD** : Github Version Checker
 +  **ADD** : Add `guthlevelsystem_debug` convar to enable debug messages
