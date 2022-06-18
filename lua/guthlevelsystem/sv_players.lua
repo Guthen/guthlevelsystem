@@ -14,7 +14,7 @@ function PLAYER:gls_init_data()
 		self:gls_update_nxp()
 
 		guthlevelsystem.print( "data has been created on %q (%s)", self:GetName(), self:SteamID() )
-		hook.Run( "guthlevelsystem:OnPlayerCreateData", self )
+		hook.Run( "guthlevelsystem:on_player_init_data", self )
 	end )
 end
 
