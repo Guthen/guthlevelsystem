@@ -1,11 +1,13 @@
 guthlevelsystem = guthlevelsystem or {}
 guthlevelsystem.Author = "Guthen"
-guthlevelsystem.Version = "2.0.0"
+guthlevelsystem.Version = "2.1.0"
 guthlevelsystem.Link = "https://github.com/Guthen/guthlevelsystem"
 guthlevelsystem.Discord = "https://discord.gg/eKgkpCf"
 
 guthlevelsystem.IsLastVersion = guthlevelsystem.IsLastVersion or nil
 guthlevelsystem.GithubVersion = guthlevelsystem.GithubVersion or "N/A"
+
+guthlevelsystem.NET_CHANGE_VAR_VALUE_BITS = 16  --  16 u-bits: allow numbers from 0 up to 65535
 
 --  debug (https://github.com/Guthen/guthscpbase/blob/master/lua/autorun/sh_guthscpbase.lua)
 local convar_debug = CreateConVar( "guthlevelsystem_debug", "0", FCVAR_NONE, "Enables debug messages", "0", "1" )
@@ -231,7 +233,10 @@ if SERVER then
 	guthlevelsystem.load_file( "guthlevelsystem/sv_players.lua" )
 	guthlevelsystem.load_file( "guthlevelsystem/sv_hooks.lua" )
 	
+	guthlevelsystem.load_file( "guthlevelsystem/sv_panel.lua" )
+
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
+	guthlevelsystem.load_file( "guthlevelsystem/cl_panel.lua" )
 	
 	--  sending huds files
 	local path = "guthlevelsystem/hud/"
@@ -243,6 +248,7 @@ if SERVER then
 	guthlevelsystem.init_data_table()
 else
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
+	guthlevelsystem.load_file( "guthlevelsystem/cl_panel.lua" )
 end
 hook.Run( "guthlevelsystem:on_loaded" )
 

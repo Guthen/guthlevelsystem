@@ -223,3 +223,17 @@ guthlevelsystem.settings.level_command = {
 	--  Arguments Highlight Color
 	highlight_color = Color( 230, 110, 40 ),
 }
+
+---  Data Panel
+guthlevelsystem.settings.data_panel = {
+	--  Set of user groups able to open the panel and see all player's level data
+	read_usergroups = {
+		["superadmin"] = true,
+		["admin"] = true,
+		["operator"] = true,
+	},
+	--  Set of user groups able to edit player's level data (through the panel or any other 3rd party-way)
+	write_usergroups = {
+		["superadmin"] = true,
+	},
+}
