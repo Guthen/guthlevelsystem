@@ -36,25 +36,29 @@ function PLAYER:gls_save_data()
 	end )
 end
 
-function PLAYER:gls_load_data()
-	local query = ( "SELECT xp, lvl, prestige FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.query( query, function( success, message, data )
-		if not success or not data or #data <= 0 then
-			return not data and guthlevelsystem.error( "failed while loading data on %q : %s", self:GetName(), message )
-		end
+function PLAYER:gls_load_data( data )
+	local function load_data( data ) 
+		if not data then return end
 
-		self:gls_set_raw_level( tonumber( data[1].lvl ), true )
+		self:gls_set_raw_level( tonumber( data[1].lvl ) )
 		self:gls_set_raw_xp( tonumber( data[1].xp ) )
-		self:gls_set_raw_prestige( tonumber( data[1].prestige ))
+		self:gls_set_raw_prestige( tonumber( data[1].prestige ) )
 		self:gls_update_nxp()
 
 		guthlevelsystem.print( "data has been loaded on %q", self:GetName() )
-	end )
+	end
+
+	if data then
+		--  load given data
+		load_data( data )
+	else
+		--  fetch data to load
+		guthlevelsystem.get_steamid_data( self:SteamID(), load_data )
+	end
 end
 
 function PLAYER:gls_get_data( callback )
-	local query = ( "SELECT * FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( self:SteamID() ) )
-	guthlevelsystem.query( query, callback )
+	guthlevelsystem.get_steamid_data( self:SteamID(), callback )
 end
 
 function PLAYER:gls_reset_data()
@@ -178,49 +182,16 @@ function PLAYER:gls_get_xp_multiplier()
 end
 
 function PLAYER:gls_update_nxp()
-	self:gls_set_raw_nxp( guthlevelsystem.settings.nxp_formula( self, self:gls_get_level() ) )
+	self:gls_set_raw_nxp( guthlevelsystem.settings.nxp_formula( self:gls_get_prestige(), self:gls_get_level() ) )
 end
 
 function PLAYER:gls_set_xp( num, is_silent )
 	local diff_xp = math.Round( num - self:gls_get_xp() )
 
-	local level = self:gls_get_level()
+	local prestige, level = self:gls_get_prestige(), self:gls_get_level()
 	if diff_xp >= 0 and level >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() then return end
 
-	local nxp = self:gls_get_nxp()
-	local xp, level = num, level
-	
-	--  decrease
-	if xp <= 0 then
-		while ( xp <= 0 ) do
-			level = level - 1
-			nxp = guthlevelsystem.settings.nxp_formula( self, level )
-			xp = xp + nxp
-			
-			--  limit
-			if level <= 1 then
-				level = 1  --  avoid level 0 
-				xp = 0
-				break
-			end
-		end
-	--  increase
-	else
-		while ( xp >= nxp ) do
-			level = level + 1
-			xp = xp - nxp
-			
-			--  limit
-			if level > guthlevelsystem.settings.maximum_level then
-				level = guthlevelsystem.settings.maximum_level
-				xp = nxp
-				break
-			end
-			
-			nxp = guthlevelsystem.settings.nxp_formula( self, level )
-		end
-	end
-	
+	local level, xp, nxp = guthlevelsystem.compute_next_xp( prestige, level, num, self:gls_get_nxp() )
 	local diff_level = level - self:gls_get_level() 
 
 	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, diff_xp )

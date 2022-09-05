@@ -20,15 +20,14 @@ guthlevelsystem.settings.database = {
 local migrations = {}
 local migrations_path = "guthlevelsystem/migrations/"
 
-local db
 function guthlevelsystem.query( query, callback )
     if Gsql then
-        if not db then 
+        if not guthlevelsystem.database then 
             callback( false, "database not initialized!" )
             return
         end
 
-        db:query( query, {}, callback )
+        guthlevelsystem.database:query( query, {}, callback )
     else
         local result = sql.Query( query )
         local success = not ( result == false )
@@ -39,14 +38,14 @@ end
 function guthlevelsystem.init_data_table()
     --  gSQL
     if Gsql then
-        db = Gsql:new( 
+        guthlevelsystem.database = Gsql:new( 
             guthlevelsystem.settings.database.driver, guthlevelsystem.settings.database,
             function( success, message )
                 if not success then
                     return guthlevelsystem.error( "failed while connecting to database: %s (gSQL)", message )
                 end
 
-                timer.Simple( 0, function()  --  avoid aborting cause `db` wouldn't be initialized
+                timer.Simple( 0, function()  --  avoid aborting cause `guthlevelsystem.database` wouldn't be initialized
                     guthlevelsystem.print( "database connection successfully established (gSQL)" )
                     guthlevelsystem.migrate()
                 end )
@@ -120,5 +119,68 @@ function guthlevelsystem.migrate()
             end )
         end
         run_next_migration()
+    end )
+end
+
+function guthlevelsystem.get_steamid_data( steamid, callback )
+	local query = ( "SELECT * FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( steamid ) )
+	guthlevelsystem.query( query, function( success, message, data )
+		if not success or ( not data or #data == 0 ) then
+			callback( nil )
+            return guthlevelsystem.error( "failed to get data of %q : %s", steamid, message )
+		end
+
+        callback( data )
+    end )
+end
+
+--  raw setters
+function guthlevelsystem.set_steamid_raw_prestige( steamid, prestige )
+    local query = ( "UPDATE guthlevelsystem_players SET prestige = %d WHERE steamid = %s" ):format( prestige, SQLStr( steamid ) )
+    guthlevelsystem.query( query, function( success, message, data ) end )
+end 
+
+function guthlevelsystem.set_steamid_raw_level( steamid, level )
+    local query = ( "UPDATE guthlevelsystem_players SET lvl = %d WHERE steamid = %s" ):format( level, SQLStr( steamid ) )
+    guthlevelsystem.query( query, function( success, message, data ) end )
+end 
+
+function guthlevelsystem.set_steamid_raw_xp( steamid, xp )
+    local query = ( "UPDATE guthlevelsystem_players SET xp = %d WHERE steamid = %s" ):format( xp, SQLStr( steamid ) )
+    guthlevelsystem.query( query, function( success, message, data ) end )
+end 
+
+--  normal setters
+function guthlevelsystem.set_steamid_prestige( steamid, prestige )
+    prestige = math.min( prestige, guthlevelsystem.settings.prestige.maximum_prestige )
+
+    local query = ( "UPDATE guthlevelsystem_players SET prestige = %d, lvl = %d, xp = %d WHERE steamid = %s" ):format( prestige, 1, 0, SQLStr( steamid ) )
+    guthlevelsystem.query( query, function( success, message, data ) end )
+end
+
+function guthlevelsystem.set_steamid_level( steamid, level )
+    level = math.min( level, guthlevelsystem.settings.maximum_level )
+
+    local query = ( "UPDATE guthlevelsystem_players SET lvl = %d, xp = %d WHERE steamid = %s" ):format( level, 0, SQLStr( steamid ) )
+    guthlevelsystem.query( query, function( success, message, data ) end )
+end
+
+function guthlevelsystem.set_steamid_xp( steamid, xp )
+    guthlevelsystem.get_steamid_data( steamid, function( data )
+        if not data then return end
+
+        --  get first row
+        data = data[1]
+
+        --  convert values to number
+        local prestige, level = tonumber( data.prestige ), tonumber( data.lvl )
+        
+        --  compute next values
+        local nxp = guthlevelsystem.settings.nxp_formula( prestige, level )
+        local level, xp, nxp = guthlevelsystem.compute_next_xp( prestige, level, xp, nxp )
+        
+        --  query changes
+        local query = ( "UPDATE guthlevelsystem_players SET lvl = %d, xp = %d WHERE steamid = %s" ):format( level, xp, SQLStr( steamid ) )
+        guthlevelsystem.query( query, function( success, message, data ) end )
     end )
 end

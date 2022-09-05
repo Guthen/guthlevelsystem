@@ -140,6 +140,42 @@ function guthlevelsystem.format_multiplier( multiplier )
 	return not ( multiplier == 1 ) and ( "(x%s)" ):format( multiplier ) or ""
 end
 
+--  compute next xp
+function guthlevelsystem.compute_next_xp( prestige, level, xp, nxp )
+	--  decrease
+	if xp <= 0 then
+		while ( xp <= 0 ) do
+			level = level - 1
+			nxp = guthlevelsystem.settings.nxp_formula( prestige, level )
+			xp = xp + nxp
+			
+			--  limit
+			if level <= 1 then
+				level = 1  --  avoid level 0 
+				xp = 0
+				break
+			end
+		end
+	--  increase
+	else
+		while ( xp >= nxp ) do
+			level = level + 1
+			xp = xp - nxp
+			
+			--  limit
+			if level > guthlevelsystem.settings.maximum_level then
+				level = guthlevelsystem.settings.maximum_level
+				xp = nxp
+				break
+			end
+			
+			nxp = guthlevelsystem.settings.nxp_formula( prestige, level )
+		end
+	end
+
+	return level, xp, nxp
+end
+
 --  check for updates
 function guthlevelsystem.check_for_updates()
 	guthlevelsystem.print( "checking for updates.." )

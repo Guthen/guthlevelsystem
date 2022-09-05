@@ -4,7 +4,7 @@ guthlevelsystem = guthlevelsystem or {}
 hook.Add( "PlayerInitialSpawn", "guthlevelsystem:set_data", function( ply )
 	if ply:IsBot() then return end
 
-	ply:gls_get_data( function( success, message, data )
+	ply:gls_get_data( function( data )
 		if not data or #data <= 0 then
 			ply:gls_init_data()
 		else

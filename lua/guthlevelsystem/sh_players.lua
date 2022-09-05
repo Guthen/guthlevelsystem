@@ -13,10 +13,10 @@ function PLAYER:gls_get_xp()
 end
 
 function PLAYER:gls_get_xp_for_maximum_level()
-    local xp = -self:gls_get_xp()
+    local prestige, xp = self:gls_get_prestige(), -self:gls_get_xp()
     
     for i = self:gls_get_level(), guthlevelsystem.settings.maximum_level do
-        xp = xp + guthlevelsystem.settings.nxp_formula( self, i )
+        xp = xp + guthlevelsystem.settings.nxp_formula( prestige, i )
     end
 
     return xp
