@@ -90,13 +90,20 @@ local function show_panel()
 
 		--  init listview columns
 		listview:AddColumn( "SteamID" )
+		if DarkRP then
+			listview:AddColumn( "RP Name" )
+		end
 		listview:AddColumn( "Prestige" )
 		listview:AddColumn( "Level" )
 		listview:AddColumn( "XP" )
 
 		--  populate our data to listview
 		for i, v in ipairs( data ) do
-			listview:AddLine( v.steamid, v.prestige, v.lvl, v.xp )
+			if DarkRP then
+				listview:AddLine( v.steamid, v.rpname, v.prestige, v.lvl, v.xp )
+			else
+				listview:AddLine( v.steamid, v.prestige, v.lvl, v.xp )
+			end
 		end
 
 		--  right click menu

@@ -14,8 +14,34 @@ local function get_and_send_panel_data_to( ply )
 			send_panel_data_to( ply, { message = "Unable to fetch data due to error: " .. message } )
 			return guthlevelsystem.error( "failed to fetch panel's data for %q: %s", ply:GetName(), message ) 
 		end
-		
-		send_panel_data_to( ply, data )
+
+		--  fetch DarkRP rpnames
+		if DarkRP then
+			guthlevelsystem.query( "SELECT uid, rpname FROM darkrp_player", function( success, message, rpname_data )
+				--  set only on success
+				if success then
+					--  build a set/lookup table of <steamid, rpname> to saves iterations
+					local rpnames_set = {}
+					for i, v in ipairs( rpname_data ) do
+						local steamid = util.SteamIDFrom64( v.uid )
+						rpnames_set[steamid] = v.rpname
+					end
+
+					--  set rpname to data
+					for i, v in ipairs( data ) do
+						local rpname = rpnames_set[v.steamid]
+						if rpname then
+							v.rpname = rpname
+						end
+					end
+				end
+				
+				--  send data
+				send_panel_data_to( ply, data )
+			end )
+		else
+			send_panel_data_to( ply, data )
+		end
 	end )
 end
 
