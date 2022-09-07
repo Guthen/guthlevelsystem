@@ -79,6 +79,12 @@ local function show_panel()
 			--  no data? oh my..
 			listview:AddColumn( "No Data" )
 			listview:AddLine( "No data has been received!" )
+			
+			--  populate error message
+			if data.message then
+				listview:AddLine( data.message )
+			end
+			
 			return 
 		end
 
