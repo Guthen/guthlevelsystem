@@ -20,7 +20,7 @@ local config = {
 
 
 local _xp = 0
-return function( ply )
+guthlevelsystem.add_hud( "default_text", function( ply )
 	_xp = Lerp( FrameTime() * 5, _xp or 0, ply:gls_get_xp() )
 
 	local level, nxp = ply:gls_get_level(), ply:gls_get_nxp()
@@ -33,4 +33,4 @@ return function( ply )
 	if guthlevelsystem.settings.prestige.enabled then
 		draw.SimpleText( config.TextPrestige:format( ply:gls_get_prestige() ), config.TextFont, config.PrestigeX, config.PrestigeY, config.TextColor )
 	end
-end
+end )

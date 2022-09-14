@@ -40,7 +40,7 @@ end
 
 local progress_color = config.BoxProgressColor
 local xp = 0
-return function( ply )
+guthlevelsystem.add_hud( "default_progress", function( ply )
     --  variables
     local x = ScrW() / 2 - config.BoxW / 2
     xp = Lerp( FrameTime() * config.SmoothSpeed, xp, ply:gls_get_xp() )
@@ -67,4 +67,4 @@ return function( ply )
     if guthlevelsystem.settings.prestige.enabled then
         draw.SimpleText( config.TextPrestige:format( ply:gls_get_prestige() ), config.TextFont, x + config.BoxW / 2, config.BoxY + config.BoxH / 2, config.TextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
     end
-end
+end )

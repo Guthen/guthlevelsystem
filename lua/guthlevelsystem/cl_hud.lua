@@ -2,19 +2,12 @@ guthlevelsystem = guthlevelsystem or {}
 
 --  load HUDs
 local path, huds = "guthlevelsystem/hud/", {}
+function guthlevelsystem.add_hud( id, callback )
+	huds[id] = callback
+end
+
 for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
-	local file_name = v:gsub( "%.lua$", "" )
-
-	local func = include( path .. v )
-	if not func then
-		guthlevelsystem.error( "HUD '%s' can't be load, an error has occured!", file_name )
-		continue
-	elseif not isfunction( func ) then
-		guthlevelsystem.error( "HUD '%s' can't be load, the returned value is not a function!", file_name )
-		continue
-	end
-
-	huds[file_name] = func
+	guthlevelsystem.load_hud( v )
 end 
 guthlevelsystem.print( "loaded %d HUDs", table.Count( huds ) )
 
