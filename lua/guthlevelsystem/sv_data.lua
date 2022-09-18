@@ -79,46 +79,50 @@ function guthlevelsystem.migrate()
             version INTEGER NOT NULL
         );
         INSERT INTO guthlevelsystem_version SELECT 0 WHERE NOT EXISTS ( SELECT * FROM guthlevelsystem_version );
-
-        SELECT version FROM guthlevelsystem_version LIMIT 1;
     ]]
 
-    guthlevelsystem.query( query, function( success, message, data )
+    guthlevelsystem.query( query, function( success, message, data, ... )
         if not success then return guthlevelsystem.error( "failed to migrate: %s", message ) end
         
-        local current_version = data[1] and data[1].version or 0
-        local diff_version = #migrations - current_version
-        if diff_version == 0 then
-            guthlevelsystem.print( "database is up-to-date, no migrations to run" )
-            return
-        elseif diff_version < 0 then 
-            return 
-        end
+        --  NOTE: I had to split the SELECT query from the previous query cause of MySQLOO
+        --        not being able to determine which data to return
+        guthlevelsystem.query( "SELECT version FROM guthlevelsystem_version LIMIT 1;", function( success, message, data )
+            if not success then return guthlevelsystem.error( "failed to retrieve version while migrating: %s", message ) end
 
-        --  migrating..
-        guthlevelsystem.print( "%d version(s) of difference, migrating..", diff_version )
-
-        local i = current_version + 1
-        local function run_next_migration()
-            if i > #migrations then 
-                guthlevelsystem.query( "UPDATE guthlevelsystem_version SET version = " .. #migrations, function( success, message )
-                    if not success then return guthlevelsystem.error( "failed to set migration version: %s", message ) end
-                    
-                    guthlevelsystem.print( "migration successfully finished!" )
-                end )
+            local current_version = data[1] and data[1].version or 0
+            local diff_version = #migrations - current_version
+            if diff_version == 0 then
+                guthlevelsystem.print( "database is up-to-date, no migrations to run" )
+                return
+            elseif diff_version < 0 then 
                 return 
             end
-
-            guthlevelsystem.query( migrations[i], function( success, message )
-                if not success then return guthlevelsystem.error( "failed to run migration %d: %s", i, message ) end
-
-                guthlevelsystem.print( "migration %d successfull!", i )
-                i = i + 1
-
-                run_next_migration()
-            end )
-        end
-        run_next_migration()
+    
+            --  migrating..
+            guthlevelsystem.print( "%d version(s) of difference, migrating..", diff_version )
+    
+            local i = current_version + 1
+            local function run_next_migration()
+                if i > #migrations then 
+                    guthlevelsystem.query( "UPDATE guthlevelsystem_version SET version = " .. #migrations, function( success, message )
+                        if not success then return guthlevelsystem.error( "failed to set migration version: %s", message ) end
+                        
+                        guthlevelsystem.print( "migration successfully finished!" )
+                    end )
+                    return 
+                end
+    
+                guthlevelsystem.query( migrations[i], function( success, message )
+                    if not success then return guthlevelsystem.error( "failed to run migration %d: %s", i, message ) end
+    
+                    guthlevelsystem.print( "migration %d successfull!", i )
+                    i = i + 1
+    
+                    run_next_migration()
+                end )
+            end
+            run_next_migration()
+        end )
     end )
 end
 
