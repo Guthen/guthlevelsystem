@@ -81,7 +81,7 @@ function guthlevelsystem.migrate()
         INSERT INTO guthlevelsystem_version SELECT 0 WHERE NOT EXISTS ( SELECT * FROM guthlevelsystem_version );
     ]]
 
-    guthlevelsystem.query( query, function( success, message, data, ... )
+    guthlevelsystem.query( query, function( success, message, data )
         if not success then return guthlevelsystem.error( "failed to migrate: %s", message ) end
         
         --  NOTE: I had to split the SELECT query from the previous query cause of MySQLOO
