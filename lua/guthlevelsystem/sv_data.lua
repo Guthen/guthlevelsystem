@@ -125,12 +125,16 @@ end
 function guthlevelsystem.get_steamid_data( steamid, callback )
 	local query = ( "SELECT * FROM guthlevelsystem_players WHERE steamid = %s" ):format( SQLStr( steamid ) )
 	guthlevelsystem.query( query, function( success, message, data )
-		if not success or ( not data or #data == 0 ) then
+		if not success then
 			callback( nil )
             return guthlevelsystem.error( "failed to get data of %q : %s", steamid, message )
 		end
 
-        callback( data )
+        if not data or #data == 0 then
+            callback( nil )
+        else
+            callback( data )
+        end
     end )
 end
 
