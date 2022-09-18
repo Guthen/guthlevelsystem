@@ -7,7 +7,7 @@ function guthlevelsystem.add_hud( id, callback )
 end
 
 for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do
-	guthlevelsystem.load_hud( v )
+	guthlevelsystem.load_file( path .. v, "cl_" )
 end 
 guthlevelsystem.print( "loaded %d HUDs", table.Count( huds ) )
 
