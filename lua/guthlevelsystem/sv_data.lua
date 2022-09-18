@@ -86,7 +86,7 @@ function guthlevelsystem.migrate()
     guthlevelsystem.query( query, function( success, message, data )
         if not success then return guthlevelsystem.error( "failed to migrate: %s", message ) end
         
-        local current_version = data[1].version
+        local current_version = data[1] and data[1].version or 0
         local diff_version = #migrations - current_version
         if diff_version == 0 then
             guthlevelsystem.print( "database is up-to-date, no migrations to run" )
