@@ -1,6 +1,6 @@
 guthlevelsystem = guthlevelsystem or {}
 guthlevelsystem.Author = "Guthen"
-guthlevelsystem.Version = "2.3.2"
+guthlevelsystem.Version = "2.3.3"
 guthlevelsystem.Link = "https://github.com/Guthen/guthlevelsystem"
 guthlevelsystem.Discord = "https://discord.gg/eKgkpCf"
 
@@ -10,7 +10,7 @@ guthlevelsystem.GithubVersion = guthlevelsystem.GithubVersion or "N/A"
 guthlevelsystem.NET_CHANGE_VAR_VALUE_BITS = 16  --  16 u-bits: allow numbers from 0 up to 65535
 
 --  debug (https://github.com/Guthen/guthscpbase/blob/master/lua/autorun/sh_guthscpbase.lua)
-local convar_debug = CreateConVar( "guthlevelsystem_debug", "0", FCVAR_NONE, "Enables debug messages", "0", "1" )
+local convar_debug = CreateConVar( "guthlevelsystem_debug", 0, FCVAR_NONE, "Enables debug messages", 0, 1 )
 
 function guthlevelsystem.is_debug()
 	return convar_debug:GetBool()
