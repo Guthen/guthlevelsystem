@@ -27,7 +27,7 @@ if guthlevelsystem.settings.event_npc_kill.enabled then
 		local ply = dmg:GetAttacker()
 		if not IsValid( ply ) or not ply:IsPlayer() then return end
 
-		ply:gls_add_xp( guthlevelsystem.settings.event_npc_kill.formula( npc, ent.guthlevelsystem_max_health ) )
+		ply:gls_add_xp( guthlevelsystem.settings.event_npc_kill.formula( ent, ent.guthlevelsystem_max_health ) )
 		ent.guthlevelsystem_took = true
 	end )
 else
