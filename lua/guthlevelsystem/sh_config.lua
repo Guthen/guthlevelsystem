@@ -54,7 +54,7 @@ The available commands are:
 	--    Available arguments are:
 	--    - prestige: player's prestige
 	earn_notification = "Congratulations, you get to prestige {prestige}!",
-	
+
 	--  Sound to play when you receive a prestige notification
 	sound_notification = "Friends/message.wav",
 }
@@ -96,7 +96,7 @@ hook.Add( "PostGamemodeLoaded", "guthlevelsystem:TeamXPMultipliers", function()
 		--[TEAM_CITIZEN] = 0.75, --  XP of TEAM_CITIZEN players multiplied by x0.75
 		--[TEAM_HOBO] = 0, --  XP of TEAM_HOBO players completely disabled
 	}
-	
+
 	guthlevelsystem.print( "%d Team XP Multipliers loaded", table.Count( guthlevelsystem.settings.team_xp_multipliers ) )
 end )
 
@@ -156,7 +156,7 @@ guthlevelsystem.settings.event_npc_kill = {
 	--  Multiplicator of XP to earn depending of the Max Health of the NPC
 	multiplicator = 2,
 	--  Formula of the amount of XP to earn on NPC Kill 
-	--    By default, it's the Max Health scaled by 2 of the NPC
+	--    By default, it's the Max Health of the NPC scaled by 2
 	--    NOTE: use `max_health` instead of `npc:GetMaxHealth()`, more reliable!
 	formula = function( npc, max_health )
 		return max_health * guthlevelsystem.settings.event_npc_kill.multiplicator

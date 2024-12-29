@@ -13,9 +13,9 @@ xAdmin.RegisterCommand( "gls_set_prestige", "Set prestige", "Set prestige to a s
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_set_prestige", {
-		xAdmin.GetLanguageString( "You" ), 
+		xAdmin.GetLanguageString( "You" ),
 		xAdmin.GetTargetString( targets ),
-		amount, 
+		amount,
 	} )
 	xAdmin.LogCommandUse( admin, "gls_set_prestige", {
 		( admin:EntIndex() == 0 ) and "CONSOLE" or admin:Nick(),
@@ -39,8 +39,8 @@ xAdmin.RegisterCommand( "gls_add_prestige", "Add prestige", "Add prestige to a s
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_add_prestige", {
-		xAdmin.GetLanguageString( "You" ), 
-		amount, 
+		xAdmin.GetLanguageString( "You" ),
+		amount,
 		xAdmin.GetTargetString( targets ),
 	} )
 	xAdmin.LogCommandUse( admin, "gls_add_prestige", {
@@ -66,9 +66,9 @@ xAdmin.RegisterCommand( "gls_set_level", "Set level", "Set level to a specified 
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_set_level", {
-		xAdmin.GetLanguageString( "You" ), 
+		xAdmin.GetLanguageString( "You" ),
 		xAdmin.GetTargetString( targets ),
-		amount, 
+		amount,
 	} )
 	xAdmin.LogCommandUse( admin, "gls_set_level", {
 		( admin:EntIndex() == 0 ) and "CONSOLE" or admin:Nick(),
@@ -92,8 +92,8 @@ xAdmin.RegisterCommand( "gls_add_level", "Add level", "Add level to a specified 
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_add_level", {
-		xAdmin.GetLanguageString( "You" ), 
-		amount, 
+		xAdmin.GetLanguageString( "You" ),
+		amount,
 		xAdmin.GetTargetString( targets ),
 	} )
 	xAdmin.LogCommandUse( admin, "gls_add_level", {
@@ -119,9 +119,9 @@ xAdmin.RegisterCommand( "gls_set_xp", "Set XP", "Set XP to a specified player", 
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_set_xp", {
-		xAdmin.GetLanguageString( "You" ), 
+		xAdmin.GetLanguageString( "You" ),
 		xAdmin.GetTargetString( targets ),
-		amount, 
+		amount,
 	} )
 	xAdmin.LogCommandUse( admin, "gls_set_xp", {
 		( admin:EntIndex() == 0 ) and "CONSOLE" or admin:Nick(),
@@ -145,8 +145,8 @@ xAdmin.RegisterCommand( "gls_add_xp", "Add XP", "Add XP to a specified player", 
 	end
 
 	xAdmin.NotifyCommandUse( admin, "gls_add_xp", {
-		xAdmin.GetLanguageString( "You" ), 
-		amount, 
+		xAdmin.GetLanguageString( "You" ),
+		amount,
 		xAdmin.GetTargetString( targets ),
 	} )
 	xAdmin.LogCommandUse( admin, "gls_add_xp", {

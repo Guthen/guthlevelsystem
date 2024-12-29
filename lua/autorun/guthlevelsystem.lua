@@ -17,7 +17,7 @@ function guthlevelsystem.is_debug()
 end
 
 local function colored_print( color, name, message, ... )
-	if ... then 
+	if ... then
 		message = message:format( ... )
 	end
 	MsgC( color, "[ ", name, " ] ", color_white, "guthlevelsystem: " .. message, "\n" )
@@ -82,12 +82,11 @@ function guthlevelsystem.format_message( msg, args )
 
 	local word = ""
 	for l in msg:gmatch( "." ) do
-		local force_implement = false
 		if l == "{" and #word > 0 then
 			format_word( word )
 			word = ""
 		end
-		
+
 		word = word .. l
 		if l == " " or l == "}" then
 			format_word( word )
@@ -123,7 +122,7 @@ function guthlevelsystem.colored_format_message( msg, args )
 			format_word( word )
 			word = ""
 		end
-		
+
 		word = word .. l
 		if l == " " or l == "}" then
 			format_word( word )
@@ -146,11 +145,11 @@ end
 function guthlevelsystem.compute_next_xp( prestige, level, xp, nxp )
 	--  decrease
 	if xp <= 0 then
-		while ( xp <= 0 ) do
+		while xp <= 0 do
 			level = level - 1
 			nxp = guthlevelsystem.settings.nxp_formula( prestige, level )
 			xp = xp + nxp
-			
+
 			--  limit
 			if level <= 1 then
 				level = 1  --  avoid level 0 
@@ -160,17 +159,17 @@ function guthlevelsystem.compute_next_xp( prestige, level, xp, nxp )
 		end
 	--  increase
 	else
-		while ( xp >= nxp ) do
+		while xp >= nxp do
 			level = level + 1
 			xp = xp - nxp
-			
+
 			--  limit
 			if level > guthlevelsystem.settings.maximum_level then
 				level = guthlevelsystem.settings.maximum_level
 				xp = nxp
 				break
 			end
-			
+
 			nxp = guthlevelsystem.settings.nxp_formula( prestige, level )
 		end
 	end
@@ -181,8 +180,8 @@ end
 --  check for updates
 function guthlevelsystem.check_for_updates()
 	guthlevelsystem.print( "checking for updates.." )
-	http.Fetch( 
-		"https://raw.githubusercontent.com/Guthen/guthlevelsystem/master/lua/autorun/guthlevelsystem.lua", 
+	http.Fetch(
+		"https://raw.githubusercontent.com/Guthen/guthlevelsystem/master/lua/autorun/guthlevelsystem.lua",
 		function( body )
 			local raw_git_version = body:match( "\"(%d+%.%d+.%d+)\"" )
 			if not raw_git_version then return guthlevelsystem.error( "failed to fetch Github version: `raw_git_version = nil`" ) end
@@ -229,15 +228,15 @@ if SERVER then
 	util.AddNetworkString( "guthlevelsystem:tchat" )
 
 	guthlevelsystem.load_file( "guthlevelsystem/sv_data.lua" )
-	
+
 	guthlevelsystem.load_file( "guthlevelsystem/sv_players.lua" )
 	guthlevelsystem.load_file( "guthlevelsystem/sv_hooks.lua" )
-	
+
 	guthlevelsystem.load_file( "guthlevelsystem/sv_panel.lua" )
 
 	guthlevelsystem.load_file( "guthlevelsystem/cl_hud.lua" )
 	guthlevelsystem.load_file( "guthlevelsystem/cl_panel.lua" )
-	
+
 	--  sending huds files
 	local path = "guthlevelsystem/hud/"
 	for i, v in ipairs( file.Find( path .. "*.lua", "LUA" ) ) do

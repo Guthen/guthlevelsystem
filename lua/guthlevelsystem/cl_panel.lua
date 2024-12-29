@@ -1,7 +1,7 @@
 
 --  lerping color (why isn't already built-in?)
 local function lerp_color( t, a, b )
-	return Color( 
+	return Color(
 		Lerp( t, a.r, b.r ),
 		Lerp( t, a.g, b.g ),
 		Lerp( t, a.b, b.b ),
@@ -16,7 +16,7 @@ local function change_player_var( steamid, key, value )
 		net.WriteString( key )
 		net.WriteUInt( value, guthlevelsystem.NET_CHANGE_VAR_VALUE_BITS )
 	net.SendToServer()
-end 
+end
 
 local function ask_number_input( title, subtitle, default, confirm_callback )
 	Derma_StringRequest( title, subtitle, default, function( text )
@@ -34,7 +34,7 @@ end
 local co
 local function show_panel()
 	local w, h = ScrW() * .4, ScrH() * .4
-	
+
 	--  create frame
 	local frame = vgui.Create( "DFrame" )
 	frame:SetSize( w, h )
@@ -52,7 +52,7 @@ local function show_panel()
 	listview:AddLine( "Waiting for request response.." )
 
 	local target_alpha_multiplier, alpha_multiplier = 0, 0
-	
+
 	--  wait and populate the data w/ coroutine (yeah wanted to try fancy stuff) 
 	local function wait_and_refresh_data()
 		--  request data from server
@@ -75,17 +75,17 @@ local function show_panel()
 		function listview:OnRowRightClick() end
 
 		--  checking data
-		if not data or #data == 0 then 
+		if not data or #data == 0 then
 			--  no data? oh my..
 			listview:AddColumn( "No Data" )
 			listview:AddLine( "No data has been received!" )
-			
+
 			--  populate error message
 			if data.message then
 				listview:AddLine( data.message )
 			end
-			
-			return 
+
+			return
 		end
 
 		--  init listview columns
@@ -113,10 +113,10 @@ local function show_panel()
 			local steamid = line:GetColumnText( 1 )
 
 			--  edit menu
-			if guthlevelsystem.settings.data_panel.write_usergroups[LocalPlayer():GetUserGroup()] then 
+			if guthlevelsystem.settings.data_panel.write_usergroups[LocalPlayer():GetUserGroup()] then
 				local edit_menu, edit_option = menu:AddSubMenu( "Edit" )
 				edit_option:SetMaterial( "icon16/pencil.png" )
-				
+
 				edit_menu:AddOption( "Set Prestige", function()
 					ask_number_input( "Set Prestige", "Which prestige do you want to set the player to?", line:GetColumnText( 2 ), function( value )
 						change_player_var( steamid, "prestige", value )
@@ -136,18 +136,18 @@ local function show_panel()
 					end )
 				end ):SetMaterial( "icon16/award_star_bronze_1.png" )
 			end
-			
+
 			--  copy menu
 			local copy_menu, copy_option = menu:AddSubMenu( "Copy" )
 			copy_option:SetMaterial( "icon16/page_copy.png" )
-			
+
 			copy_menu:AddOption( "SteamID", function()
 				SetClipboardText( steamid )
 			end ):SetMaterial( "icon16/user_gray.png" )
 			copy_menu:AddOption( "Entry as JSON", function()
 				local json = util.TableToJSON( data[line_id] )
 				if not json then
-					return guthlevelsystem.error( "failed to serialize entry as json" )	
+					return guthlevelsystem.error( "failed to serialize entry as json" )
 				end
 
 				SetClipboardText( json )
@@ -162,7 +162,7 @@ local function show_panel()
 	top_container:Dock( TOP )
 	top_container:DockMargin( 4, 4, 4, 4 )
 	top_container:SetTall( 16 )
-	
+
 	--  create refresh button
 	local refresh_button = top_container:Add( "DImageButton" )
 	refresh_button:Dock( RIGHT )
@@ -177,7 +177,6 @@ local function show_panel()
 	end
 
 	local warning_color = Color( 255, 128, 0 )
-	local old_paint = refresh_button.Paint
 	function refresh_button:Think()
 		--  animate alpha multiplier
 		alpha_multiplier = Lerp( FrameTime() * 3, alpha_multiplier, target_alpha_multiplier )
@@ -203,7 +202,7 @@ net.Receive( "guthlevelsystem:receive_panel_data", function()
 end )
 
 function guthlevelsystem.open_panel()
-	if not guthlevelsystem.settings.data_panel.read_usergroups[LocalPlayer():GetUserGroup()] then 
+	if not guthlevelsystem.settings.data_panel.read_usergroups[LocalPlayer():GetUserGroup()] then
 		return guthlevelsystem.error( "you do not have the permission to access this panel" )
 	end
 

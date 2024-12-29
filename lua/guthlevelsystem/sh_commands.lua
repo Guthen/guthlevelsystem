@@ -2,7 +2,7 @@ local function find_player_by_name( name )
 	if not name then return end
 
 	for i, v in ipairs( player.GetAll() ) do
-		if v:GetName():StartWith( name ) then 
+		if v:GetName():StartWith( name ) then
 			return v
 		end
 	end
@@ -15,14 +15,14 @@ local function command_wrapper( callback )
 
 		local amount = tonumber( args[1] )
 		if not amount then return end
-	
+
 		local target
 		if args[2] then
 			target = find_player_by_name( args[2] )
 		else
 			target = ply
 		end
-	
+
 		if IsValid( target ) then
 			callback( ply, target, amount )
 		else
@@ -32,10 +32,10 @@ local function command_wrapper( callback )
 end
 
 --  prestige
-concommand.Add( "guthlevelsystem_set_prestige", command_wrapper( 
+concommand.Add( "guthlevelsystem_set_prestige", command_wrapper(
 	function( ply, target, amount )
 		local diff_prestige = target:gls_set_prestige( amount )
-		if not ( diff_prestige == 0 ) then 
+		if diff_prestige ~= 0 then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You set prestige of {target_name} to {prestige}!", {
 				target_name = target:GetName(),
 				prestige = amount,
@@ -44,10 +44,10 @@ concommand.Add( "guthlevelsystem_set_prestige", command_wrapper(
 	end )
 )
 
-concommand.Add( "guthlevelsystem_add_prestige", command_wrapper( 
+concommand.Add( "guthlevelsystem_add_prestige", command_wrapper(
 	function( ply, target, amount )
 		local diff_prestige = target:gls_add_prestige( amount )
-		if not ( diff_level == 0 ) then 
+		if diff_prestige ~= 0 then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You add {amount} prestige(s) to {target_name}!", {
 				target_name = target:GetName(),
 				amount = amount,
@@ -57,10 +57,10 @@ concommand.Add( "guthlevelsystem_add_prestige", command_wrapper(
 )
 
 --  level
-concommand.Add( "guthlevelsystem_set_level", command_wrapper( 
+concommand.Add( "guthlevelsystem_set_level", command_wrapper(
 	function( ply, target, amount )
 		local diff_level = target:gls_set_level( amount )
-		if not ( diff_level == 0 ) then 
+		if diff_level ~= 0 then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You set level of {target_name} to {level}!", {
 				target_name = target:GetName(),
 				level = amount,
@@ -69,10 +69,10 @@ concommand.Add( "guthlevelsystem_set_level", command_wrapper(
 	end )
 )
 
-concommand.Add( "guthlevelsystem_add_level", command_wrapper( 
+concommand.Add( "guthlevelsystem_add_level", command_wrapper(
 	function( ply, target, amount )
 		local diff_level = target:gls_add_level( amount )
-		if not ( diff_level == 0 ) then 
+		if diff_level ~= 0 then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You add {amount} level(s) to {target_name}!", {
 				target_name = target:GetName(),
 				amount = amount,
@@ -82,10 +82,10 @@ concommand.Add( "guthlevelsystem_add_level", command_wrapper(
 )
 
 --  XP
-concommand.Add( "guthlevelsystem_set_xp", command_wrapper( 
+concommand.Add( "guthlevelsystem_set_xp", command_wrapper(
 	function( ply, target, amount )
 		local diff_level, diff_xp = target:gls_set_xp( amount )
-		if not ( diff_xp == 0 and diff_level == 0 ) then 
+		if not ( diff_level == 0 and diff_xp == 0 ) then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You set XP of {target_name} to {xp}!", {
 				target_name = target:GetName(),
 				xp = string.Comma( amount ),
@@ -94,10 +94,10 @@ concommand.Add( "guthlevelsystem_set_xp", command_wrapper(
 	end )
 )
 
-concommand.Add( "guthlevelsystem_add_xp", command_wrapper( 
+concommand.Add( "guthlevelsystem_add_xp", command_wrapper(
 	function( ply, target, amount )
 		local diff_level, diff_xp = target:gls_add_xp( amount )
-		if not ( diff_xp == 0 and diff_level == 0 ) then 
+		if not ( diff_level == 0 and diff_xp == 0 ) then
 			guthlevelsystem.print( guthlevelsystem.format_message( "You add {amount} XP(s) to {target_name}!", {
 				target_name = target:GetName(),
 				amount = string.Comma( amount ),

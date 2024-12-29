@@ -7,8 +7,8 @@ function ulx.gls_set_prestige( ply, target, prestige )
 end
 
 local gls_set_prestige = ulx.command( "guthlevelsystem", "ulx gls_set_prestige", ulx.gls_set_prestige, "!gls_set_prestige" )
-gls_set_prestige:addParam( { type=ULib.cmds.PlayerArg } )
-gls_set_prestige:addParam( { type=ULib.cmds.NumArg, hint="prestige" } )
+gls_set_prestige:addParam( { type = ULib.cmds.PlayerArg } )
+gls_set_prestige:addParam( { type = ULib.cmds.NumArg, hint = "prestige" } )
 gls_set_prestige:defaultAccess( ULib.ACCESS_SUPERADMIN )
 gls_set_prestige:help( "Set prestige to a specified player." )
 
@@ -33,8 +33,8 @@ function ulx.gls_set_level( ply, target, level )
 end
 
 local gls_set_level = ulx.command( "guthlevelsystem", "ulx gls_set_level", ulx.gls_set_level, "!gls_set_level" )
-gls_set_level:addParam( { type=ULib.cmds.PlayerArg } )
-gls_set_level:addParam( { type=ULib.cmds.NumArg, hint="level" } )
+gls_set_level:addParam( { type = ULib.cmds.PlayerArg } )
+gls_set_level:addParam( { type = ULib.cmds.NumArg, hint = "level" } )
 gls_set_level:defaultAccess( ULib.ACCESS_SUPERADMIN )
 gls_set_level:help( "Set level to a specified player." )
 

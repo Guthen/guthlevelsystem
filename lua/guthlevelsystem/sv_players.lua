@@ -23,21 +23,21 @@ function PLAYER:gls_save_data()
 		local xp = self:gls_get_xp()
 		local level = self:gls_get_level()
 		local prestige = self:gls_get_prestige()
-	
+
 		local query = ( "UPDATE guthlevelsystem_players SET xp = %d, lvl = %d, prestige = %d WHERE steamid = %s" ):format( xp, level, prestige, SQLStr( self:SteamID() ) )
 		guthlevelsystem.query( query, function( success, message, data )
 			if not success then
 				return guthlevelsystem.error( "failed while saving data on %q : %s", self:GetName(), message )
 			end
-	
-			guthlevelsystem.debug_print( "data has been saved on %q (%s)", self:GetName(), self:SteamID() ) 
+
+			guthlevelsystem.debug_print( "data has been saved on %q (%s)", self:GetName(), self:SteamID() )
 			hook.Run( "guthlevelsystem:on_player_save_data", self )
 		end )
 	end )
 end
 
 function PLAYER:gls_load_data( data )
-	local function load_data( data ) 
+	local function load_data( data )
 		if not data then return end
 
 		self:gls_set_raw_level( tonumber( data[1].lvl ) )
@@ -135,14 +135,14 @@ function PLAYER:gls_set_level( num, is_silent )
 	num = math.Clamp( num, 1, guthlevelsystem.settings.maximum_level )
 	local diff_level = num - self:gls_get_level()
 	if diff_level == 0 then return end
-	
+
 	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, 0 )
 	if should == false then return end
-	
+
 	self:gls_set_raw_level( num )
 	self:gls_set_raw_xp( 0 )
 	self:gls_update_nxp()
-	
+
 	guthlevelsystem.debug_print( "%q (%s) earned %d level(s)", self:GetName(), self:SteamID(), diff_level )
 	self:gls_save_data()
 
@@ -152,7 +152,7 @@ function PLAYER:gls_set_level( num, is_silent )
 	if not is_silent then
 		self:gls_default_notify_level( diff_level )
 	end
-	
+
 	hook.Run( "guthlevelsystem:on_player_earn", self, diff_level, 0 )
 	return diff_level
 end
@@ -177,7 +177,7 @@ function PLAYER:gls_get_xp_multiplier()
 
 	--  custom multiplier (not cumulable!)
 	multiplier = multiplier * ( hook.Run( "guthlevelsystem:custom_xp_multiplier", self, mul ) or 1 )
-	
+
 	return multiplier
 end
 
@@ -191,8 +191,9 @@ function PLAYER:gls_set_xp( num, is_silent )
 	local prestige, level = self:gls_get_prestige(), self:gls_get_level()
 	if diff_xp >= 0 and level >= guthlevelsystem.settings.maximum_level and self:gls_get_xp() >= self:gls_get_nxp() then return end
 
-	local level, xp, nxp = guthlevelsystem.compute_next_xp( prestige, level, num, self:gls_get_nxp() )
-	local diff_level = level - self:gls_get_level() 
+	local xp, nxp = 0, 0
+	level, xp, nxp = guthlevelsystem.compute_next_xp( prestige, level, num, self:gls_get_nxp() )
+	local diff_level = level - self:gls_get_level()
 
 	local should = hook.Run( "guthlevelsystem:can_player_earn", self, diff_level, diff_xp )
 	if should == false then return end
@@ -200,10 +201,10 @@ function PLAYER:gls_set_xp( num, is_silent )
 	self:gls_set_raw_level( level )
 	self:gls_set_raw_xp( xp )
 	self:gls_set_raw_nxp( nxp )
-	
+
 	guthlevelsystem.debug_print( "%q (%s) earned %d level(s) and %d XP", self:GetName(), self:SteamID(), diff_level, diff_xp )
 	self:gls_save_data()
-	
+
 	--  prestige
 	check_and_alert_for_prestige( self )
 
@@ -253,7 +254,7 @@ end
 function PLAYER:gls_default_notify_prestige( diff_prestige )
 	local prestige = self:gls_get_prestige()
 	if diff_prestige > 0 then
-		self:gls_notify( 
+		self:gls_notify(
 			guthlevelsystem.format_message( guthlevelsystem.settings.prestige.earn_notification, {
 				prestige = prestige,
 			} ),
@@ -266,7 +267,7 @@ end
 function PLAYER:gls_default_notify_level( diff_level )
 	local level = self:gls_get_level()
 	if diff_level > 0 then
-		self:gls_notify( 
+		self:gls_notify(
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_earn_level, {
 				level = level,
 			} ),
@@ -274,7 +275,7 @@ function PLAYER:gls_default_notify_level( diff_level )
 			guthlevelsystem.settings.sound_notification_level
 		)
 	elseif diff_level < 0 then
-		self:gls_notify( 
+		self:gls_notify(
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_loss_level, {
 				level = level,
 			} ),
@@ -286,7 +287,7 @@ end
 
 function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 	if diff_xp > 0 then
-		self:gls_notify( 
+		self:gls_notify(
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_earn_xp, {
 				xp = string.Comma( diff_xp ),
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),
@@ -295,7 +296,7 @@ function PLAYER:gls_default_notify_xp( diff_xp, multiplier )
 			guthlevelsystem.settings.sound_notification_xp
 		)
 	elseif diff_xp < 0 then
-		self:gls_notify( 
+		self:gls_notify(
 			guthlevelsystem.format_message( guthlevelsystem.settings.notification_loss_xp, {
 				xp = string.Comma( diff_xp ),
 				multiplier = guthlevelsystem.format_multiplier( multiplier ),

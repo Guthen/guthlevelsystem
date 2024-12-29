@@ -32,7 +32,7 @@ guthlevelsystem.add_hud( "default_text", function( ply )
 	--  text
 	draw.SimpleText( config.text_level:format( level ), config.text_font, config.level_x, config.level_y, config.text_color )
 	draw.SimpleText( xp_text, config.text_font, config.xp_x, config.xp_y, config.text_color )
-	
+
 	if guthlevelsystem.settings.prestige.enabled then
 		draw.SimpleText( config.text_prestige:format( ply:gls_get_prestige() ), config.text_font, config.prestige_x, config.prestige_y, config.text_color )
 	end

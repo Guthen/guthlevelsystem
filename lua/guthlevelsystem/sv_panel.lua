@@ -10,9 +10,9 @@ end
 local function get_and_send_panel_data_to( ply )
 	local query = "SELECT * FROM guthlevelsystem_players"
 	guthlevelsystem.query( query, function( success, message, data )
-		if not success then 
+		if not success then
 			send_panel_data_to( ply, { message = "Unable to fetch data due to error: " .. message } )
-			return guthlevelsystem.error( "failed to fetch panel's data for %q: %s", ply:GetName(), message ) 
+			return guthlevelsystem.error( "failed to fetch panel's data for %q: %s", ply:GetName(), message )
 		end
 
 		--  fetch DarkRP rpnames
@@ -35,7 +35,7 @@ local function get_and_send_panel_data_to( ply )
 						end
 					end
 				end
-				
+
 				--  send data
 				send_panel_data_to( ply, data )
 			end )
@@ -66,22 +66,22 @@ net.Receive( "guthlevelsystem:change_player_var", function( len, ply )
 	--  get desired value
 	local value = net.ReadUInt( guthlevelsystem.NET_CHANGE_VAR_VALUE_BITS )
 
-	local ply = player.GetBySteamID( steamid )
+	local target = player.GetBySteamID( steamid )
 	if key == "prestige" then
-		if IsValid( ply ) then
-			ply:gls_set_prestige( value )
+		if IsValid( target ) then
+			target:gls_set_prestige( value )
 		else
 			guthlevelsystem.set_steamid_prestige( steamid, value )
 		end
 	elseif key == "lvl" then
-		if IsValid( ply ) then
-			ply:gls_set_level( value )
+		if IsValid( target ) then
+			target:gls_set_level( value )
 		else
 			guthlevelsystem.set_steamid_level( steamid, value )
 		end
 	elseif key == "xp" then
-		if IsValid( ply ) then
-			ply:gls_set_xp( value )
+		if IsValid( target ) then
+			target:gls_set_xp( value )
 		else
 			guthlevelsystem.set_steamid_xp( steamid, value )
 		end

@@ -10,7 +10,7 @@ hook.Add( "PlayerInitialSpawn", "guthlevelsystem:set_data", function( ply )
 		else
 			ply:gls_load_data()
 		end
-	end ) 
+	end )
 end )
 
 --  earn xp on npc kill
@@ -31,11 +31,11 @@ if guthlevelsystem.settings.event_npc_kill.enabled then
 		ent.guthlevelsystem_took = true
 	end )
 else
-	hook.Remove( "PostEntityTakeDamage", "guthlevelsystem:add_xp" ) 
+	hook.Remove( "PostEntityTakeDamage", "guthlevelsystem:add_xp" )
 end
 
 --  earn xp on player kill
-if guthlevelsystem.settings.event_player_kill.enabled then 
+if guthlevelsystem.settings.event_player_kill.enabled then
 	hook.Add( "PlayerDeath", "guthlevelsystem:add_xp", function( ply, _, atk )
 		if not IsValid( atk ) or not atk:IsPlayer() then return end
 		if ply == atk then return end
@@ -43,7 +43,7 @@ if guthlevelsystem.settings.event_player_kill.enabled then
 		atk:gls_add_xp( guthlevelsystem.settings.event_player_kill.formula( ply ) )
 	end )
 else
-	hook.Remove( "PlayerDeath", "guthlevelsystem:add_xp" ) 
+	hook.Remove( "PlayerDeath", "guthlevelsystem:add_xp" )
 end
 
 --  earn xp while playing
@@ -52,8 +52,8 @@ if guthlevelsystem.settings.event_time_playing.enabled then
 		for _, v in pairs( player.GetHumans() ) do
 			local diff_level, diff_xp, multiplier = v:gls_add_xp( guthlevelsystem.settings.event_time_playing.formula( v ), true )
 			if diff_level and diff_xp and multiplier then
-				v:gls_default_notify_level( diff_level ) 
-				v:gls_notify( 
+				v:gls_default_notify_level( diff_level )
+				v:gls_notify(
 					guthlevelsystem.format_message( guthlevelsystem.settings.event_time_playing.earn_notification, {
 						xp = diff_xp,
 						multiplier = guthlevelsystem.format_multiplier( multiplier ),
@@ -80,13 +80,13 @@ end )
 hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_chat )
 	if text:StartWith( guthlevelsystem.settings.prestige.command ) then
 		local arg = text:Split( " " )[2]
-		
+
 		if arg == "y" or arg == "yes" then
 			if ply:gls_is_eligible_to_prestige() then
 				ply:gls_add_prestige( 1 )
 			else
 				if ply:gls_get_prestige() < guthlevelsystem.settings.prestige.maximum_prestige then
-					ply:gls_colored_message( guthlevelsystem.settings.prestige.not_eligible_message, { 
+					ply:gls_colored_message( guthlevelsystem.settings.prestige.not_eligible_message, {
 						total_xp = string.Comma( ply:gls_get_xp_for_maximum_level() ),
 					} )
 				else
@@ -107,7 +107,7 @@ hook.Add( "PlayerSay", "guthlevelsystem:prestige", function( ply, text, is_team_
 				command_reset = guthlevelsystem.settings.prestige.command .. " reset",
 			} )
 		end
-		
+
 		return ""
 	end
 end )
@@ -123,17 +123,17 @@ hook.Add( "playerCanChangeTeam", "guthlevelsystem:can_change_team", function( pl
 	local level, prestige = ply:gls_get_level(), ply:gls_get_prestige()
 
 	if has_level_priority then
-		if not ( level >= job_level and prestige >= job_prestige ) then 
+		if not ( level >= job_level and prestige >= job_prestige ) then
 			return false, guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_level_priority_job, {
-				level = job_level, 
+				level = job_level,
 				prestige = job_prestige,
 				job = team.GetName( job ),
 			} )
-		end 
+		end
 	else
 		if not ( level >= job_level and prestige >= job_prestige or prestige > job_prestige ) then
 			return false, guthlevelsystem.format_message( guthlevelsystem.settings.notification_fail_job, {
-				level = job_level, 
+				level = job_level,
 				prestige = job_prestige,
 				job = team.GetName( job ),
 			} )
